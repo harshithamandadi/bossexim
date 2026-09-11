@@ -1,0 +1,227 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Design tokens
+   Palette colours are fixed. Semantic colours (canvas, surface, fg, …) are
+   remapped per [data-tone] below, so every component adapts automatically when
+   placed in a light, mist or dark section — no per-component dark variants.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@theme {
+  /* Palette */
+  --color-ink: #0a0a0b;
+  --color-mist: #f5f5f7;
+  --color-brand: #1f6bff;
+  --color-brand-deep: #0b4fd6;
+  --color-tide: #12b3c8;
+  --color-saffron: #ff9500;
+  --color-danger: #d70015;
+  --color-success: #1f9d55;
+
+  /* Semantic */
+  --color-canvas: #ffffff;
+  --color-surface: #f5f5f7;
+  --color-elevated: #ffffff;
+  --color-fg: #1d1d1f;
+  --color-fg-mute: #6e6e73;
+  --color-border: rgb(0 0 0 / 0.08);
+
+  --radius-card: 1.75rem;
+  --radius-panel: 2.5rem;
+
+  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+  --animate-dash: dash 1.2s linear infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes dash {
+    to {
+      stroke-dashoffset: -16;
+    }
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+/* ───────────────────────────── Section tones ───────────────────────────── */
+[data-tone] {
+  color: var(--color-fg);
+}
+
+[data-tone="light"] {
+  --color-canvas: #ffffff;
+  --color-surface: #f5f5f7;
+  --color-elevated: #ffffff;
+  --color-fg: #1d1d1f;
+  --color-fg-mute: #6e6e73;
+  --color-border: rgb(0 0 0 / 0.08);
+  --color-brand: #1f6bff;
+  --color-danger: #d70015;
+  color-scheme: light;
+}
+
+[data-tone="mist"] {
+  --color-canvas: var(--color-mist);
+  --color-surface: #ffffff;
+  --color-elevated: #ffffff;
+}
+
+[data-tone="dark"] {
+  --color-canvas: #000000;
+  --color-surface: #141416;
+  --color-elevated: #1c1c1f;
+  --color-fg: #f5f5f7;
+  --color-fg-mute: #a1a1a6;
+  --color-border: rgb(255 255 255 / 0.12);
+  --color-brand: #4c8dff;
+  --color-danger: #ff6961;
+  color-scheme: dark;
+}
+
+/* ─────────────────────────────── Base ─────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-brand) 22%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+  }
+}
+
+/* ─────────────────────────── Typography scale ─────────────────────────── */
+@utility type-hero {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(3.25rem, 11vw, 9.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+
+@utility type-h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.5rem, 6.4vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+@utility type-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.125rem, 4.6vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+@utility type-h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+@utility type-h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+@utility type-lead {
+  font-size: clamp(1.125rem, 1.5vw, 1.3125rem);
+  line-height: 1.5;
+  letter-spacing: -0.012em;
+}
+
+@utility type-body {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+@utility type-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ─────────────────────────────── Effects ─────────────────────────────── */
+@utility gradient-text {
+  background-image: linear-gradient(100deg, var(--color-brand) 10%, var(--color-tide) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glass {
+  background-color: color-mix(in oklab, var(--color-canvas) 72%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+@utility glow-brand {
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--color-brand) 24%, transparent), transparent);
+}
+
+@utility glow-tide {
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--color-tide) 20%, transparent), transparent);
+}
+
+@utility dot-grid {
+  background-image: radial-gradient(color-mix(in oklab, var(--color-fg) 14%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+@utility edge-fade-x {
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility underline-link {
+  text-decoration-line: underline;
+  text-decoration-color: var(--color-border);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.3s var(--ease-apple);
+
+  &:hover {
+    text-decoration-color: currentColor;
+  }
+}
