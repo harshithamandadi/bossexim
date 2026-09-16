@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
+import { WaveDivider } from "@/components/ui/wave-divider";
 import { contactNavGroup, mainNavigation, routes, siteConfig, uiLabels } from "@/config";
 import { SocialLinks } from "./social-links";
 
@@ -12,7 +13,8 @@ export function SiteFooter() {
 
   return (
     <footer data-tone="dark" className="relative overflow-hidden bg-canvas text-fg">
-      <Container className="pt-20 pb-10">
+      <WaveDivider flip />
+      <Container className="relative pt-24 pb-10">
         <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.2fr)]">
           <div className="max-w-sm">
             <Link href={routes.home} aria-label={`${company.name} — home`} className="inline-block rounded-lg">

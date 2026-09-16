@@ -3,7 +3,7 @@
 import { animate, useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { cn } from "@/lib/cn";
-import { EASE_APPLE } from "@/lib/motion";
+import { EASE_SMOOTH } from "@/lib/motion";
 
 const COUNT_DURATION = 1.6;
 
@@ -13,7 +13,7 @@ const COUNT_DURATION = 1.6;
  */
 export function AnimatedNumber({ value, className }: { value: number; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "0px 0px -15% 0px" });
+  const isInView = useInView(ref, { once: true, margin: "0px 0px -5% 0px" });
   const reduceMotion = useReducedMotion();
 
   useLayoutEffect(() => {
@@ -25,7 +25,7 @@ export function AnimatedNumber({ value, className }: { value: number; className?
     if (!isInView || reduceMotion || !node) return;
     const controls = animate(0, value, {
       duration: COUNT_DURATION,
-      ease: EASE_APPLE,
+      ease: EASE_SMOOTH,
       onUpdate: (latest) => {
         node.textContent = String(Math.round(latest));
       },

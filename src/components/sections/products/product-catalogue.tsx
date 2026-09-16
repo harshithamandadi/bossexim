@@ -7,7 +7,7 @@ import { productLabels, tradeDirections } from "@/config/products";
 import { activeMarkets, filterProducts, getProductsByDirection, type MarketFilter } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
 import { pluralize } from "@/lib/format";
-import { DURATION, EASE_APPLE, SPRING_SNAPPY } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH, SPRING_SNAPPY } from "@/lib/motion";
 import type { TradeDirection } from "@/types/content";
 import { ProductCard } from "./product-card";
 
@@ -54,7 +54,7 @@ export function ProductCatalogue({ initialView }: { initialView: TradeDirection 
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: DURATION.base, ease: EASE_APPLE }}
+            transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
             className="overflow-hidden"
           >
             <MarketFilterBar value={market} onChange={setMarket} />

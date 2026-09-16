@@ -18,7 +18,7 @@ export function ProductCard({ product, className }: { product: Product; classNam
         <IconTile icon={product.icon} />
         <ArrowUpRight
           aria-hidden
-          className="size-5 text-fg-mute transition-[color,transform] duration-300 ease-apple group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-fg"
+          className="size-5 text-fg-mute transition-[color,transform] duration-300 ease-smooth group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-fg"
         />
       </div>
       <p className="type-eyebrow mt-10 text-fg-mute">{product.category}</p>

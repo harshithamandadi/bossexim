@@ -7,15 +7,24 @@ import { FeatureBand } from "@/components/sections/shared/feature-grid";
 import { PartnerTracks } from "@/components/sections/shared/partner-tracks";
 import { ProcessScroller } from "@/components/sections/shared/process-scroller";
 import { ServicesBento } from "@/components/sections/shared/services-bento";
+import { TradeRoutesStage } from "@/components/sections/trade/trade-routes-stage";
+import { Reveal } from "@/components/motion/reveal";
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
-import { homeContent, howWeWork, partnerContent, whyUs } from "@/config";
+import { globalPresence, homeContent, howWeWork, partnerContent, whyUs } from "@/config";
 
 export default function HomePage() {
   return (
     <>
       <HeroSection />
       <StatsSection />
+
+      <Section>
+        <SectionHeader {...globalPresence.heading} />
+        <Reveal className="mt-12 overflow-hidden rounded-panel shadow-[0_40px_90px_-50px_rgb(8_33_79/0.6)]">
+          <TradeRoutesStage />
+        </Reveal>
+      </Section>
 
       <Section tone="mist">
         <SectionHeader {...homeContent.services} />
@@ -28,14 +37,14 @@ export default function HomePage() {
         <ProcessScroller content={howWeWork} />
       </Section>
 
-      <FeatureBand content={whyUs} />
+      <FeatureBand content={whyUs} tone="mist" />
 
-      <Section tone="mist">
+      <Section>
         <SectionHeader {...partnerContent.heading} />
         <PartnerTracks className="mt-14" />
       </Section>
 
-      <FaqSection />
+      <FaqSection tone="mist" />
       <CtaSection />
     </>
   );

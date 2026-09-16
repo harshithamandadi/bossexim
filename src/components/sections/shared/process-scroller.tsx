@@ -7,7 +7,7 @@ import { SplitLayout } from "@/components/ui/split-layout";
 import { useScrollSpy } from "@/hooks/use-scroll-spy";
 import { cn } from "@/lib/cn";
 import { formatStepNumber } from "@/lib/format";
-import { DURATION, EASE_APPLE } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH } from "@/lib/motion";
 import type { ProcessContent } from "@/types/content";
 
 const STEP_ID_PREFIX = "process-step";
@@ -34,7 +34,7 @@ export function ProcessScroller({ content }: { content: ProcessContent }) {
                 initial={{ y: "60%", opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: "-60%", opacity: 0 }}
-                transition={{ duration: DURATION.base, ease: EASE_APPLE }}
+                transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
                 className="gradient-text block"
               >
                 {formatStepNumber(activeIndex + 1)}
@@ -47,7 +47,7 @@ export function ProcessScroller({ content }: { content: ProcessContent }) {
           <motion.div
             initial={false}
             animate={{ scaleX: (activeIndex + 1) / steps.length }}
-            transition={{ duration: DURATION.base, ease: EASE_APPLE }}
+            transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
             className="h-full origin-left rounded-full bg-linear-to-r from-brand to-tide"
           />
         </div>
@@ -63,7 +63,7 @@ export function ProcessScroller({ content }: { content: ProcessContent }) {
             key={step.title}
             id={stepIds[index]}
             className={cn(
-              "rounded-card bg-surface p-7 transition-opacity duration-500 ease-apple sm:p-10 lg:flex lg:min-h-[19rem] lg:flex-col",
+              "rounded-card bg-surface p-7 transition-opacity duration-500 ease-smooth sm:p-10 lg:flex lg:min-h-[19rem] lg:flex-col",
               index !== activeIndex && "lg:opacity-35",
             )}
           >

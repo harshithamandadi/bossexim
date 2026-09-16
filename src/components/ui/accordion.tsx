@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useId, useState } from "react";
-import { DURATION, EASE_APPLE } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH } from "@/lib/motion";
 import type { FaqItem } from "@/types/content";
 
 interface AccordionProps {
@@ -57,7 +57,7 @@ function AccordionItem({ id, item, isOpen, onToggle }: AccordionItemProps) {
           <motion.span
             aria-hidden
             animate={{ rotate: isOpen ? 45 : 0 }}
-            transition={{ duration: DURATION.base, ease: EASE_APPLE }}
+            transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
             className="grid size-9 shrink-0 place-items-center rounded-full bg-surface text-fg"
           >
             <Plus className="size-4" />
@@ -73,7 +73,7 @@ function AccordionItem({ id, item, isOpen, onToggle }: AccordionItemProps) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: DURATION.base, ease: EASE_APPLE }}
+            transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
             className="overflow-hidden"
           >
             <p className="type-body max-w-2xl pr-12 pb-7 text-fg-mute">{item.answer}</p>

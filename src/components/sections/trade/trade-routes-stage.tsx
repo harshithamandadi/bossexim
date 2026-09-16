@@ -44,7 +44,7 @@ function MapLegend() {
         {tradeLanes.legend.export}
       </li>
       <li className="flex items-center gap-2">
-        <span aria-hidden className="w-6 border-t-2 border-dashed border-saffron" />
+        <span aria-hidden className="w-6 border-t-2 border-dashed border-gold" />
         {tradeLanes.legend.import}
       </li>
     </ul>
@@ -79,7 +79,7 @@ function LaneList({ activeCode, onActiveChange }: { activeCode: MarketCode | nul
         {groupByCategory(importProducts).map(({ category, items }) => (
           <li key={category} className="flex items-center gap-3 py-2.5">
             <span className="w-7">
-              <ArrowDownRight aria-hidden className="size-4 text-saffron" />
+              <ArrowDownRight aria-hidden className="size-4 text-gold" />
             </span>
             <span className="flex-1 text-sm font-medium">{category}</span>
             <ProductIcons products={items} />

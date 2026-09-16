@@ -1,37 +1,42 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   Design tokens
+   Design tokens — BOSS Group blue
    Palette colours are fixed. Semantic colours (canvas, surface, fg, …) are
    remapped per [data-tone] below, so every component adapts automatically when
-   placed in a light, mist or dark section — no per-component dark variants.
+   placed in a light, mist or deep-navy section — no per-component variants.
    ═══════════════════════════════════════════════════════════════════════════ */
 @theme {
   /* Palette */
-  --color-ink: #0a0a0b;
-  --color-mist: #f5f5f7;
-  --color-brand: #1f6bff;
-  --color-brand-deep: #0b4fd6;
-  --color-tide: #12b3c8;
-  --color-saffron: #ff9500;
-  --color-danger: #d70015;
+  --color-navy: #0e2f73;
+  --color-navy-deep: #08214f;
+  --color-brand: #1560bd;
+  --color-brand-deep: #0e4a95;
+  --color-tide: #4fa8e8;
+  --color-sky: #8fc6f2;
+  --color-mist: #eef4fc;
+  --color-gold: #f2b34b;
+  --color-danger: #c62828;
   --color-success: #1f9d55;
 
   /* Semantic */
   --color-canvas: #ffffff;
-  --color-surface: #f5f5f7;
+  --color-surface: #eef4fc;
   --color-elevated: #ffffff;
-  --color-fg: #1d1d1f;
-  --color-fg-mute: #6e6e73;
-  --color-border: rgb(0 0 0 / 0.08);
+  --color-fg: #10254f;
+  --color-fg-mute: #5a7196;
+  --color-border: rgb(14 47 115 / 0.12);
 
   --radius-card: 1.75rem;
   --radius-panel: 2.5rem;
 
-  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Ease-out curve: quick to start, gently decelerating (Emil Kowalski's
+     preferred UI curve). Enter animations use it; exits stay shorter. */
+  --ease-smooth: cubic-bezier(0.32, 0.72, 0, 1);
 
   --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
   --animate-dash: dash 1.2s linear infinite;
+  --animate-orbit: orbit 48s linear infinite;
 
   @keyframes marquee {
     to {
@@ -42,6 +47,12 @@
   @keyframes dash {
     to {
       stroke-dashoffset: -16;
+    }
+  }
+
+  @keyframes orbit {
+    to {
+      transform: rotate(360deg);
     }
   }
 }
@@ -58,13 +69,13 @@
 
 [data-tone="light"] {
   --color-canvas: #ffffff;
-  --color-surface: #f5f5f7;
+  --color-surface: #eef4fc;
   --color-elevated: #ffffff;
-  --color-fg: #1d1d1f;
-  --color-fg-mute: #6e6e73;
-  --color-border: rgb(0 0 0 / 0.08);
-  --color-brand: #1f6bff;
-  --color-danger: #d70015;
+  --color-fg: #10254f;
+  --color-fg-mute: #5a7196;
+  --color-border: rgb(14 47 115 / 0.12);
+  --color-brand: #1560bd;
+  --color-danger: #c62828;
   color-scheme: light;
 }
 
@@ -75,14 +86,14 @@
 }
 
 [data-tone="dark"] {
-  --color-canvas: #000000;
-  --color-surface: #141416;
-  --color-elevated: #1c1c1f;
-  --color-fg: #f5f5f7;
-  --color-fg-mute: #a1a1a6;
-  --color-border: rgb(255 255 255 / 0.12);
-  --color-brand: #4c8dff;
-  --color-danger: #ff6961;
+  --color-canvas: #08214f;
+  --color-surface: #103068;
+  --color-elevated: #17407f;
+  --color-fg: #eaf2fd;
+  --color-fg-mute: #a9c2e4;
+  --color-border: rgb(255 255 255 / 0.16);
+  --color-brand: #6fb6f0;
+  --color-danger: #ff8a80;
   color-scheme: dark;
 }
 
@@ -119,66 +130,66 @@
 /* ─────────────────────────── Typography scale ─────────────────────────── */
 @utility type-hero {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(3.25rem, 11vw, 9.5rem);
-  line-height: 0.92;
-  letter-spacing: -0.055em;
+  font-weight: 800;
+  font-size: clamp(3.25rem, 10.5vw, 9rem);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
 }
 
 @utility type-h1 {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(2.5rem, 6.4vw, 5.5rem);
-  line-height: 1;
-  letter-spacing: -0.045em;
+  font-weight: 800;
+  font-size: clamp(2.5rem, 6.2vw, 5.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
 }
 
 @utility type-h2 {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(2.125rem, 4.6vw, 4rem);
+  font-weight: 700;
+  font-size: clamp(2.125rem, 4.4vw, 3.75rem);
   line-height: 1.04;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.035em;
 }
 
 @utility type-h3 {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: clamp(1.5rem, 2.4vw, 2rem);
   line-height: 1.15;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
 }
 
 @utility type-h4 {
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.25rem;
   line-height: 1.3;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.018em;
 }
 
 @utility type-lead {
   font-size: clamp(1.125rem, 1.5vw, 1.3125rem);
-  line-height: 1.5;
+  line-height: 1.55;
   letter-spacing: -0.012em;
 }
 
 @utility type-body {
   font-size: 1.0625rem;
-  line-height: 1.6;
+  line-height: 1.65;
   letter-spacing: -0.01em;
 }
 
 @utility type-eyebrow {
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 /* ─────────────────────────────── Effects ─────────────────────────────── */
 @utility gradient-text {
-  background-image: linear-gradient(100deg, var(--color-brand) 10%, var(--color-tide) 90%);
+  background-image: linear-gradient(100deg, var(--color-brand) 5%, var(--color-tide) 95%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -191,16 +202,30 @@
 }
 
 @utility glow-brand {
-  background: radial-gradient(closest-side, color-mix(in oklab, var(--color-brand) 24%, transparent), transparent);
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--color-brand) 26%, transparent), transparent);
 }
 
 @utility glow-tide {
-  background: radial-gradient(closest-side, color-mix(in oklab, var(--color-tide) 20%, transparent), transparent);
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--color-tide) 24%, transparent), transparent);
+}
+
+/* Soft blue wash behind light sections, echoing the brand banner. */
+@utility sky-wash {
+  background-image:
+    radial-gradient(60% 55% at 78% 8%, color-mix(in oklab, var(--color-tide) 20%, transparent), transparent 70%),
+    radial-gradient(55% 50% at 10% 0%, color-mix(in oklab, var(--color-brand) 14%, transparent), transparent 72%),
+    linear-gradient(180deg, color-mix(in oklab, var(--color-mist) 85%, transparent), transparent 55%);
 }
 
 @utility dot-grid {
-  background-image: radial-gradient(color-mix(in oklab, var(--color-fg) 14%, transparent) 1px, transparent 1px);
+  background-image: radial-gradient(color-mix(in oklab, var(--color-brand) 22%, transparent) 1px, transparent 1px);
   background-size: 22px 22px;
+}
+
+/* Coarser dot field used as the "world map" texture. */
+@utility map-dots {
+  background-image: radial-gradient(color-mix(in oklab, var(--color-brand) 28%, transparent) 1.6px, transparent 1.6px);
+  background-size: 14px 14px;
 }
 
 @utility edge-fade-x {
@@ -219,7 +244,7 @@
   text-decoration-line: underline;
   text-decoration-color: var(--color-border);
   text-underline-offset: 4px;
-  transition: text-decoration-color 0.3s var(--ease-apple);
+  transition: text-decoration-color 0.18s var(--ease-smooth);
 
   &:hover {
     text-decoration-color: currentColor;

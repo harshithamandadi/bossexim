@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
 
 const controlStyles = cn(
   "w-full rounded-2xl bg-surface px-4 py-3.5 text-[15px] text-fg ring-1 ring-inset ring-border",
-  "placeholder:text-fg-mute/70 transition-shadow duration-300 ease-apple",
+  "placeholder:text-fg-mute/70 transition-shadow duration-300 ease-smooth",
   "focus:outline-none focus:ring-2 focus:ring-brand aria-[invalid=true]:ring-danger",
 );
 

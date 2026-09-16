@@ -1,50 +1,60 @@
 /**
- * Shared motion language. Every animation on the site draws from these tokens so
- * timing and easing feel consistent (and can be tuned in one place).
+ * Shared motion language. Every animation draws from these tokens, so timing and
+ * easing stay consistent and can be tuned in one place.
+ *
+ * Principles (as taught by Emil Kowalski in "Animations on the Web"):
+ *  - animate transform and opacity only — they are cheap to composite;
+ *  - ease-out for entrances, so motion starts fast and settles gently;
+ *  - keep UI feedback short (150–350ms); reserve longer runs for hero moments;
+ *  - springs for direct manipulation (selection pills, tactile toggles);
+ *  - animations must be interruptible and must respect reduced-motion.
  */
 import type { Transition, Variants } from "framer-motion";
 
-/** Apple-style "ease out expo" — fast start, long graceful settle. */
-export const EASE_APPLE = [0.16, 1, 0.3, 1] as const;
+/** Ease-out curve: immediate response, soft landing. */
+export const EASE_SMOOTH = [0.32, 0.72, 0, 1] as const;
 
 export const DURATION = {
-  fast: 0.3,
-  base: 0.6,
-  slow: 0.9,
+  /** Hover, colour and small state changes. */
+  fast: 0.18,
+  /** Panels, accordions, list transitions. */
+  base: 0.32,
+  /** Scroll reveals and hero entrances. */
+  slow: 0.55,
 } as const;
 
-export const SPRING_SNAPPY: Transition = { type: "spring", bounce: 0.18, duration: 0.55 };
+export const SPRING_SNAPPY: Transition = { type: "spring", bounce: 0.2, duration: 0.45 };
 
-export const SPRING_ISLAND: Transition = { type: "spring", bounce: 0.22, duration: 0.6 };
+export const SPRING_ISLAND: Transition = { type: "spring", bounce: 0.18, duration: 0.5 };
 
 /** Trigger once, slightly before the element is fully on screen. */
-export const VIEWPORT_ONCE = { once: true, margin: "0px 0px -10% 0px" } as const;
+export const VIEWPORT_ONCE = { once: true, margin: "0px 0px -12% 0px" } as const;
 
 /** Pass a delay (seconds) via `custom`; omit it to let a parent's stagger decide. */
 export const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 16 },
   visible: (delay?: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: DURATION.slow, ease: EASE_APPLE, ...(delay ? { delay } : {}) },
+    transition: { duration: DURATION.slow, ease: EASE_SMOOTH, ...(delay ? { delay } : {}) },
   }),
 };
 
 /** Props for a one-off entrance on page load (hero copy, buttons). */
 export function enterOnLoad(delay: number) {
   return {
-    initial: { opacity: 0, y: 20 },
+    initial: { opacity: 0, y: 14 },
     animate: { opacity: 1, y: 0 },
-    transition: { delay, duration: DURATION.slow, ease: EASE_APPLE },
+    transition: { delay, duration: DURATION.slow, ease: EASE_SMOOTH },
   } as const;
 }
 
-/** Headline words: rise out of a soft blur. */
-export const blurUp: Variants = {
-  hidden: { opacity: 0, y: "0.35em", filter: "blur(12px)" },
-  visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 1.1, ease: EASE_APPLE } },
+/** Headline words rise into place. No blur: it is expensive across large text. */
+export const riseIn: Variants = {
+  hidden: { opacity: 0, y: "0.32em" },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_SMOOTH } },
 };
 
-export function stagger(staggerChildren = 0.08, delayChildren = 0): Variants {
+export function stagger(staggerChildren = 0.06, delayChildren = 0): Variants {
   return { hidden: {}, visible: { transition: { staggerChildren, delayChildren } } };
 }

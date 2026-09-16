@@ -11,7 +11,7 @@ import { contactContent, enquiryTypes } from "@/config/contact";
 import { tradeDirections } from "@/config/products";
 import { getProductsByDirection } from "@/lib/catalogue";
 import { HONEYPOT_FIELD, OTHER_PRODUCT_VALUE, type EnquiryFormState } from "@/lib/enquiry/schema";
-import { EASE_APPLE, SPRING_SNAPPY } from "@/lib/motion";
+import { EASE_SMOOTH, SPRING_SNAPPY } from "@/lib/motion";
 import type { EnquiryTypeId, TradeDirection } from "@/types/content";
 
 const INITIAL_STATE: EnquiryFormState = { status: "idle" };
@@ -172,7 +172,7 @@ function FormSuccess({ onReset }: { onReset: () => void }) {
             d="M5 12.5l4.5 4.5L19 7.5"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
-            transition={{ delay: 0.2, duration: 0.6, ease: EASE_APPLE }}
+            transition={{ delay: 0.2, duration: 0.6, ease: EASE_SMOOTH }}
           />
         </svg>
       </span>

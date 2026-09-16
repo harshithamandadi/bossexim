@@ -9,7 +9,7 @@ import type { Gallery } from "@/types/content";
 const PLACEHOLDER_WASHES = [
   "from-brand/25 via-brand/5 to-transparent",
   "from-tide/25 via-tide/5 to-transparent",
-  "from-saffron/20 via-saffron/5 to-transparent",
+  "from-gold/20 via-gold/5 to-transparent",
 ] as const;
 
 export function MediaGrid({ className }: { className?: string }) {
@@ -37,7 +37,7 @@ function GalleryTile({ gallery, wash }: { gallery: Gallery; wash?: string }) {
             alt={cover.alt}
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-700 ease-apple group-hover:scale-105"
+            className="object-cover transition-transform duration-700 ease-smooth group-hover:scale-105"
           />
           <div aria-hidden className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
         </>

@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
 const variantStyles = {
   /** Solid, inverts automatically on dark sections. */
   primary: "bg-fg text-canvas hover:bg-fg/85",
-  brand: "bg-brand text-white hover:bg-brand-deep",
+  brand: "bg-brand text-white shadow-lg shadow-brand/25 hover:bg-brand-deep",
   secondary: "bg-elevated text-fg ring-1 ring-inset ring-border hover:ring-fg/25",
   ghost: "text-fg hover:bg-fg/5",
 } as const;
@@ -26,7 +26,7 @@ export interface ButtonStyleOptions {
 export function buttonStyles({ variant = "primary", size = "md", className }: ButtonStyleOptions = {}): string {
   return cn(
     "group inline-flex shrink-0 items-center justify-center gap-2 rounded-full font-medium tracking-[-0.01em]",
-    "transition-[background-color,color,box-shadow,transform] duration-300 ease-apple active:scale-[0.97]",
+    "transition-[background-color,color,box-shadow,transform] duration-200 ease-smooth active:scale-[0.97]",
     "disabled:pointer-events-none disabled:opacity-50",
     variantStyles[variant],
     sizeStyles[size],
@@ -41,7 +41,7 @@ function ButtonContent({ children, withArrow }: { children: ReactNode; withArrow
       {withArrow && (
         <ArrowRight
           aria-hidden
-          className="size-4 transition-transform duration-300 ease-apple group-hover:translate-x-0.5"
+          className="size-4 transition-transform duration-300 ease-smooth group-hover:translate-x-0.5"
         />
       )}
     </>

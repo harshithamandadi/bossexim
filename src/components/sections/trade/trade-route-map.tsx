@@ -9,7 +9,7 @@ import { activeMarkets, getProductsForMarket } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
 import { formatList, pluralize } from "@/lib/format";
 import { arcPath, project, toPercent, type MapBounds, type MapSize, type Point } from "@/lib/geo";
-import { DURATION, EASE_APPLE } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH } from "@/lib/motion";
 import type { LabelAnchor, Market } from "@/types/content";
 import { laneInteractionProps, type ActiveLaneChange } from "./lane-interaction";
 
@@ -111,7 +111,7 @@ export function TradeRouteMap({ activeCode, onActiveChange, className }: TradeRo
             key={path}
             d={path}
             fill="none"
-            stroke="var(--color-saffron)"
+            stroke="var(--color-gold)"
             strokeOpacity={0.75}
             strokeWidth={1.5}
             strokeDasharray="4 4"
@@ -135,7 +135,7 @@ export function TradeRouteMap({ activeCode, onActiveChange, className }: TradeRo
                   isInView ? { pathLength: 1, opacity: isDimmed ? 0.2 : 1, strokeWidth: isActive ? 3.5 : 2 } : undefined
                 }
                 transition={{
-                  pathLength: { duration: 1.8, delay: 0.3 + index * 0.12, ease: EASE_APPLE },
+                  pathLength: { duration: 1.8, delay: 0.3 + index * 0.12, ease: EASE_SMOOTH },
                   default: { duration: DURATION.fast },
                 }}
               />

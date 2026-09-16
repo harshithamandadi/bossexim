@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ButtonLink } from "@/components/ui/button";
 import { contactLink, mainNavigation, uiLabels } from "@/config";
-import { EASE_APPLE } from "@/lib/motion";
+import { EASE_SMOOTH } from "@/lib/motion";
 
 const ITEM_STAGGER = 0.04;
 
@@ -24,7 +24,7 @@ export function MobileMenu({ id, onNavigate }: { id: string; onNavigate: () => v
             key={group.label}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08 + index * ITEM_STAGGER, duration: 0.5, ease: EASE_APPLE }}
+            transition={{ delay: 0.08 + index * ITEM_STAGGER, duration: 0.5, ease: EASE_SMOOTH }}
             className="py-3"
           >
             <Link href={group.href} onClick={onNavigate} className="type-h4 block px-3 py-1.5">
