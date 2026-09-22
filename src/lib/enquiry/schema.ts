@@ -3,7 +3,6 @@
  * Pure functions only (no server APIs), so it is safe to import anywhere.
  */
 import { contactContent, enquiryTypes } from "@/config/contact";
-import { products } from "@/config/products";
 import type { EnquiryTypeId } from "@/types/content";
 
 export const OTHER_PRODUCT_VALUE = "other";
@@ -45,8 +44,8 @@ function isEnquiryType(value: string): value is EnquiryTypeId {
   return enquiryTypes.some((type) => type.id === value);
 }
 
-function isKnownProduct(value: string): boolean {
-  return value === OTHER_PRODUCT_VALUE || products.some((product) => product.slug === value);
+function isKnownProduct(value: string, productSlugs: readonly string[]): boolean {
+  return value === OTHER_PRODUCT_VALUE || productSlugs.includes(value);
 }
 
 function maxLengthFor(field: EnquiryField): number {
@@ -59,8 +58,8 @@ export function toEnquiryType(value: unknown): EnquiryTypeId | undefined {
 }
 
 /** Safely read a product slug from a URL parameter. */
-export function toProductSlug(value: unknown): string | undefined {
-  return typeof value === "string" && products.some((product) => product.slug === value) ? value : undefined;
+export function toProductSlug(value: unknown, productSlugs: readonly string[]): string | undefined {
+  return typeof value === "string" && productSlugs.includes(value) ? value : undefined;
 }
 
 export function readEnquiryValues(formData: FormData): EnquiryValues {
@@ -73,7 +72,7 @@ export function isHoneypotFilled(formData: FormData): boolean {
   return String(formData.get(HONEYPOT_FIELD) ?? "").length > 0;
 }
 
-export function validateEnquiry(values: EnquiryValues): ValidationResult {
+export function validateEnquiry(values: EnquiryValues, productSlugs: readonly string[]): ValidationResult {
   const { type = "", name = "", email = "", message = "", company, phone, country, product } = values;
   const errors: EnquiryErrors = {};
 
@@ -81,7 +80,7 @@ export function validateEnquiry(values: EnquiryValues): ValidationResult {
   if (!name) errors.name = messages.required;
   if (!EMAIL_PATTERN.test(email)) errors.email = email ? messages.email : messages.required;
   if (message.length < MIN_MESSAGE_LENGTH) errors.message = message ? messages.message : messages.required;
-  if (product && !isKnownProduct(product)) errors.product = messages.product;
+  if (product && !isKnownProduct(product, productSlugs)) errors.product = messages.product;
 
   if (Object.keys(errors).length > 0 || !isEnquiryType(type)) return { ok: false, errors };
 

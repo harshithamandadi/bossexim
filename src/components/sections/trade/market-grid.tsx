@@ -4,7 +4,7 @@ import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Chip } from "@/components/ui/chip";
 import { Icon } from "@/components/ui/icon";
 import { productHref } from "@/config/routes";
-import { activeMarkets, getProductsForMarket } from "@/lib/catalogue";
+import type { Catalogue } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
 import type { Market } from "@/types/content";
 
@@ -23,14 +23,14 @@ export function MarketTile({ market, children, className }: { market: Market; ch
 }
 
 /** Every destination market with the export lines that ship there. */
-export function MarketGrid({ className }: { className?: string }) {
+export function MarketGrid({ catalogue, className }: { catalogue: Catalogue; className?: string }) {
   return (
     <RevealGroup as="ul" className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}>
-      {activeMarkets.map((market) => (
+      {catalogue.activeMarkets.map((market) => (
         <RevealItem as="li" key={market.code}>
           <MarketTile market={market}>
             <ul className="mt-5 flex flex-wrap gap-1.5">
-              {getProductsForMarket(market.code).map((product) => (
+              {catalogue.getProductsForMarket(market.code).map((product) => (
                 <li key={product.slug}>
                   <Link href={productHref(product.slug)} className="group">
                     <Chip variant="outline" className="transition-colors group-hover:text-fg group-hover:ring-fg/30">

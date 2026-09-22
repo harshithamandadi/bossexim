@@ -4,6 +4,7 @@ import { Chip } from "@/components/ui/chip";
 import { IconTile } from "@/components/ui/icon";
 import { groupCompanies } from "@/config";
 import { cn } from "@/lib/cn";
+import { getGroupCompanies } from "@/lib/content/queries";
 import type { GroupCompany } from "@/types/content";
 
 function CurrentBadge({ company }: { company: GroupCompany }) {
@@ -11,10 +12,12 @@ function CurrentBadge({ company }: { company: GroupCompany }) {
 }
 
 /** Card grid — BOSS Group page. */
-export function CompanyGrid({ className }: { className?: string }) {
+export async function CompanyGrid({ className }: { className?: string }) {
+  const companies = await getGroupCompanies();
+
   return (
     <RevealGroup as="ul" className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}>
-      {groupCompanies.items.map((company) => {
+      {companies.map((company) => {
         const Wrapper = company.href ? "a" : "article";
         return (
           <RevealItem as="li" key={company.name}>
@@ -38,10 +41,12 @@ export function CompanyGrid({ className }: { className?: string }) {
 }
 
 /** Compact list — About page. */
-export function CompanyList({ className }: { className?: string }) {
+export async function CompanyList({ className }: { className?: string }) {
+  const companies = await getGroupCompanies();
+
   return (
     <RevealGroup as="ul" interval={0.05} className={cn("divide-y divide-border border-y border-border", className)}>
-      {groupCompanies.items.map((company) => (
+      {companies.map((company) => (
         <RevealItem as="li" key={company.name} className="flex items-center gap-4 py-4">
           <IconTile icon={company.icon} size="sm" variant={company.isCurrent ? "brand" : "soft"} />
           <div className="min-w-0 flex-1">

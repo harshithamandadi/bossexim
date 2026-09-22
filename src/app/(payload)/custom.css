@@ -1,0 +1,199 @@
+/*
+ * BOSS Global EXIM branding for the Payload admin.
+ * Payload's own styles sit in the `payload-default` cascade layer, so these
+ * unlayered rules win without !important.
+ */
+:root {
+  --bg-brand: #1560bd;
+  --bg-brand-deep: #0e4a95;
+  --bg-navy: #0e2f73;
+  --bg-ice: #eef4fc;
+}
+
+/* Primary buttons in brand blue */
+.btn--style-primary {
+  --bg-color: var(--bg-brand);
+  --hover-bg: var(--bg-brand-deep);
+  --color: #ffffff;
+  --hover-color: #ffffff;
+}
+
+.btn--style-primary.btn--disabled {
+  --bg-color: #b8cde8;
+  --hover-bg: #b8cde8;
+  --color: #ffffff;
+}
+
+.nav__link-indicator {
+  background-color: var(--bg-brand);
+}
+
+/* Sign-in screen: the site's soft blue wash */
+.template-minimal {
+  background:
+    radial-gradient(60% 50% at 80% 0%, rgb(79 168 232 / 0.18), transparent 70%),
+    radial-gradient(50% 45% at 0% 10%, rgb(21 96 189 / 0.12), transparent 70%),
+    var(--bg-ice);
+}
+
+/* Logo on the sign-in screen */
+.bg-admin-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.bg-admin-logo__mark {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.bg-admin-logo__name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--bg-navy);
+}
+
+.bg-admin-logo__name span {
+  font-weight: 600;
+  color: #5a7196;
+}
+
+.bg-admin-logo__label {
+  margin: 2px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #5a7196;
+}
+
+.bg-admin-icon {
+  width: 28px;
+  height: 28px;
+}
+
+/* Dashboard welcome */
+.bg-welcome {
+  display: grid;
+  align-items: start;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  margin-bottom: 32px;
+}
+
+@media (max-width: 900px) {
+  .bg-welcome {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.bg-welcome__intro,
+.bg-welcome__checklist {
+  padding: 28px;
+  border-radius: 20px;
+  border: 1px solid var(--theme-elevation-100);
+  background: var(--theme-elevation-0);
+}
+
+.bg-welcome__intro {
+  background:
+    radial-gradient(70% 90% at 100% 0%, rgb(79 168 232 / 0.16), transparent 70%),
+    var(--bg-ice);
+  border-color: rgb(21 96 189 / 0.15);
+}
+
+.bg-welcome__eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bg-brand);
+}
+
+.bg-welcome__title {
+  margin: 8px 0 0;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--bg-navy);
+}
+
+.bg-welcome__subtitle {
+  margin: 0 0 12px;
+  font-size: 15px;
+  color: var(--theme-elevation-800);
+}
+
+.bg-welcome__text {
+  margin: 8px 0 0;
+  color: var(--theme-elevation-600);
+}
+
+.bg-welcome__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.bg-welcome__link {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--bg-brand);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgb(21 96 189 / 0.25);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.bg-welcome__link:hover {
+  background: var(--bg-brand);
+  color: #ffffff;
+}
+
+.bg-welcome__link--primary {
+  background: var(--bg-brand);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.bg-welcome__link--primary:hover {
+  background: var(--bg-brand-deep);
+}
+
+.bg-welcome__checklist ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bg-welcome__checklist li + li {
+  border-top: 1px solid var(--theme-elevation-100);
+}
+
+.bg-welcome__checklist a {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  text-decoration: none;
+  color: var(--theme-elevation-800);
+}
+
+.bg-welcome__checklist a:hover {
+  color: var(--bg-brand);
+}
+
+.bg-welcome__count {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #b45309;
+}

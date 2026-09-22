@@ -1,20 +1,26 @@
 "use client";
 
 import { ArrowDownRight } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Icon } from "@/components/ui/icon";
-import type { MarketCode } from "@/config/markets";
 import { tradeLanes } from "@/config/process";
-import { activeMarkets, getProductsForMarket, groupByCategory, importProducts } from "@/lib/catalogue";
+import { createCatalogue, groupByCategory, type Catalogue } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
-import type { Product } from "@/types/content";
+import type { Market, MarketCode, Product } from "@/types/content";
 import { laneInteractionProps, type ActiveLaneChange } from "./lane-interaction";
 import { TradeRouteMap } from "./trade-route-map";
 
+interface TradeRoutesStageProps {
+  products: Product[];
+  markets: Market[];
+  className?: string;
+}
+
 /** Dark "stage": interactive route map plus the matching lane list. */
-export function TradeRoutesStage({ className }: { className?: string }) {
+export function TradeRoutesStage({ products, markets, className }: TradeRoutesStageProps) {
   const [activeCode, setActiveCode] = useState<MarketCode | null>(null);
+  const catalogue = useMemo(() => createCatalogue(products, markets), [products, markets]);
 
   return (
     <div
@@ -29,9 +35,9 @@ export function TradeRoutesStage({ className }: { className?: string }) {
           <Eyebrow>{tradeLanes.eyebrow}</Eyebrow>
           <MapLegend />
         </div>
-        <TradeRouteMap activeCode={activeCode} onActiveChange={setActiveCode} className="mt-6" />
+        <TradeRouteMap catalogue={catalogue} activeCode={activeCode} onActiveChange={setActiveCode} className="mt-6" />
       </div>
-      <LaneList activeCode={activeCode} onActiveChange={setActiveCode} />
+      <LaneList catalogue={catalogue} activeCode={activeCode} onActiveChange={setActiveCode} />
     </div>
   );
 }
@@ -51,11 +57,17 @@ function MapLegend() {
   );
 }
 
-function LaneList({ activeCode, onActiveChange }: { activeCode: MarketCode | null; onActiveChange: ActiveLaneChange }) {
+interface LaneListProps {
+  catalogue: Catalogue;
+  activeCode: MarketCode | null;
+  onActiveChange: ActiveLaneChange;
+}
+
+function LaneList({ catalogue, activeCode, onActiveChange }: LaneListProps) {
   return (
     <div className="flex flex-col gap-8 lg:border-l lg:border-border lg:pl-10">
       <LaneGroup title={tradeLanes.outbound}>
-        {activeMarkets.map((market) => {
+        {catalogue.activeMarkets.map((market) => {
           const isActive = market.code === activeCode;
           return (
             <li key={market.code}>
@@ -69,14 +81,14 @@ function LaneList({ activeCode, onActiveChange }: { activeCode: MarketCode | nul
               >
                 <span className="w-7 text-xs font-semibold text-fg-mute">{market.code}</span>
                 <span className="flex-1 text-sm font-medium">{market.shortName}</span>
-                <ProductIcons products={getProductsForMarket(market.code)} />
+                <ProductIcons products={catalogue.getProductsForMarket(market.code)} />
               </button>
             </li>
           );
         })}
       </LaneGroup>
       <LaneGroup title={tradeLanes.inbound}>
-        {groupByCategory(importProducts).map(({ category, items }) => (
+        {groupByCategory(catalogue.importProducts).map(({ category, items }) => (
           <li key={category} className="flex items-center gap-3 py-2.5">
             <span className="w-7">
               <ArrowDownRight aria-hidden className="size-4 text-gold" />

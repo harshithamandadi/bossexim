@@ -3,6 +3,7 @@ import { ProductCatalogue } from "@/components/sections/products/product-catalog
 import { CtaSection } from "@/components/sections/shared/cta-section";
 import { Section } from "@/components/ui/section";
 import { pageContent, routes } from "@/config";
+import { getCatalogue } from "@/lib/content/queries";
 import { createPageMetadata } from "@/lib/metadata";
 import type { TradeDirection } from "@/types/content";
 
@@ -19,7 +20,7 @@ interface ProductsPageProps {
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
-  const { view } = await searchParams;
+  const [{ view }, { products, markets }] = await Promise.all([searchParams, getCatalogue()]);
   const initialView: TradeDirection = view === "import" ? "import" : "export";
 
   return (
@@ -27,7 +28,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       <PageHero content={content} />
       <Section spacing="compact" className="pt-4 sm:pt-6">
         {/* Keyed so the header's Exports/Imports links switch tabs even on this page. */}
-        <ProductCatalogue key={initialView} initialView={initialView} />
+        <ProductCatalogue key={initialView} initialView={initialView} products={products} markets={markets} />
       </Section>
       <CtaSection />
     </>

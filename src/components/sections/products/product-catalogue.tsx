@@ -1,23 +1,30 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { productLabels, tradeDirections } from "@/config/products";
-import { activeMarkets, filterProducts, getProductsByDirection, type MarketFilter } from "@/lib/catalogue";
+import { createCatalogue, type MarketFilter } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
 import { pluralize } from "@/lib/format";
 import { DURATION, EASE_SMOOTH, SPRING_SNAPPY } from "@/lib/motion";
-import type { TradeDirection } from "@/types/content";
+import type { Market, Product, TradeDirection } from "@/types/content";
 import { ProductCard } from "./product-card";
 
 const DIRECTIONS: TradeDirection[] = ["export", "import"];
 
 /** Exports / Imports segmented control, market filter and an animated product grid. */
-export function ProductCatalogue({ initialView }: { initialView: TradeDirection }) {
+interface ProductCatalogueProps {
+  initialView: TradeDirection;
+  products: Product[];
+  markets: Market[];
+}
+
+export function ProductCatalogue({ initialView, products, markets }: ProductCatalogueProps) {
+  const catalogue = useMemo(() => createCatalogue(products, markets), [products, markets]);
   const [direction, setDirection] = useState(initialView);
   const [market, setMarket] = useState<MarketFilter>("all");
-  const visibleProducts = filterProducts(direction, market);
+  const visibleProducts = catalogue.filterProducts(direction, market);
 
   function changeDirection(next: TradeDirection) {
     setDirection(next);
@@ -39,7 +46,7 @@ export function ProductCatalogue({ initialView }: { initialView: TradeDirection 
           options={DIRECTIONS.map((value) => ({
             value,
             label: tradeDirections[value].label,
-            count: getProductsByDirection(value).length,
+            count: catalogue.getProductsByDirection(value).length,
           }))}
         />
         <p aria-live="polite" className="text-sm text-fg-mute">
@@ -57,7 +64,7 @@ export function ProductCatalogue({ initialView }: { initialView: TradeDirection 
             transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
             className="overflow-hidden"
           >
-            <MarketFilterBar value={market} onChange={setMarket} />
+            <MarketFilterBar markets={catalogue.activeMarkets} value={market} onChange={setMarket} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -73,7 +80,7 @@ export function ProductCatalogue({ initialView }: { initialView: TradeDirection 
               exit={{ opacity: 0, scale: 0.96 }}
               transition={SPRING_SNAPPY}
             >
-              <ProductCard product={product} />
+              <ProductCard product={product} markets={catalogue.markets} />
             </motion.li>
           ))}
         </AnimatePresence>
@@ -82,10 +89,16 @@ export function ProductCatalogue({ initialView }: { initialView: TradeDirection 
   );
 }
 
-function MarketFilterBar({ value, onChange }: { value: MarketFilter; onChange: (value: MarketFilter) => void }) {
+interface MarketFilterBarProps {
+  markets: Market[];
+  value: MarketFilter;
+  onChange: (value: MarketFilter) => void;
+}
+
+function MarketFilterBar({ markets, value, onChange }: MarketFilterBarProps) {
   const options: { value: MarketFilter; label: string }[] = [
     { value: "all", label: productLabels.allMarkets },
-    ...activeMarkets.map((market) => ({ value: market.code, label: market.shortName })),
+    ...markets.map((market) => ({ value: market.code, label: market.shortName })),
   ];
 
   return (

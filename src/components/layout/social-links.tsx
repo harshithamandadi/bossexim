@@ -1,12 +1,13 @@
 import { Chip } from "@/components/ui/chip";
-import { siteConfig, uiLabels } from "@/config";
+import { uiLabels } from "@/config";
 import { cn } from "@/lib/cn";
+import type { SocialLink } from "@/types/content";
 
-/** Social profiles from config. Profiles without a URL show as "coming soon". */
-export function SocialLinks({ className }: { className?: string }) {
+/** Social profiles (set in the admin). Profiles without a link show as "coming soon". */
+export function SocialLinks({ links, className }: { links: SocialLink[]; className?: string }) {
   return (
     <ul className={cn("flex flex-wrap gap-2", className)}>
-      {siteConfig.social.map(({ platform, href }) => (
+      {links.map(({ platform, href }) => (
         <li key={platform}>
           {href ? (
             <a href={href} target="_blank" rel="noopener noreferrer" className="group">

@@ -5,7 +5,6 @@ import type {
   LinkItem,
   SectionContent,
   Statement,
-  TeamMember,
 } from "@/types/content";
 import { routes } from "./routes";
 
@@ -58,20 +57,17 @@ export const visionMissionValues: {
   ],
 };
 
-export const leadership: { heading: SectionContent; members: TeamMember[]; emptyState: string } = {
+/** Leadership profiles are managed in the admin (Website content → Team / Leadership). */
+export const leadership: { heading: SectionContent; emptyState: string } = {
   heading: {
     eyebrow: "Our Team / Leadership",
     title: "The people behind BOSS EXIM.",
     description: "Experienced leadership across trade, sourcing and logistics.",
   },
-  /**
-   * Add leaders here, e.g.
-   * { name: "Full Name", role: "Managing Director", bio: "Short profile…", photo: "/team/name.jpg" },
-   */
-  members: [],
   emptyState: "Leadership profiles will be published here soon.",
 };
 
+/** The registrations we list; their numbers are entered in the admin (Settings → Company details). */
 export const compliance: { heading: SectionContent; items: ComplianceItem[] } = {
   heading: {
     eyebrow: "Registrations, Certifications & Compliance",
@@ -80,12 +76,12 @@ export const compliance: { heading: SectionContent; items: ComplianceItem[] } = 
       "Our statutory registrations and certifications. Registration numbers will be listed here once verified.",
   },
   items: [
-    { code: "CIN", name: "Corporate Identity Number", issuer: "Ministry of Corporate Affairs", value: undefined },
-    { code: "PAN", name: "Permanent Account Number", issuer: "Income Tax Department", value: undefined },
-    { code: "GST", name: "Goods & Services Tax Identification Number", issuer: "GST Network", value: undefined },
-    { code: "IEC", name: "Importer-Exporter Code", issuer: "Directorate General of Foreign Trade", value: undefined },
-    { code: "RCMC", name: "Registration-cum-Membership Certificate", issuer: "Export Promotion Council", value: undefined },
-    { code: "ISO", name: "ISO Certification", issuer: "Accredited certification body", value: undefined },
-    { code: "AD Code", name: "Authorised Dealer Code", issuer: "Authorised dealer bank, registered with Customs", value: undefined },
+    { key: "cin", code: "CIN", name: "Corporate Identity Number", issuer: "Ministry of Corporate Affairs" },
+    { key: "pan", code: "PAN", name: "Permanent Account Number", issuer: "Income Tax Department" },
+    { key: "gst", code: "GST", name: "Goods & Services Tax Identification Number", issuer: "GST Network" },
+    { key: "iec", code: "IEC", name: "Importer-Exporter Code", issuer: "Directorate General of Foreign Trade" },
+    { key: "rcmc", code: "RCMC", name: "Registration-cum-Membership Certificate", issuer: "Export Promotion Council" },
+    { key: "iso", code: "ISO", name: "ISO Certification", issuer: "Accredited certification body" },
+    { key: "adCode", code: "AD Code", name: "Authorised Dealer Code", issuer: "Authorised dealer bank, registered with Customs" },
   ],
 };

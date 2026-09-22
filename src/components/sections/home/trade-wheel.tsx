@@ -11,14 +11,16 @@ import {
 } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState, type PointerEvent } from "react";
+import { useMemo, useRef, useState, type PointerEvent } from "react";
 import { Icon } from "@/components/ui/icon";
-import { productLabels, products, productsViewHref, tradeDirections } from "@/config";
+import { productLabels, productsViewHref, tradeDirections } from "@/config";
 import { useDomId } from "@/hooks/use-dom-id";
 import { groupByCategory } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
 import { pluralize } from "@/lib/format";
 import { DURATION, EASE_SMOOTH, SPRING_SNAPPY, VIEWPORT_ONCE } from "@/lib/motion";
+import type { IconName } from "@/lib/icons";
+import type { Product } from "@/types/content";
 
 /* Geometry, in viewBox units. */
 const SIZE = 500;
@@ -33,23 +35,30 @@ const ORBIT_SPEED = 6;
 /** How quickly the orbit eases to a stop, or back up to speed (per second). */
 const ORBIT_RESPONSE = 5;
 
-/** One segment per product category — the wheel grows with the catalogue. */
-const segments = groupByCategory(products).flatMap(({ category, items }) => {
-  const lead = items[0];
-  if (!lead) return [];
-  const direction = tradeDirections[lead.direction];
-  return [
-    {
-      category,
-      icon: lead.icon,
-      href: productsViewHref(lead.direction),
-      caption: `${items.length} ${direction.singular.toLowerCase()} ${pluralize(items.length, productLabels.line, productLabels.lines)}`,
-    },
-  ];
-});
-type Segment = (typeof segments)[number];
+interface Segment {
+  category: string;
+  icon: IconName;
+  href: string;
+  caption: string;
+}
 
-const SECTOR_DEGREES = 360 / segments.length;
+/** One segment per product category — the wheel grows with the catalogue. */
+function buildSegments(products: Product[]): Segment[] {
+  return groupByCategory(products).flatMap(({ category, items }) => {
+    const lead = items[0];
+    if (!lead) return [];
+    const direction = tradeDirections[lead.direction];
+    return [
+      {
+        category,
+        icon: lead.icon,
+        href: productsViewHref(lead.direction),
+        caption: `${items.length} ${direction.singular.toLowerCase()} ${pluralize(items.length, productLabels.line, productLabels.lines)}`,
+      },
+    ];
+  });
+}
+
 const POD_RADIUS = (OUTER_RADIUS + INNER_RADIUS) / 2;
 
 const round = (value: number) => Math.round(value * 100) / 100;
@@ -60,9 +69,9 @@ function polar(radius: number, degrees: number) {
   return { x: round(CENTER + radius * Math.cos(radians)), y: round(CENTER + radius * Math.sin(radians)) };
 }
 
-function sectorPath(index: number) {
-  const start = index * SECTOR_DEGREES + SECTOR_GAP_DEGREES / 2;
-  const end = (index + 1) * SECTOR_DEGREES - SECTOR_GAP_DEGREES / 2;
+function sectorPath(index: number, sectorDegrees: number) {
+  const start = index * sectorDegrees + SECTOR_GAP_DEGREES / 2;
+  const end = (index + 1) * sectorDegrees - SECTOR_GAP_DEGREES / 2;
   const outerStart = polar(OUTER_RADIUS, start);
   const outerEnd = polar(OUTER_RADIUS, end);
   const innerEnd = polar(INNER_RADIUS, end);
@@ -86,7 +95,9 @@ function leavesSegment(event: PointerEvent, index: number) {
  * The brand wheel: trade categories orbiting a still globe. Pointing at (or
  * focusing) a segment glides the orbit to a stop and brings that segment forward.
  */
-export function TradeWheel({ className }: { className?: string }) {
+export function TradeWheel({ products, className }: { products: Product[]; className?: string }) {
+  const segments = useMemo(() => buildSegments(products), [products]);
+  const sectorDegrees = 360 / segments.length;
   const id = useDomId("wheel");
   const router = useRouter();
   const wheelRef = useRef<HTMLDivElement>(null);
@@ -154,7 +165,7 @@ export function TradeWheel({ className }: { className?: string }) {
               <motion.path
                 key={segment.category}
                 {...segmentProps(index)}
-                d={sectorPath(index)}
+                d={sectorPath(index, sectorDegrees)}
                 fill={`url(#${id}-${index % 2 === 0 ? "light" : "deep"})`}
                 strokeWidth="3"
                 className="cursor-pointer stroke-canvas"
@@ -168,7 +179,7 @@ export function TradeWheel({ className }: { className?: string }) {
         </svg>
 
         {segments.map((segment, index) => {
-          const point = polar(POD_RADIUS, (index + 0.5) * SECTOR_DEGREES);
+          const point = polar(POD_RADIUS, (index + 0.5) * sectorDegrees);
           return (
             <div
               key={segment.category}

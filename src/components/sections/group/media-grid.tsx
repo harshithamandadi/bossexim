@@ -3,6 +3,7 @@ import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Icon } from "@/components/ui/icon";
 import { mediaEvents, uiLabels } from "@/config";
 import { cn } from "@/lib/cn";
+import { getGalleries } from "@/lib/content/queries";
 import type { Gallery } from "@/types/content";
 
 /** Placeholder washes for galleries that don't have photos yet (cycled in order). */
@@ -12,10 +13,12 @@ const PLACEHOLDER_WASHES = [
   "from-gold/20 via-gold/5 to-transparent",
 ] as const;
 
-export function MediaGrid({ className }: { className?: string }) {
+export async function MediaGrid({ className }: { className?: string }) {
+  const galleries = await getGalleries();
+
   return (
     <RevealGroup as="ul" className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}>
-      {mediaEvents.galleries.map((gallery, index) => (
+      {galleries.map((gallery, index) => (
         <RevealItem as="li" key={gallery.title}>
           <GalleryTile gallery={gallery} wash={PLACEHOLDER_WASHES[index % PLACEHOLDER_WASHES.length]} />
         </RevealItem>

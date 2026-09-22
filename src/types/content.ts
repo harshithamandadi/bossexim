@@ -1,9 +1,9 @@
 /**
- * Content model for the site. Every file in `src/config` is type-checked against
- * these shapes, so a typo in the content is caught at build time rather than on
- * the live site.
+ * Content model for the site. Code config (`src/config`) and CMS content
+ * (mapped in `src/lib/content`) are both checked against these shapes, so the
+ * components never care where a piece of content came from.
  */
-import type { MarketCode } from "@/config/markets";
+import type { FAQ_CATEGORY } from "@/config/faq";
 import type { IconName } from "@/lib/icons";
 
 /* ───────────────────────── Shared building blocks ───────────────────────── */
@@ -71,7 +71,7 @@ export interface CompanyInfo {
 
 export interface ContactInfo {
   website: string;
-  /** Leave undefined to show "To be added". */
+  /** Undefined shows "To be added". */
   email?: string;
   phone?: string;
   address?: string;
@@ -81,8 +81,17 @@ export type SocialPlatform = "LinkedIn" | "Facebook" | "Instagram" | "X" | "YouT
 
 export interface SocialLink {
   platform: SocialPlatform;
-  /** Leave undefined until the profile is live — it renders as "coming soon". */
+  /** Undefined until the profile is live — it renders as "coming soon". */
   href?: string;
+}
+
+export type RegistrationKey = "cin" | "pan" | "gst" | "iec" | "rcmc" | "iso" | "adCode";
+
+/** Managed in the admin under Settings → Company details. */
+export interface CompanyDetails {
+  contact: ContactInfo;
+  social: SocialLink[];
+  registrations: Partial<Record<RegistrationKey, string>>;
 }
 
 /** Selects the illustration shown inside a service's bento card. */
@@ -101,8 +110,10 @@ export interface Service {
 export interface SiteConfig {
   company: CompanyInfo;
   url: string;
-  contact: ContactInfo;
-  social: SocialLink[];
+  /** Shown as the website contact; email, phone and address come from the admin. */
+  website: string;
+  /** Profiles offered in the admin, in display order. */
+  socialPlatforms: SocialPlatform[];
   seo: { description: string; keywords: string[] };
   services: Service[];
 }
@@ -127,8 +138,10 @@ export interface GeoPoint {
 /** Which side of its map marker a market's label sits on. */
 export type LabelAnchor = "top" | "bottom" | "left" | "right";
 
+export type MarketCode = string;
+
 export interface Market {
-  code: string;
+  code: MarketCode;
   name: string;
   shortName: string;
   region: string;
@@ -170,20 +183,26 @@ export interface Statement {
   text: string;
 }
 
+export interface ImageAsset {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+}
+
 export interface TeamMember {
   name: string;
   role: string;
   bio?: string;
-  /** Path under /public, e.g. "/team/managing-director.jpg". */
-  photo?: string;
+  photo?: ImageAsset;
 }
 
+/** A statutory registration; its number is entered in the admin. */
 export interface ComplianceItem {
+  key: RegistrationKey;
   code: string;
   name: string;
   issuer: string;
-  /** Registration number — leave undefined to show "To be added". */
-  value?: string;
 }
 
 export interface GroupCompany {
@@ -194,15 +213,10 @@ export interface GroupCompany {
   isCurrent?: boolean;
 }
 
-export interface GalleryImage {
-  src: string;
-  alt: string;
-}
-
 export interface Gallery {
   title: string;
   icon: IconName;
-  images: GalleryImage[];
+  images: ImageAsset[];
 }
 
 export interface Resource {
@@ -210,7 +224,7 @@ export interface Resource {
   description: string;
   format: string;
   icon: IconName;
-  /** File path under /public or an external URL. Undefined = "coming soon". */
+  /** Download link; undefined shows "Coming soon". */
   href?: string;
 }
 
@@ -234,11 +248,13 @@ export interface PartnerTrack {
   featured?: boolean;
 }
 
+export type FaqCategory = (typeof FAQ_CATEGORY)[keyof typeof FAQ_CATEGORY];
+
 export interface FaqItem {
   question: string;
   answer: string;
   /** Groups questions on the FAQ page and in the chatbot. */
-  category: string;
+  category: FaqCategory;
   /** Other words visitors might type; they help the chatbot find this answer. */
   keywords?: string[];
   /** Optional next step shown under the answer. */

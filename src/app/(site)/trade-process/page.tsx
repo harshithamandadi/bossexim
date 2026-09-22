@@ -9,6 +9,7 @@ import { TradeRoutesStage } from "@/components/sections/trade/trade-routes-stage
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
 import { globalPresence, howWeWork, pageContent, qualityVerification, routes, sectionIds } from "@/config";
+import { getCatalogue } from "@/lib/content/queries";
 import { createPageMetadata } from "@/lib/metadata";
 import { getLocalNavItems } from "@/lib/navigation";
 
@@ -21,7 +22,8 @@ export const metadata = createPageMetadata({
   path: routes.tradeProcess,
 });
 
-export default function TradeProcessPage() {
+export default async function TradeProcessPage() {
+  const catalogue = await getCatalogue();
   return (
     <>
       <PageHero content={content} />
@@ -36,9 +38,9 @@ export default function TradeProcessPage() {
       <Section id={ids.presence}>
         <SectionHeader {...globalPresence.heading} />
         <Reveal className="mt-14 overflow-hidden rounded-panel">
-          <TradeRoutesStage />
+          <TradeRoutesStage products={catalogue.products} markets={catalogue.markets} />
         </Reveal>
-        <MarketGrid className="mt-4" />
+        <MarketGrid catalogue={catalogue} className="mt-4" />
       </Section>
 
       <CtaSection />

@@ -4,11 +4,17 @@ import { cardStyles } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
 import { IconTile } from "@/components/ui/icon";
 import { productHref } from "@/config/routes";
-import { getMarket } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
-import type { Product } from "@/types/content";
+import type { Market, Product } from "@/types/content";
 
-export function ProductCard({ product, className }: { product: Product; className?: string }) {
+interface ProductCardProps {
+  product: Product;
+  /** Used to name the markets in each tag's tooltip. */
+  markets: Market[];
+  className?: string;
+}
+
+export function ProductCard({ product, markets, className }: ProductCardProps) {
   return (
     <Link
       href={productHref(product.slug)}
@@ -24,16 +30,16 @@ export function ProductCard({ product, className }: { product: Product; classNam
       <p className="type-eyebrow mt-10 text-fg-mute">{product.category}</p>
       <h3 className="type-h4 mt-2">{product.name}</h3>
       <p className="mt-2 text-[15px] leading-relaxed text-fg-mute">{product.summary}</p>
-      <ProductTags product={product} className="mt-auto pt-6" />
+      <ProductTags product={product} markets={markets} className="mt-auto pt-6" />
     </Link>
   );
 }
 
 /** Export lines show destination markets; import lines show grades/types. */
-export function ProductTags({ product, className }: { product: Product; className?: string }) {
+export function ProductTags({ product, markets, className }: ProductCardProps) {
   const tags =
     product.direction === "export"
-      ? product.markets.map((code) => ({ label: code, title: getMarket(code).name }))
+      ? product.markets.map((code) => ({ label: code, title: markets.find((market) => market.code === code)?.name ?? code }))
       : (product.variants ?? []).map((variant) => ({ label: variant, title: variant }));
 
   if (tags.length === 0) return null;

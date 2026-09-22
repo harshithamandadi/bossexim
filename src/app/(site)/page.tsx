@@ -12,17 +12,20 @@ import { Reveal } from "@/components/motion/reveal";
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
 import { globalPresence, homeContent, howWeWork, partnerContent, whyUs } from "@/config";
+import { getCatalogue } from "@/lib/content/queries";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { products, markets } = await getCatalogue();
+
   return (
     <>
-      <HeroSection />
+      <HeroSection products={products} />
       <StatsSection />
 
       <Section>
         <SectionHeader {...globalPresence.heading} />
         <Reveal className="mt-12 overflow-hidden rounded-panel shadow-[0_40px_90px_-50px_rgb(8_33_79/0.6)]">
-          <TradeRoutesStage />
+          <TradeRoutesStage products={products} markets={markets} />
         </Reveal>
       </Section>
 

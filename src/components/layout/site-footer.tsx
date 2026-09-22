@@ -3,12 +3,14 @@ import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
 import { WaveDivider } from "@/components/ui/wave-divider";
 import { contactNavGroup, mainNavigation, routes, siteConfig, uiLabels } from "@/config";
+import { getCompanyDetails } from "@/lib/content/queries";
 import { SocialLinks } from "./social-links";
 
 const footerGroups = [...mainNavigation, contactNavGroup];
 
-export function SiteFooter() {
-  const { company, contact, url } = siteConfig;
+export async function SiteFooter() {
+  const { company, website, url } = siteConfig;
+  const { social } = await getCompanyDetails();
   const year = new Date().getFullYear();
 
   return (
@@ -21,7 +23,7 @@ export function SiteFooter() {
               <Logo showDescriptor />
             </Link>
             <p className="type-body mt-6 text-fg-mute">{company.summary}</p>
-            <SocialLinks className="mt-8" />
+            <SocialLinks links={social} className="mt-8" />
           </div>
 
           <nav aria-label={uiLabels.footerNavigation} className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
@@ -56,7 +58,7 @@ export function SiteFooter() {
             © {year} {company.legalName} · A {company.parentGroup} company
           </p>
           <a href={url} className="transition-colors hover:text-fg">
-            {contact.website}
+            {website}
           </a>
         </div>
       </Container>

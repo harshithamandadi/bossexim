@@ -2,7 +2,7 @@ import { PageHero } from "@/components/layout/page-hero";
 import { ButtonLink } from "@/components/ui/button";
 import { routes, uiLabels } from "@/config";
 
-export default function NotFound() {
+export function NotFoundContent() {
   const { notFound } = uiLabels;
 
   return (

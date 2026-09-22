@@ -18,7 +18,7 @@ import {
   sectionIds,
   tradeDirections,
 } from "@/config";
-import { getMarketsForProduct, getRelatedProducts } from "@/lib/catalogue";
+import type { Catalogue } from "@/lib/catalogue";
 import type { ExportProduct, Product } from "@/types/content";
 import { ProductCard } from "./product-card";
 
@@ -51,7 +51,7 @@ export function ProductHero({ product }: { product: Product }) {
   );
 }
 
-function getProductFacts(product: Product): { label: string; value: ReactNode }[] {
+function getProductFacts(product: Product, catalogue: Catalogue): { label: string; value: ReactNode }[] {
   const { facts } = productLabels;
   const direction = tradeDirections[product.direction];
 
@@ -60,7 +60,7 @@ function getProductFacts(product: Product): { label: string; value: ReactNode }[
     { label: facts.category, value: product.category },
     ...(product.hsCode ? [{ label: facts.hsCode, value: product.hsCode }] : []),
     product.direction === "export"
-      ? { label: facts.markets, value: getMarketsForProduct(product).map((market) => market.shortName).join(", ") }
+      ? { label: facts.markets, value: catalogue.getMarketsForProduct(product).map((market) => market.shortName).join(", ") }
       : { label: facts.origin, value: facts.originValue },
     {
       label: facts.specifications,
@@ -73,7 +73,7 @@ function getProductFacts(product: Product): { label: string; value: ReactNode }[
   ];
 }
 
-export function ProductOverview({ product }: { product: Product }) {
+export function ProductOverview({ product, catalogue }: { product: Product; catalogue: Catalogue }) {
   return (
     <Section spacing="compact">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-20">
@@ -96,7 +96,7 @@ export function ProductOverview({ product }: { product: Product }) {
         </Reveal>
         <Reveal delay={0.1}>
           <dl className="divide-y divide-border rounded-card bg-surface px-7">
-            {getProductFacts(product).map((fact) => (
+            {getProductFacts(product, catalogue).map((fact) => (
               <div key={fact.label} className="flex items-baseline justify-between gap-6 py-5">
                 <dt className="text-sm text-fg-mute">{fact.label}</dt>
                 <dd className="text-right text-sm font-medium">{fact.value}</dd>
@@ -109,12 +109,12 @@ export function ProductOverview({ product }: { product: Product }) {
   );
 }
 
-export function ProductMarkets({ product }: { product: ExportProduct }) {
+export function ProductMarkets({ product, catalogue }: { product: ExportProduct; catalogue: Catalogue }) {
   return (
     <Section tone="mist" spacing="compact">
       <h2 className="type-h3">{productLabels.marketsTitle}</h2>
       <RevealGroup as="ul" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {getMarketsForProduct(product).map((market) => (
+        {catalogue.getMarketsForProduct(product).map((market) => (
           <RevealItem as="li" key={market.code}>
             <MarketTile market={market} />
           </RevealItem>
@@ -124,8 +124,8 @@ export function ProductMarkets({ product }: { product: ExportProduct }) {
   );
 }
 
-export function RelatedProducts({ product }: { product: Product }) {
-  const related = getRelatedProducts(product);
+export function RelatedProducts({ product, catalogue }: { product: Product; catalogue: Catalogue }) {
+  const related = catalogue.getRelatedProducts(product);
   if (related.length === 0) return null;
 
   return (
@@ -134,7 +134,7 @@ export function RelatedProducts({ product }: { product: Product }) {
       <RevealGroup as="ul" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {related.map((relatedProduct) => (
           <RevealItem as="li" key={relatedProduct.slug}>
-            <ProductCard product={relatedProduct} />
+            <ProductCard product={relatedProduct} markets={catalogue.markets} />
           </RevealItem>
         ))}
       </RevealGroup>

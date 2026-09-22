@@ -9,8 +9,9 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { WaveDivider } from "@/components/ui/wave-divider";
 import { homeContent, siteConfig } from "@/config";
 import { enterOnLoad } from "@/lib/motion";
+import type { Product } from "@/types/content";
 
-export function HeroSection() {
+export function HeroSection({ products }: { products: Product[] }) {
   const { hero } = homeContent;
   const { company } = siteConfig;
 
@@ -62,7 +63,7 @@ export function HeroSection() {
         </div>
 
         <motion.div {...enterOnLoad(0.25)}>
-          <TradeWheel className="mx-auto max-w-[27rem]" />
+          <TradeWheel products={products} className="mx-auto max-w-[27rem]" />
         </motion.div>
       </Container>
     </section>

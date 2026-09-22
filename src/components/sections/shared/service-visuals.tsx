@@ -7,14 +7,18 @@ import type { ComponentType } from "react";
 import { Chip } from "@/components/ui/chip";
 import { Icon } from "@/components/ui/icon";
 import { containerLine, productHref, tradeOrigin } from "@/config";
-import { activeMarkets, exportProducts, groupByCategory, importProducts } from "@/lib/catalogue";
+import { groupByCategory, type Catalogue } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
 import type { ServiceVisual } from "@/types/content";
 
-function ExportsVisual() {
+interface VisualProps {
+  catalogue: Catalogue;
+}
+
+function ExportsVisual({ catalogue }: VisualProps) {
   return (
     <ul className="grid gap-2 sm:grid-cols-2">
-      {exportProducts.map((product) => (
+      {catalogue.exportProducts.map((product) => (
         <li key={product.slug}>
           <Link
             href={productHref(product.slug)}
@@ -34,10 +38,10 @@ function ExportsVisual() {
   );
 }
 
-function ImportsVisual() {
+function ImportsVisual({ catalogue }: VisualProps) {
   return (
     <div className="space-y-5">
-      {groupByCategory(importProducts).map(({ category, items }) => (
+      {groupByCategory(catalogue.importProducts).map(({ category, items }) => (
         <div key={category}>
           <p className="type-eyebrow text-fg-mute">{category}</p>
           <ul className="mt-2.5 flex flex-wrap gap-1.5">
@@ -73,10 +77,10 @@ function LogisticsVisual() {
   );
 }
 
-function SourcingVisual() {
+function SourcingVisual({ catalogue }: VisualProps) {
   const nodes = [
     { code: tradeOrigin.code, label: tradeOrigin.name, isOrigin: true },
-    ...activeMarkets.map((market) => ({ code: market.code, label: market.shortName, isOrigin: false })),
+    ...catalogue.activeMarkets.map((market) => ({ code: market.code, label: market.shortName, isOrigin: false })),
   ];
 
   return (
@@ -99,7 +103,7 @@ function SourcingVisual() {
   );
 }
 
-export const serviceVisuals: Record<ServiceVisual, ComponentType> = {
+export const serviceVisuals: Record<ServiceVisual, ComponentType<VisualProps>> = {
   exports: ExportsVisual,
   imports: ImportsVisual,
   logistics: LogisticsVisual,

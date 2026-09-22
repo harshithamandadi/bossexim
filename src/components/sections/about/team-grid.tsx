@@ -3,13 +3,15 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { IconTile } from "@/components/ui/icon";
 import { leadership } from "@/config";
 import { cn } from "@/lib/cn";
+import { getTeamMembers } from "@/lib/content/queries";
 import { getInitials } from "@/lib/format";
 import type { TeamMember } from "@/types/content";
 
 const AVATAR_SIZE = 80;
 
-export function TeamGrid({ className }: { className?: string }) {
-  const { members, emptyState } = leadership;
+export async function TeamGrid({ className }: { className?: string }) {
+  const { emptyState } = leadership;
+  const members = await getTeamMembers();
 
   if (members.length === 0) {
     return (
@@ -42,8 +44,8 @@ function Avatar({ member }: { member: TeamMember }) {
   if (member.photo) {
     return (
       <Image
-        src={member.photo}
-        alt={member.name}
+        src={member.photo.src}
+        alt={member.photo.alt}
         width={AVATAR_SIZE}
         height={AVATAR_SIZE}
         className="size-20 rounded-full object-cover"

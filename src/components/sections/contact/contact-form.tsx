@@ -3,16 +3,15 @@
 import { motion } from "framer-motion";
 import { LoaderCircle } from "lucide-react";
 import { useActionState, useState } from "react";
-import { submitEnquiry } from "@/app/contact/actions";
+import { submitEnquiry } from "@/app/(site)/contact/actions";
 import { Button } from "@/components/ui/button";
 import { SelectField, TextAreaField, TextField } from "@/components/ui/field";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { contactContent, enquiryTypes } from "@/config/contact";
 import { tradeDirections } from "@/config/products";
-import { getProductsByDirection } from "@/lib/catalogue";
 import { HONEYPOT_FIELD, OTHER_PRODUCT_VALUE, type EnquiryFormState } from "@/lib/enquiry/schema";
 import { EASE_SMOOTH, SPRING_SNAPPY } from "@/lib/motion";
-import type { EnquiryTypeId, TradeDirection } from "@/types/content";
+import type { EnquiryTypeId, Product, TradeDirection } from "@/types/content";
 
 const INITIAL_STATE: EnquiryFormState = { status: "idle" };
 const PRODUCT_GROUPS: TradeDirection[] = ["export", "import"];
@@ -21,6 +20,8 @@ const { form } = contactContent;
 interface ContactFormCardProps {
   initialType: EnquiryTypeId;
   initialProduct?: string;
+  /** Offered in the "Product of interest" list. */
+  products: Product[];
 }
 
 /** Remounts the form (via `key`) when the visitor wants to send another enquiry. */
@@ -34,7 +35,7 @@ export function ContactFormCard(props: ContactFormCardProps) {
   );
 }
 
-function ContactForm({ initialType, initialProduct, onReset }: ContactFormCardProps & { onReset: () => void }) {
+function ContactForm({ initialType, initialProduct, products, onReset }: ContactFormCardProps & { onReset: () => void }) {
   const [state, formAction, isPending] = useActionState(submitEnquiry, INITIAL_STATE);
   const [type, setType] = useState<EnquiryTypeId>(initialType);
 
@@ -113,11 +114,13 @@ function ContactForm({ initialType, initialProduct, onReset }: ContactFormCardPr
         <option value="">{fields.product.placeholder}</option>
         {PRODUCT_GROUPS.map((direction) => (
           <optgroup key={direction} label={tradeDirections[direction].label}>
-            {getProductsByDirection(direction).map((product) => (
-              <option key={product.slug} value={product.slug}>
-                {product.name}
-              </option>
-            ))}
+            {products
+              .filter((product) => product.direction === direction)
+              .map((product) => (
+                <option key={product.slug} value={product.slug}>
+                  {product.name}
+                </option>
+              ))}
           </optgroup>
         ))}
         <option value={OTHER_PRODUCT_VALUE}>{fields.product.other}</option>

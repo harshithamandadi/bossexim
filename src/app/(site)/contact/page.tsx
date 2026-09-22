@@ -7,6 +7,7 @@ import { EnquiryTypeList } from "@/components/sections/contact/enquiry-type-list
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
 import { contactContent, pageContent, routes, sectionIds } from "@/config";
+import { getCatalogue, getCompanyDetails } from "@/lib/content/queries";
 import { toEnquiryType, toProductSlug } from "@/lib/enquiry/schema";
 import { createPageMetadata } from "@/lib/metadata";
 
@@ -23,8 +24,11 @@ interface ContactPageProps {
 }
 
 export default async function ContactPage({ searchParams }: ContactPageProps) {
-  const params = await searchParams;
-  const initialProduct = toProductSlug(params.product);
+  const [params, catalogue, company] = await Promise.all([searchParams, getCatalogue(), getCompanyDetails()]);
+  const initialProduct = toProductSlug(
+    params.product,
+    catalogue.products.map((product) => product.slug),
+  );
   const initialType = toEnquiryType(params.type) ?? (initialProduct ? "buyer" : "general");
 
   return (
@@ -35,10 +39,10 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           <div className="space-y-12">
             <SectionHeader {...contactContent.heading} />
             <EnquiryTypeList />
-            <ContactDetails />
+            <ContactDetails contact={company.contact} />
             <div>
               <h3 className="type-h4">{contactContent.social.title}</h3>
-              <SocialLinks className="mt-5" />
+              <SocialLinks links={company.social} className="mt-5" />
             </div>
           </div>
           <Reveal id={sectionIds.contact.form} className="scroll-mt-32">
@@ -47,6 +51,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
               key={`${initialType}-${initialProduct ?? ""}`}
               initialType={initialType}
               initialProduct={initialProduct}
+              products={catalogue.products}
             />
           </Reveal>
         </div>

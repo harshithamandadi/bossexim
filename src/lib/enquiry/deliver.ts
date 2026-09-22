@@ -7,18 +7,19 @@
  */
 import { enquiryTypes } from "@/config/contact";
 import { siteConfig } from "@/config/site";
-import { getProductBySlug } from "@/lib/catalogue";
+import { getCatalogue } from "@/lib/content/queries";
 import type { Enquiry } from "./schema";
 
 export class EnquiryDeliveryError extends Error {
   override name = "EnquiryDeliveryError";
 }
 
-function toPayload(enquiry: Enquiry) {
+async function toPayload(enquiry: Enquiry) {
+  const catalogue = await getCatalogue();
   return {
     ...enquiry,
     typeLabel: enquiryTypes.find((type) => type.id === enquiry.type)?.label,
-    productName: enquiry.product ? (getProductBySlug(enquiry.product)?.name ?? enquiry.product) : undefined,
+    productName: enquiry.product ? (catalogue.getProductBySlug(enquiry.product)?.name ?? enquiry.product) : undefined,
     submittedAt: new Date().toISOString(),
     source: siteConfig.url,
   };
@@ -31,7 +32,7 @@ export async function deliverEnquiry(enquiry: Enquiry): Promise<void> {
     const response = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(toPayload(enquiry)),
+      body: JSON.stringify(await toPayload(enquiry)),
     });
     if (!response.ok) throw new EnquiryDeliveryError(`Webhook responded with ${response.status}`);
     return;

@@ -3,13 +3,14 @@ import type { ReactNode } from "react";
 import { Reveal } from "@/components/motion/reveal";
 import { Icon } from "@/components/ui/icon";
 import { currentFocus, productHref } from "@/config";
-import { activeMarkets, exportProducts, importProducts } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
+import { getCatalogue } from "@/lib/content/queries";
 import type { Product } from "@/types/content";
 
 /** "We export → To → We import", derived entirely from the catalogue. */
-export function FocusPanel({ className }: { className?: string }) {
+export async function FocusPanel({ className }: { className?: string }) {
   const { labels } = currentFocus;
+  const { exportProducts, importProducts, activeMarkets } = await getCatalogue();
 
   return (
     <Reveal className={className}>

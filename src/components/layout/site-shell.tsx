@@ -1,33 +1,30 @@
-import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
 import type { ReactNode } from "react";
-import { SiteHeader } from "@/components/layout/header/site-header";
 import { ChatWidget } from "@/components/chat/chat-widget";
+import { SiteHeader } from "@/components/layout/header/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MotionProvider } from "@/components/motion/motion-provider";
-import { faqContent, uiLabels } from "@/config";
+import { uiLabels } from "@/config";
 import { cn } from "@/lib/cn";
-import { rootMetadata } from "@/lib/metadata";
+import { getCompanyDetails, getFaqs } from "@/lib/content/queries";
 import { getOrganizationJsonLd, serializeJsonLd } from "@/lib/structured-data";
-import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const interTight = Inter_Tight({ subsets: ["latin"], variable: "--font-inter-tight", display: "swap" });
 
-export const metadata: Metadata = rootMetadata;
+/**
+ * The public site's document: fonts, header, footer, assistant and organisation
+ * markup. Shared by the site layout and the app-wide 404 page.
+ */
+export async function SiteShell({ children }: { children: ReactNode }) {
+  const [faqs, company] = await Promise.all([getFaqs(), getCompanyDetails()]);
 
-export const viewport: Viewport = {
-  themeColor: "#ffffff",
-  colorScheme: "light",
-};
-
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" className={cn(inter.variable, interTight.variable)}>
       <body data-tone="light" className="bg-canvas font-sans text-fg antialiased">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: serializeJsonLd(getOrganizationJsonLd()) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(getOrganizationJsonLd(company)) }}
         />
         <MotionProvider>
           <a
@@ -39,7 +36,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           <SiteHeader />
           <main id="main">{children}</main>
           <SiteFooter />
-          <ChatWidget faqs={faqContent.items} />
+          <ChatWidget faqs={faqs} />
         </MotionProvider>
       </body>
     </html>

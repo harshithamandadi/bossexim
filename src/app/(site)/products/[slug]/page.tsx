@@ -7,23 +7,22 @@ import {
   RelatedProducts,
 } from "@/components/sections/products/product-detail";
 import { CtaSection } from "@/components/sections/shared/cta-section";
-import { productHref, products } from "@/config";
-import { getProductBySlug } from "@/lib/catalogue";
+import { productHref } from "@/config";
+import { getCatalogue, getProducts } from "@/lib/content/queries";
 import { createPageMetadata } from "@/lib/metadata";
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
 
-/** One static page per product in config — unknown slugs 404. */
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return products.map(({ slug }) => ({ slug }));
+/** Pre-builds every product page; products added later in the admin render on their first visit. */
+export async function generateStaticParams() {
+  return (await getProducts()).map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const product = getProductBySlug((await params).slug);
+  const [{ slug }, catalogue] = await Promise.all([params, getCatalogue()]);
+  const product = catalogue.getProductBySlug(slug);
   if (!product) return {};
 
   return createPageMetadata({
@@ -34,15 +33,16 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const product = getProductBySlug((await params).slug);
+  const [{ slug }, catalogue] = await Promise.all([params, getCatalogue()]);
+  const product = catalogue.getProductBySlug(slug);
   if (!product) notFound();
 
   return (
     <>
       <ProductHero product={product} />
-      <ProductOverview product={product} />
-      {product.direction === "export" && <ProductMarkets product={product} />}
-      <RelatedProducts product={product} />
+      <ProductOverview product={product} catalogue={catalogue} />
+      {product.direction === "export" && <ProductMarkets product={product} catalogue={catalogue} />}
+      <RelatedProducts product={product} catalogue={catalogue} />
       <CtaSection />
     </>
   );

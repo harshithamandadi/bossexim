@@ -2,7 +2,8 @@ import { PageHero } from "@/components/layout/page-hero";
 import { FaqExplorer } from "@/components/sections/faq/faq-explorer";
 import { CtaSection } from "@/components/sections/shared/cta-section";
 import { Section } from "@/components/ui/section";
-import { closingCta, faqCategories, faqContent, faqPageLabels, pageContent, routes } from "@/config";
+import { closingCta, faqCategories, faqPageLabels, pageContent, routes } from "@/config";
+import { getFaqs } from "@/lib/content/queries";
 import { createPageMetadata } from "@/lib/metadata";
 import { getFaqPageJsonLd, serializeJsonLd } from "@/lib/structured-data";
 
@@ -14,17 +15,19 @@ export const metadata = createPageMetadata({
   path: routes.faq,
 });
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const faqs = await getFaqs();
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(getFaqPageJsonLd(faqContent.items)) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(getFaqPageJsonLd(faqs)) }}
       />
       <PageHero content={content} />
       <Section spacing="compact">
         <FaqExplorer
-          items={faqContent.items}
+          items={faqs}
           categories={faqCategories}
           labels={faqPageLabels}
           enquiry={closingCta.primary}

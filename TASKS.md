@@ -31,8 +31,8 @@ The site built from the first brief already covers most of §2. The new work is 
 | Partner / business enquiries | Partial | `/partner` links to the contact form; there is no form on the page |
 | Contact and enquiry form | Partial | Validation, success and error states work. Delivers to a webhook only; no email notification |
 | FAQs | Done | Dedicated `/faq` page with search, topic filters and FAQ structured data. 13 questions drafted by us: need client approval |
-| Chatbot (§3.4) | Done | FAQ-based assistant on every page; matching runs in the browser, no paid APIs. Will read FAQs from the CMS once it exists |
-| CMS / Admin panel (§3.2) | Not started | All content lives in `src/config/*.ts` today |
+| Chatbot (§3.4) | Done | FAQ-based assistant on every page; matching runs in the browser, no paid APIs. Answers come from the FAQs in the admin |
+| CMS / Admin panel (§3.2) | Done | Payload CMS at `/admin`: products, markets, FAQs, team, galleries, downloads, group companies, company details. Runs locally on SQLite; production hosting still to decide (D1) |
 | Digital brochure (§4) | Not started | |
 | Video + voice-over (§5) | Not started | |
 | Basic SEO (§9) | Mostly | Metadata, sitemap, robots, JSON-LD. No social share image |
@@ -42,27 +42,32 @@ The site built from the first brief already covers most of §2. The new work is 
 
 ## 3. Decisions needed before coding
 
-These block the CMS work, so settle them first.
+D2 and D3 are settled and built. D1 now only affects deployment; D4–D6 affect tasks C, E and F.
 
-### D1. Production hosting (§11: "deploy to the client's hosting")
-We don't know where the site will live, and that decides the CMS, the database and file storage.
+### D1. Production hosting (§11: "deploy to the client's hosting") — still open
+The CMS is built and runs locally. Where it goes live decides three concrete things:
+- **Database:** a Turso database (hosted SQLite, free tier), a file on a server with a persistent disk, or Postgres if the host provides one (a one-line adapter change plus a re-seed).
+- **Uploaded images and PDFs:** stored on disk today. Serverless hosts need a storage service (S3 or Vercel Blob).
+- **Email for password resets:** see D4.
+
+The earlier notes still apply:
 - A Node.js host is required: the forms already run on the server, and an admin panel needs a server and a database.
 - Vercel's free Hobby plan is for non-commercial use only. A company site needs Vercel Pro or another host. Hosting cost is the client's (§10).
 - **Ask:** Which host? Can it run Node.js and a database?
 
-### D2. CMS: recommendation is **Payload CMS 3**, embedded in this Next.js app at `/admin`
+### D2. CMS: ✅ decided — **Payload CMS 3.90.1**, embedded in this Next.js app at `/admin`
 - Free and open source, so there's no subscription (§10). Login and roles are built in (§3.2). Its typed collections map directly onto our existing `src/types/content.ts`.
-- It needs a Postgres database and file storage, which D1 decides.
-- **We haven't yet confirmed that it supports Next.js 16.3**; task A2 checks this. Fallback: Sanity, which is hosted with a free tier but is a third-party service, so it needs approval.
+- It needs a database and file storage. Locally it runs on SQLite; production depends on D1.
+- Confirmed: Payload 3.90.1 officially supports Next.js 16.3.3+, and the production build and tests pass on 16.3.4.
 - Ruled out: building our own admin, because login, uploads and create/edit/delete screens would use up most of the 22–25 days.
 
-### D3. What becomes admin-editable
+### D3. What becomes admin-editable — ✅ built as proposed
 §3.2 names products, team/leadership, FAQs and media/resources, plus "other agreed repeatable content". Proposed split:
-- **Editable in the admin:** products, product categories, markets, ports, team, FAQs, galleries, resources (files), BOSS Group companies, and company details (contact info, registrations, social links, enquiry recipients).
+- **Editable in the admin (built):** products (with their category), markets, team, FAQs, galleries, downloads, BOSS Group companies, and company details (contact info, registration numbers, social links). Ports arrive with B4 and enquiry recipients with C3.
 - **Stays in code:** page layouts, navigation, headings and long-form page copy. Changing these after launch counts as a change request.
 
 ### D4. How enquiry emails are sent
-Recommendation: send through the client's own business mailbox over SMTP, which needs no extra subscription. Fallback: the Resend free tier (third-party, so it needs approval). The existing webhook can stay as an optional extra.
+Recommendation: send through the client's own business mailbox over SMTP, which needs no extra subscription. The same mailbox would also send the admin's password-reset emails, which currently only appear in the server log. Fallback: the Resend free tier (third-party, so it needs approval). The existing webhook can stay as an optional extra.
 
 ### D5. Keep a copy of each enquiry in the admin?
 Recommended as a read-only log, so a failed email never loses a lead. It deliberately has no statuses, assignments or pipelines, because §3.2 rules out a CRM. Needs client agreement.
@@ -79,17 +84,18 @@ Recommended as a read-only log, so a failed email never loses a lead. It deliber
 
 IDs are for reference in reviews. Effort figures are rough working days for our side; time spent waiting on the client is extra.
 
-### A. CMS and architecture (~7 days)
-- [ ] **A1** Settle D1–D3.
-- [ ] **A2** Trial run of Payload on Next.js 16.3 in a branch: `/admin` login, one collection, a Postgres database, and a passing production build. First read the caching guide in `node_modules/next/dist/docs`, because Next 16 changed the caching APIs.
-- [ ] **A3** Content model: collections for products, categories, markets, ports, team, FAQs, galleries, resources, group companies and enquiries (if D5 is approved), plus a single "Company details" record. Alt text required on every image.
-- [ ] **A4** Access control: Admin and Editor roles, no public sign-up, lockout after repeated failed logins, `/admin` hidden from search engines.
-- [ ] **A5** Data layer in `src/lib/content/`: server functions that read from the CMS with caching. Publishing in the admin refreshes the affected pages without a redeploy.
-- [ ] **A6** Refactor the 59 files that import `@/config`. The 10 client components that use it (header, trade map, product catalogue, contact form, trade wheel and others) receive their data as props instead.
-- [ ] **A7** Seed script: copy today's config content into the CMS so the site looks identical on day one.
-- [ ] **A8** New products get their page and sitemap entry without a rebuild.
-- [ ] **A9** Admin usability: help text on fields, sensible ordering, "View on site" links.
-- [ ] **A10** Rewrite `README.md`, which currently tells non-developers to edit `src/config` files.
+### A. CMS and architecture (~7 days) — ✅ done
+Built and tested: 20 automated checks cover editing, new products, company details, role permissions and login lockout, and every public page was re-checked on desktop and mobile. FAQ answers that list products are now ordinary editable text: when products change, update those answers in the admin.
+- [x] **A1** Settle D1–D3. (D2 and D3 settled; D1 hosting is still open and only affects deployment.)
+- [x] **A2** Confirm Payload works on Next.js 16.3: `/admin` login, a database (SQLite locally) and a passing production build.
+- [x] **A3** Content model: products, markets, team, FAQs, galleries, downloads, group companies, images and PDFs, plus a single "Company details" record. Alt text required on every image. (Ports come with B4; an enquiries log only if D5 is approved.)
+- [x] **A4** Access control: Admin and Editor roles, no public sign-up, lockout after repeated failed logins, `/admin` hidden from search engines.
+- [x] **A5** Data layer in `src/lib/content/`: server functions that read from the CMS with caching. Publishing in the admin refreshes the affected pages without a redeploy.
+- [x] **A6** Refactor the 59 files that import `@/config`. The 10 client components that use it (header, trade map, product catalogue, contact form, trade wheel and others) receive their data as props instead.
+- [x] **A7** Seed script: copy today's config content into the CMS so the site looks identical on day one.
+- [x] **A8** New products get their page and sitemap entry without a rebuild.
+- [x] **A9** Admin usability: help text on fields, drag-to-reorder, "View on site" links, brand styling, and a dashboard checklist of content the site is still waiting for.
+- [x] **A10** Rewrite `README.md`, which currently tells non-developers to edit `src/config` files.
 
 ### B. Website gaps (~3 days)
 - [ ] **B1** Replace our placeholder logo with the official logo in the header, footer, favicon and social share image.
@@ -143,7 +149,7 @@ No AI or paid APIs (§3.4). Answers come only from client-approved FAQs.
 - [ ] **G2** Test matrix: 360, 390, 768, 1024, 1280 and 1440 px; Chrome, Safari, Firefox and Edge; iOS Safari and Android Chrome.
 - [ ] **G3** Functional tests: navigation, every form type, the chatbot, creating/editing/deleting in each admin collection, image upload, publishing updating the site, login/logout, and protected admin routes.
 - [ ] **G4** Accessibility and performance pass (Lighthouse).
-- [ ] **G5** Security: secrets only in server environment variables, `/admin` not indexed, security headers, dependency audit, database backups.
+- [ ] **G5** Security: secrets only in server environment variables, `/admin` not indexed (done in robots.txt), security headers, dependency audit, database backups. Audit status: 7 moderate/low advisories, all in Payload's own dependencies — `dompurify` (admin code editor, not used by our fields) and `esbuild` inside `drizzle-kit` (database tooling). Neither has a safe fix yet; recheck when upgrading Payload.
 - [ ] **G6** Production deploy: domain, SSL, environment variables, first admin accounts.
 - [ ] **G7** Handover pack: repo and admin access, list of environment variables, deployment steps, a short admin guide with screenshots, and the support start date.
 
@@ -172,7 +178,7 @@ We checked each library the client suggested and took components and patterns on
 
 ### Sprint 1: Mon 28 Sep (4 working days)
 Show the rethemed site on a preview link, plus:
-- Hosting and CMS decided (D1–D3), and the A2 trial running locally with an admin login.
+- ~~Hosting and CMS decided (D1–D3), and the A2 trial running locally with an admin login.~~ Done and beyond: the full CMS is built (hosting D1 still open).
 - Partnership form on `/partner` (C2).
 - ~~Chatbot prototype running on the current FAQs (D2–D4).~~ Done: the full chatbot is built and tested.
 - Port and product-specification fields on the site, with placeholder data clearly marked (B3, B4).
@@ -180,7 +186,7 @@ Show the rethemed site on a preview link, plus:
 - Client inputs checklist (section 6) sent to the client.
 
 ### Sprint 2: Fri 2 Oct (4 working days; confirm the date)
-- CMS live for products, FAQs, team, media, resources and company details, with today's content copied in (A3–A8).
+- ~~CMS live for products, FAQs, team, media, resources and company details, with today's content copied in (A3–A8).~~ Done.
 - Enquiry emails reaching test recipients (C3–C7).
 - Chatbot reading its FAQs from the CMS.
 - If they're ours: brochure outline and first pages, and the video script and storyboard (E2, F3–F4).
@@ -231,7 +237,6 @@ Anything new is written down and approved before it's built (§10).
 
 - **Late inputs.** The clock starts only when inputs arrive, and sprint reviews will show placeholders until then.
 - **Unknown hosting.** This blocks the CMS. Resolve D1 this week.
-- **Payload on Next.js 16.3 is unverified.** The A2 trial settles this before Sprint 1.
 - **Brochure and video** depend on assets and approval rounds, and their owner is unclear (D6).
 - **Scope creep.** The enquiry log (D5) and editable page copy (D3) can drift towards a CRM or a page builder. Keep them to what's agreed.
 - **2 Oct is a national holiday**, so the Sprint 2 review may move.

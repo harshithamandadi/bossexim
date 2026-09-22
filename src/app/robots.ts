@@ -3,7 +3,8 @@ import { siteConfig } from "@/config";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/" },
+    // The content admin and its API are private.
+    rules: { userAgent: "*", allow: "/", disallow: ["/admin", "/api"] },
     sitemap: new URL("/sitemap.xml", siteConfig.url).toString(),
   };
 }

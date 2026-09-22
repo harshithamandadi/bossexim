@@ -1,9 +1,10 @@
 import { PendingValue } from "@/components/ui/pending-value";
 import { contactContent, siteConfig, uiLabels } from "@/config";
+import type { ContactInfo } from "@/types/content";
 
-/** Web, email, phone and office — each shows "To be added" until set in site.ts. */
-export function ContactDetails() {
-  const { contact, url } = siteConfig;
+/** Web, email, phone and office — each shows "To be added" until set in the admin. */
+export function ContactDetails({ contact }: { contact: ContactInfo }) {
+  const { url } = siteConfig;
   const { title, labels } = contactContent.details;
 
   const rows = [

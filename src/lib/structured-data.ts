@@ -1,9 +1,9 @@
 import { siteConfig } from "@/config/site";
-import type { FaqItem } from "@/types/content";
+import type { CompanyDetails, FaqItem } from "@/types/content";
 
-/** schema.org Organization markup, built from site config. */
-export function getOrganizationJsonLd() {
-  const { company, url, contact, social, seo } = siteConfig;
+/** schema.org Organization markup, from site config and the company details in the admin. */
+export function getOrganizationJsonLd({ contact, social }: CompanyDetails) {
+  const { company, url, seo } = siteConfig;
 
   return {
     "@context": "https://schema.org",

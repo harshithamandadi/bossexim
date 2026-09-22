@@ -6,9 +6,11 @@ import { Chip } from "@/components/ui/chip";
 import { IconTile } from "@/components/ui/icon";
 import { resourcesContent } from "@/config";
 import { cn } from "@/lib/cn";
+import { getResources } from "@/lib/content/queries";
 
-export function ResourceList({ className }: { className?: string }) {
-  const { items, labels } = resourcesContent;
+export async function ResourceList({ className }: { className?: string }) {
+  const { labels } = resourcesContent;
+  const items = await getResources();
 
   return (
     <RevealGroup as="ul" className={cn("grid gap-4 md:grid-cols-3", className)}>

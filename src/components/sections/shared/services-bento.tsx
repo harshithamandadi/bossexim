@@ -4,7 +4,9 @@ import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { cardStyles } from "@/components/ui/card";
 import { IconTile } from "@/components/ui/icon";
 import { siteConfig, uiLabels } from "@/config";
+import type { Catalogue } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
+import { getCatalogue } from "@/lib/content/queries";
 import type { Service } from "@/types/content";
 import { serviceVisuals } from "./service-visuals";
 
@@ -18,14 +20,16 @@ const BENTO_SLOTS: [BentoSlot, ...BentoSlot[]] = [
   { span: "lg:col-span-12", layout: "split" },
 ];
 
-export function ServicesBento({ services = siteConfig.services, className }: { services?: Service[]; className?: string }) {
+export async function ServicesBento({ services = siteConfig.services, className }: { services?: Service[]; className?: string }) {
+  const catalogue = await getCatalogue();
+
   return (
     <RevealGroup className={cn("grid gap-4 lg:grid-cols-12", className)}>
       {services.map((service, index) => {
         const slot = BENTO_SLOTS[index % BENTO_SLOTS.length] ?? BENTO_SLOTS[0];
         return (
           <RevealItem key={service.id} className={slot.span}>
-            <ServiceCard service={service} slot={slot} />
+            <ServiceCard service={service} slot={slot} catalogue={catalogue} />
           </RevealItem>
         );
       })}
@@ -33,7 +37,7 @@ export function ServicesBento({ services = siteConfig.services, className }: { s
   );
 }
 
-function ServiceCard({ service, slot }: { service: Service; slot: BentoSlot }) {
+function ServiceCard({ service, slot, catalogue }: { service: Service; slot: BentoSlot; catalogue: Catalogue }) {
   const Visual = serviceVisuals[service.visual];
   const isSplit = slot.layout === "split";
 
@@ -70,7 +74,7 @@ function ServiceCard({ service, slot }: { service: Service; slot: BentoSlot }) {
         </ul>
       </div>
       <div className={cn(!isSplit && "mt-auto")}>
-        <Visual />
+        <Visual catalogue={catalogue} />
       </div>
     </article>
   );

@@ -1,4 +1,4 @@
-import type { MarketCode } from "@/config/markets";
+import type { MarketCode } from "@/types/content";
 
 export type ActiveLaneChange = (code: MarketCode | null) => void;
 

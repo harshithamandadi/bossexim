@@ -1,8 +1,11 @@
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { PendingValue } from "@/components/ui/pending-value";
 import { compliance, uiLabels } from "@/config";
+import { getCompanyDetails } from "@/lib/content/queries";
 
-export function ComplianceTable() {
+export async function ComplianceTable() {
+  const { registrations } = await getCompanyDetails();
+
   return (
     <RevealGroup as="ul" interval={0.05} className="divide-y divide-border border-y border-border">
       {compliance.items.map((item) => (
@@ -17,7 +20,7 @@ export function ComplianceTable() {
             <p className="text-sm text-fg-mute">{item.issuer}</p>
           </div>
           <div className="col-start-2 text-sm sm:col-start-auto sm:text-right">
-            <PendingValue value={item.value} fallback={uiLabels.pending} className="font-mono" />
+            <PendingValue value={registrations[item.key]} fallback={uiLabels.pending} className="font-mono" />
           </div>
         </RevealItem>
       ))}

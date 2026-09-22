@@ -1,16 +1,16 @@
 "use client";
 
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { useRef } from "react";
-import { tradeOrigin, type MarketCode } from "@/config/markets";
+import { useMemo, useRef } from "react";
+import { tradeOrigin } from "@/config/markets";
 import { productLabels } from "@/config/products";
 import { useDomId } from "@/hooks/use-dom-id";
-import { activeMarkets, getProductsForMarket } from "@/lib/catalogue";
+import type { Catalogue } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
 import { formatList, pluralize } from "@/lib/format";
 import { arcPath, project, toPercent, type MapBounds, type MapSize, type Point } from "@/lib/geo";
 import { DURATION, EASE_SMOOTH } from "@/lib/motion";
-import type { LabelAnchor, Market } from "@/types/content";
+import type { LabelAnchor, Market, MarketCode } from "@/types/content";
 import { laneInteractionProps, type ActiveLaneChange } from "./lane-interaction";
 
 const MAP_SIZE: MapSize = { width: 1000, height: 690 };
@@ -38,25 +38,31 @@ function multiplesBetween(start: number, end: number, step: number): number[] {
 
 /* Static geometry, computed once per module load. */
 const origin = toMap(tradeOrigin.coordinates);
-const exportLanes = activeMarkets.map((market) => {
-  const point = toMap(market.coordinates);
-  return { market, point, path: arcPath(origin, point) };
-});
 const importLanes = IMPORT_ENTRY_POINTS.map((point) => arcPath(point, origin, 0.18));
 const graticule = {
   x: multiplesBetween(MAP_BOUNDS.west, MAP_BOUNDS.east, GRATICULE_STEP_DEGREES).map((lon) => toMap({ lat: 0, lon }).x),
   y: multiplesBetween(MAP_BOUNDS.south, MAP_BOUNDS.north, GRATICULE_STEP_DEGREES).map((lat) => toMap({ lat, lon: 0 }).y),
 };
-const mapDescription = `Export routes from ${tradeOrigin.name} to ${formatList(activeMarkets.map((market) => market.name))}.`;
+/** One arc per market an export line ships to. */
+function buildExportLanes(markets: Market[]) {
+  return markets.map((market) => {
+    const point = toMap(market.coordinates);
+    return { market, point, path: arcPath(origin, point) };
+  });
+}
 
 interface TradeRouteMapProps {
+  catalogue: Catalogue;
   activeCode: MarketCode | null;
   onActiveChange: ActiveLaneChange;
   className?: string;
 }
 
 /** Abstract, data-driven route map: arcs draw in on scroll, cargo dots travel each lane. */
-export function TradeRouteMap({ activeCode, onActiveChange, className }: TradeRouteMapProps) {
+export function TradeRouteMap({ catalogue, activeCode, onActiveChange, className }: TradeRouteMapProps) {
+  const { activeMarkets } = catalogue;
+  const exportLanes = useMemo(() => buildExportLanes(activeMarkets), [activeMarkets]);
+  const mapDescription = `Export routes from ${tradeOrigin.name} to ${formatList(activeMarkets.map((market) => market.name))}.`;
   const svgRef = useRef<SVGSVGElement>(null);
   const isInView = useInView(svgRef, { once: true, amount: 0.3 });
   const reduceMotion = useReducedMotion();
@@ -178,6 +184,7 @@ export function TradeRouteMap({ activeCode, onActiveChange, className }: TradeRo
           key={market.code}
           market={market}
           point={point}
+          lineCount={catalogue.getProductsForMarket(market.code).length}
           isActive={market.code === activeCode}
           isDimmed={activeCode !== null && market.code !== activeCode}
           onActiveChange={onActiveChange}
@@ -223,19 +230,17 @@ function OriginNode({ point, isAnimated }: { point: Point; isAnimated: boolean }
 interface MarketLabelProps {
   market: Market;
   point: Point;
+  lineCount: number;
   isActive: boolean;
   isDimmed: boolean;
   onActiveChange: ActiveLaneChange;
 }
 
-function MarketLabel({ market, point, isActive, isDimmed, onActiveChange }: MarketLabelProps) {
-  const code = market.code as MarketCode;
-  const lineCount = getProductsForMarket(code).length;
-
+function MarketLabel({ market, point, lineCount, isActive, isDimmed, onActiveChange }: MarketLabelProps) {
   return (
     <button
       type="button"
-      {...laneInteractionProps(code, isActive, onActiveChange)}
+      {...laneInteractionProps(market.code, isActive, onActiveChange)}
       aria-label={`${market.name}: ${lineCount} ${pluralize(lineCount, productLabels.line, productLabels.lines)}`}
       style={{
         left: toPercent(point.x, MAP_SIZE.width),

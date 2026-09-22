@@ -2,14 +2,10 @@
  * ════════════════════════════════════════════════════════════════════════════
  *  SITE CONFIGURATION — start here.
  *
- *  Company identity, contact details, social profiles and core services.
- *  Non-developers can safely edit any text between quotes.
- *
- *  • Anything set to `undefined` shows as "To be added" (or "coming soon") on the
- *    site. Replace it with a value in quotes, e.g.  email: "info@bgexim.com",
- *  • Other content lives next to this file: products.ts, markets.ts, about.ts,
- *    business.ts, process.ts, partners.ts, group.ts, resources.ts, faq.ts,
- *    contact.ts and pages.ts.
+ *  Company identity and core services — the parts of the site that stay in code.
+ *  Everyday content (products, markets, FAQs, team, galleries, downloads, BOSS
+ *  Group companies, contact details, social links and registration numbers) is
+ *  edited in the admin at /admin. Page copy lives next to this file.
  *
  *  NOTE: The source brief supplied the site structure, product lines, markets and
  *  group companies. Longer descriptive copy throughout src/config is DRAFT copy
@@ -36,20 +32,9 @@ export const siteConfig: SiteConfig = {
 
   url: "https://www.bgexim.com",
 
-  contact: {
-    website: "www.bgexim.com",
-    email: undefined,
-    phone: undefined,
-    address: undefined,
-  },
+  website: "www.bgexim.com",
 
-  social: [
-    { platform: "LinkedIn", href: undefined },
-    { platform: "Facebook", href: undefined },
-    { platform: "Instagram", href: undefined },
-    { platform: "X", href: undefined },
-    { platform: "YouTube", href: undefined },
-  ],
+  socialPlatforms: ["LinkedIn", "Facebook", "Instagram", "X", "YouTube"],
 
   seo: {
     description:

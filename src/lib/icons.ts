@@ -114,3 +114,6 @@ export const icons = {
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof icons;
+
+/** Every registered icon name — offered as choices in the admin. */
+export const iconNames = Object.keys(icons) as IconName[];

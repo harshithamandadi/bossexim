@@ -7,15 +7,26 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "payload": "payload",
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
+    "seed": "payload run src/payload/seed/index.ts"
   },
   "dependencies": {
+    "@payloadcms/db-sqlite": "^3.90.1",
+    "@payloadcms/next": "^3.90.1",
+    "@payloadcms/ui": "^3.90.1",
     "clsx": "^2.1.1",
     "framer-motion": "^13.2.0",
+    "graphql": "^16.14.2",
     "lucide-react": "^1.45.0",
     "next": "16.3.4",
+    "payload": "^3.90.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "server-only": "^0.0.1",
+    "sharp": "^0.35.4",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
@@ -27,5 +38,6 @@
     "eslint-config-next": "16.3.4",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3"
-  }
+  },
+  "type": "module"
 }

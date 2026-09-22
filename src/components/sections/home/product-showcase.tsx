@@ -6,13 +6,14 @@ import { Marquee } from "@/components/ui/marquee";
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
 import { homeContent } from "@/config";
-import { getProductsByDirection } from "@/lib/catalogue";
-import type { TradeDirection } from "@/types/content";
+import { getCatalogue } from "@/lib/content/queries";
+import type { Market, Product } from "@/types/content";
 
 const MARQUEE_SECONDS = 55;
 
-export function ProductShowcase() {
+export async function ProductShowcase() {
   const { products: content } = homeContent;
+  const { exportProducts, importProducts, markets } = await getCatalogue();
 
   return (
     <Section bleed>
@@ -25,18 +26,18 @@ export function ProductShowcase() {
         </Reveal>
       </Container>
       <Reveal className="mt-16 space-y-2">
-        <ShowcaseRow direction="export" />
-        <ShowcaseRow direction="import" reverse />
+        <ShowcaseRow products={exportProducts} markets={markets} />
+        <ShowcaseRow products={importProducts} markets={markets} reverse />
       </Reveal>
     </Section>
   );
 }
 
-function ShowcaseRow({ direction, reverse = false }: { direction: TradeDirection; reverse?: boolean }) {
+function ShowcaseRow({ products, markets, reverse = false }: { products: Product[]; markets: Market[]; reverse?: boolean }) {
   return (
     <Marquee reverse={reverse} durationSeconds={MARQUEE_SECONDS} className="py-2">
-      {getProductsByDirection(direction).map((product) => (
-        <ProductCard key={product.slug} product={product} className="w-[19rem] shrink-0" />
+      {products.map((product) => (
+        <ProductCard key={product.slug} product={product} markets={markets} className="w-[19rem] shrink-0" />
       ))}
     </Marquee>
   );

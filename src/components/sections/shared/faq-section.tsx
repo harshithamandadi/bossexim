@@ -6,13 +6,15 @@ import { ButtonLink } from "@/components/ui/button";
 import { Section, type SectionTone } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
 import { SplitLayout } from "@/components/ui/split-layout";
-import { closingCta, faqContent, faqPageLabels, routes } from "@/config";
+import { closingCta, faqHeading, faqPageLabels, routes } from "@/config";
+import { getFaqs } from "@/lib/content/queries";
 
 /** Shows the first `limit` questions, with a link to the full FAQ page. */
-export function FaqSection({ tone, id, limit = 6 }: { tone?: SectionTone; id?: string; limit?: number }) {
-  const items = faqContent.items.slice(0, limit);
+export async function FaqSection({ tone, id, limit = 6 }: { tone?: SectionTone; id?: string; limit?: number }) {
+  const faqs = await getFaqs();
+  const items = faqs.slice(0, limit);
   const aside = (
-    <SectionHeader {...faqContent.heading}>
+    <SectionHeader {...faqHeading}>
       <ButtonLink href={closingCta.primary.href} variant="secondary" withArrow>
         {closingCta.primary.label}
       </ButtonLink>
@@ -24,9 +26,9 @@ export function FaqSection({ tone, id, limit = 6 }: { tone?: SectionTone; id?: s
       <SplitLayout aside={aside} stickyAside>
         <Reveal>
           <Accordion items={items} />
-          {items.length < faqContent.items.length && (
+          {items.length < faqs.length && (
             <Link href={routes.faq} className="group mt-8 inline-flex items-center gap-2 text-[15px] font-semibold text-brand">
-              {faqPageLabels.seeAll} ({faqContent.items.length})
+              {faqPageLabels.seeAll} ({faqs.length})
               <ArrowRight
                 aria-hidden
                 className="size-4 transition-transform duration-200 ease-smooth group-hover:translate-x-0.5"
