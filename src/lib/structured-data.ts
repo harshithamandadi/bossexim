@@ -1,4 +1,5 @@
 import { siteConfig } from "@/config/site";
+import type { FaqItem } from "@/types/content";
 
 /** schema.org Organization markup, built from site config. */
 export function getOrganizationJsonLd() {
@@ -23,4 +24,17 @@ export function getOrganizationJsonLd() {
 /** JSON for a <script> tag, with "<" escaped so content can never close the tag early. */
 export function serializeJsonLd(data: object): string {
   return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+/** schema.org FAQPage markup, so search engines can show answers directly. */
+export function getFaqPageJsonLd(items: FaqItem[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
 }

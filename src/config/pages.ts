@@ -47,6 +47,7 @@ export type PageKey =
   | "partner"
   | "group"
   | "resources"
+  | "faq"
   | "contact";
 
 export const pageContent: Record<PageKey, PageContent> = {
@@ -108,6 +109,14 @@ export const pageContent: Record<PageKey, PageContent> = {
     description: "Company and group brochures, plus specification sheets for our export and import lines.",
     metaTitle: "Resources",
     metaDescription: "Download the BGEXIM corporate brochure, the BOSS Group brochure and product specifications.",
+  },
+  faq: {
+    eyebrow: "FAQ",
+    title: "Answers for buyers, suppliers and partners.",
+    description: "Search our most common questions — or ask our assistant, who answers from the same list.",
+    metaTitle: "Frequently Asked Questions",
+    metaDescription:
+      "Answers about BOSS Global EXIM's export and import products, markets, trade process, quality checks, pricing and partnerships.",
   },
   contact: {
     eyebrow: "Contact Us",

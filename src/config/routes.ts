@@ -10,6 +10,7 @@ export const routes = {
   partner: "/partner",
   group: "/boss-group",
   resources: "/resources",
+  faq: "/faq",
   contact: "/contact",
 } as const;
 

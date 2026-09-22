@@ -164,6 +164,11 @@ export const mainNavigation: NavGroup[] = [
         href: anchorHref(routes.resources, resources.downloads),
         description: "Specification sheets for each product line.",
       },
+      {
+        label: "FAQs",
+        href: routes.faq,
+        description: "Answers to the questions we hear most.",
+      },
     ],
   },
 ];

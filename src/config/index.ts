@@ -15,5 +15,6 @@ export * from "./contact";
 export * from "./group";
 export * from "./resources";
 export * from "./faq";
+export * from "./chatbot";
 export * from "./pages";
 export * from "./ui";

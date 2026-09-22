@@ -2,9 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Inter_Tight } from "next/font/google";
 import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/layout/header/site-header";
+import { ChatWidget } from "@/components/chat/chat-widget";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MotionProvider } from "@/components/motion/motion-provider";
-import { uiLabels } from "@/config";
+import { faqContent, uiLabels } from "@/config";
 import { cn } from "@/lib/cn";
 import { rootMetadata } from "@/lib/metadata";
 import { getOrganizationJsonLd, serializeJsonLd } from "@/lib/structured-data";
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           <SiteHeader />
           <main id="main">{children}</main>
           <SiteFooter />
+          <ChatWidget faqs={faqContent.items} />
         </MotionProvider>
       </body>
     </html>

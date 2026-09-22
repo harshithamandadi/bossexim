@@ -237,4 +237,10 @@ export interface PartnerTrack {
 export interface FaqItem {
   question: string;
   answer: string;
+  /** Groups questions on the FAQ page and in the chatbot. */
+  category: string;
+  /** Other words visitors might type; they help the chatbot find this answer. */
+  keywords?: string[];
+  /** Optional next step shown under the answer. */
+  action?: LinkItem;
 }

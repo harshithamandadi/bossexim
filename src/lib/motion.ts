@@ -27,6 +27,9 @@ export const SPRING_SNAPPY: Transition = { type: "spring", bounce: 0.2, duration
 
 export const SPRING_ISLAND: Transition = { type: "spring", bounce: 0.18, duration: 0.5 };
 
+/** Overlay panels summoned by the pointer (after beUI's panel spring). */
+export const SPRING_PANEL: Transition = { type: "spring", stiffness: 420, damping: 40, mass: 0.5 };
+
 /** Trigger once, slightly before the element is fully on screen. */
 export const VIEWPORT_ONCE = { once: true, margin: "0px 0px -12% 0px" } as const;
 

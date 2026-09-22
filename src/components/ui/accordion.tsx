@@ -1,7 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Plus } from "lucide-react";
+import { ArrowRight, Plus } from "lucide-react";
+import Link from "next/link";
 import { useId, useState } from "react";
 import { DURATION, EASE_SMOOTH } from "@/lib/motion";
 import type { FaqItem } from "@/types/content";
@@ -76,7 +77,21 @@ function AccordionItem({ id, item, isOpen, onToggle }: AccordionItemProps) {
             transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
             className="overflow-hidden"
           >
-            <p className="type-body max-w-2xl pr-12 pb-7 text-fg-mute">{item.answer}</p>
+            <div className="max-w-2xl pr-12 pb-7">
+              <p className="type-body text-fg-mute">{item.answer}</p>
+              {item.action && (
+                <Link
+                  href={item.action.href}
+                  className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand"
+                >
+                  {item.action.label}
+                  <ArrowRight
+                    aria-hidden
+                    className="size-4 transition-transform duration-200 ease-smooth group-hover:translate-x-0.5"
+                  />
+                </Link>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
