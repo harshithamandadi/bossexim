@@ -5,13 +5,14 @@
  * (see src/payload/hooks/revalidate.ts).
  */
 import "server-only";
-import config from "@payload-config";
-import { getPayload } from "payload";
 import { cache } from "react";
 import { createCatalogue } from "@/lib/catalogue";
 import { getHighlightStats } from "@/lib/stats";
+import type { EnquiryTypeId } from "@/types/content";
+import { getPayloadClient as getClient } from "./payload-client";
 import {
   toCompanyDetails,
+  toEnquiryRecipients,
   toFaq,
   toGallery,
   toGroupCompany,
@@ -20,8 +21,6 @@ import {
   toResource,
   toTeamMember,
 } from "./mappers";
-
-const getClient = cache(() => getPayload({ config }));
 
 /** Every document, in the order editors arranged them in the admin. */
 const ALL_IN_ORDER = { pagination: false, sort: "_order" } as const;
@@ -76,10 +75,17 @@ export const getGroupCompanies = cache(async () => {
   return docs.map(toGroupCompany);
 });
 
-export const getCompanyDetails = cache(async () => {
+const getCompanyDetailsDoc = cache(async () => {
   const payload = await getClient();
-  return toCompanyDetails(await payload.findGlobal({ slug: "company-details", depth: 0 }));
+  return payload.findGlobal({ slug: "company-details", depth: 0 });
 });
+
+export const getCompanyDetails = cache(async () => toCompanyDetails(await getCompanyDetailsDoc()));
+
+/** Who is emailed about a new enquiry of this type (set in Company details → Enquiry emails). */
+export async function getEnquiryRecipients(type: EnquiryTypeId): Promise<string[]> {
+  return toEnquiryRecipients(await getCompanyDetailsDoc(), type);
+}
 
 /** Headline figures shown on the home and About pages. */
 export const getSiteStats = cache(async () => {

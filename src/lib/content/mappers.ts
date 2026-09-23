@@ -8,6 +8,7 @@ import type * as Cms from "@/payload-types";
 import { socialFieldName } from "@/payload/globals/company-details";
 import type {
   CompanyDetails,
+  EnquiryTypeId,
   FaqItem,
   Gallery,
   GroupCompany,
@@ -132,4 +133,15 @@ export function toCompanyDetails(doc: Cms.CompanyDetail): CompanyDetails {
       }),
     ),
   };
+}
+
+/**
+ * Everyone on "All enquiries" plus the extra recipients for this type, without
+ * duplicates. With nobody listed, alerts fall back to the contact email.
+ */
+export function toEnquiryRecipients(doc: Cms.CompanyDetail, type: EnquiryTypeId): string[] {
+  const lists = doc.enquiryEmails ?? {};
+  const recipients = [...new Set([...(lists.all ?? []), ...(lists[type] ?? [])].map((address) => address.toLowerCase()))];
+  if (recipients.length > 0) return recipients;
+  return doc.contact?.email ? [doc.contact.email] : [];
 }

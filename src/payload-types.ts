@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    enquiries: Enquiry;
     products: Product;
     markets: Market;
     faqs: Faq;
@@ -74,9 +75,9 @@ export interface Config {
     galleries: Gallery;
     resources: Resource;
     'group-companies': GroupCompany;
+    users: User;
     media: Media;
     documents: Document;
-    users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +85,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     markets: MarketsSelect<false> | MarketsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
@@ -91,9 +93,9 @@ export interface Config {
     galleries: GalleriesSelect<false> | GalleriesSelect<true>;
     resources: ResourcesSelect<false> | ResourcesSelect<true>;
     'group-companies': GroupCompaniesSelect<false> | GroupCompaniesSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     documents: DocumentsSelect<false> | DocumentsSelect<true>;
-    users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -136,6 +138,34 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * Every enquiry sent from the website, newest first. Reply by email; “Email alert” shows whether your team was notified.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries".
+ */
+export interface Enquiry {
+  id: number;
+  type: 'general' | 'buyer' | 'supplier' | 'partnership';
+  name: string;
+  company?: string | null;
+  email: string;
+  phone?: string | null;
+  product?: string | null;
+  quantity?: string | null;
+  country?: string | null;
+  partnershipArea?: string | null;
+  message: string;
+  /**
+   * The email to your team about this enquiry.
+   */
+  notificationStatus?: ('pending' | 'sent' | 'failed' | 'not-configured' | 'no-recipients') | null;
+  notificationDetail?: string | null;
+  acknowledgementStatus?: ('pending' | 'sent' | 'failed' | 'not-configured' | 'no-recipients') | null;
+  source?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Every export and import line. Each product gets its own page; drag rows to change the order.
@@ -665,6 +695,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'enquiries';
+        value: number | Enquiry;
+      } | null)
+    | ({
         relationTo: 'products';
         value: number | Product;
       } | null)
@@ -693,16 +727,16 @@ export interface PayloadLockedDocument {
         value: number | GroupCompany;
       } | null)
     | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
       } | null)
     | ({
         relationTo: 'documents';
         value: number | Document;
-      } | null)
-    | ({
-        relationTo: 'users';
-        value: number | User;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -745,6 +779,28 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries_select".
+ */
+export interface EnquiriesSelect<T extends boolean = true> {
+  type?: T;
+  name?: T;
+  company?: T;
+  email?: T;
+  phone?: T;
+  product?: T;
+  quantity?: T;
+  country?: T;
+  partnershipArea?: T;
+  message?: T;
+  notificationStatus?: T;
+  notificationDetail?: T;
+  acknowledgementStatus?: T;
+  source?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -860,6 +916,31 @@ export interface GroupCompaniesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  resetPasswordRequestedAt?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -929,31 +1010,6 @@ export interface DocumentsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
- */
-export interface UsersSelect<T extends boolean = true> {
-  name?: T;
-  role?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  resetPasswordRequestedAt?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -993,7 +1049,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Contact details, social profiles and registration numbers. Empty fields show “To be added” on the site.
+ * Contact details, who receives enquiry emails, social profiles and registration numbers. Empty fields show “To be added” on the site.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "company-details".
@@ -1004,6 +1060,28 @@ export interface CompanyDetail {
     email?: string | null;
     phone?: string | null;
     address?: string | null;
+  };
+  enquiryEmails?: {
+    /**
+     * These people receive every enquiry. Press Enter after each address.
+     */
+    all?: string[] | null;
+    /**
+     * Extra recipients for general enquiry only.
+     */
+    general?: string[] | null;
+    /**
+     * Extra recipients for buyer enquiry only.
+     */
+    buyer?: string[] | null;
+    /**
+     * Extra recipients for supplier enquiry only.
+     */
+    supplier?: string[] | null;
+    /**
+     * Extra recipients for business partnership only.
+     */
+    partnership?: string[] | null;
   };
   social?: {
     linkedin?: string | null;
@@ -1056,6 +1134,15 @@ export interface CompanyDetailsSelect<T extends boolean = true> {
         email?: T;
         phone?: T;
         address?: T;
+      };
+  enquiryEmails?:
+    | T
+    | {
+        all?: T;
+        general?: T;
+        buyer?: T;
+        supplier?: T;
+        partnership?: T;
       };
   social?:
     | T

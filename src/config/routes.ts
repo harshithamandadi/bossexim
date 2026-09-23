@@ -38,6 +38,7 @@ export const sectionIds = {
     buyer: "buyer",
     supplier: "supplier",
     strategic: "strategic-partner",
+    form: "register",
   },
   group: {
     containerLine: "boss-container-line",
@@ -62,6 +63,11 @@ export function productHref(slug: string): string {
 
 export function productsViewHref(direction: TradeDirection): string {
   return `${routes.products}?view=${direction}`;
+}
+
+/** The registration form on the Partner page, with an enquiry type pre-selected. */
+export function partnerFormHref(type: EnquiryTypeId): string {
+  return `${routes.partner}?type=${type}#${sectionIds.partner.form}`;
 }
 
 export function contactHref(options: { type?: EnquiryTypeId; product?: string } = {}): string {

@@ -134,6 +134,15 @@
   color: var(--theme-elevation-600);
 }
 
+.bg-welcome__notice {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #8a4b08;
+  background: #fff4e0;
+}
+
 .bg-welcome__links {
   display: flex;
   flex-wrap: wrap;

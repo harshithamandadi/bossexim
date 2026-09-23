@@ -232,6 +232,26 @@ export interface Resource {
 
 export type EnquiryTypeId = "general" | "buyer" | "supplier" | "partnership";
 
+/** Every field the enquiry form can show; each enquiry type picks its own set. */
+export type EnquiryField =
+  | "name"
+  | "company"
+  | "email"
+  | "phone"
+  | "country"
+  | "product"
+  | "quantity"
+  | "partnershipArea"
+  | "message";
+
+export interface EnquiryFieldConfig {
+  name: EnquiryField;
+  required?: boolean;
+  /** Overrides the field's default label or placeholder for this enquiry type. */
+  label?: string;
+  placeholder?: string;
+}
+
 export interface EnquiryType {
   id: EnquiryTypeId;
   label: string;

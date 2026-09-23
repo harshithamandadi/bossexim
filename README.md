@@ -32,6 +32,7 @@ refreshes the website straight away. The dashboard lists what the site is still 
 
 | Admin section | What it controls |
 | --- | --- |
+| Inbox → **Enquiries** | Every enquiry sent from the website, with whether the email alert reached your team |
 | Catalogue → **Products** | Export and import lines. Each product gets its own page; drag rows to reorder |
 | Catalogue → **Markets** | Destination countries and their map positions |
 | Website content → **FAQs** | FAQ page, FAQ sections and the website assistant's answers |
@@ -39,7 +40,7 @@ refreshes the website straight away. The dashboard lists what the site is still 
 | Website content → **Media & events** | Photo galleries on the BOSS Group page |
 | Website content → **Downloads** | Brochures and specification sheets (PDF) |
 | Website content → **BOSS Group companies** | Company cards on the BOSS Group page |
-| Settings → **Company details** | Email, phone, office address, social links, registration numbers (CIN, PAN, GST…) |
+| Settings → **Company details** | Email, phone, office address, who receives enquiry emails, social links, registration numbers (CIN, PAN, GST…) |
 | Settings → **Users** | Who can sign in. **Editors** manage content; **admins** also manage users |
 
 Empty values show as **"To be added"** or **"Coming soon"** on the site. Counts such as
@@ -68,12 +69,32 @@ Pages ◀── src/lib/content/queries.ts ◀── Payload Local API (no HTTP)
   one rebuilds on its next visit. Products added later render on their first visit.
 - Client components (catalogue, trade map, contact form, hero wheel) receive content as props.
 
-## Enquiry form
+## Enquiries
 
-Submissions are validated on the server (`src/app/(site)/contact/actions.ts`) and delivered by
-`src/lib/enquiry/deliver.ts`. Set `ENQUIRY_WEBHOOK_URL` to forward each enquiry as JSON to
-Zapier, Make, Formspree, a Slack/Teams workflow or a CRM. Without it, enquiries are logged
-in development and the form reports an error in production — leads are never silently lost.
+The enquiry form (Contact page, and the registration form on Partner With Us) asks each
+enquiry type — general, buyer, supplier, partnership — for its own fields, set in
+`enquiryFormFields` in `src/config/contact.ts`. The server action
+(`src/app/(site)/contact/actions.ts`) validates against the same list, and
+`src/lib/enquiry/deliver.ts` then:
+
+1. saves the enquiry in the admin under **Inbox → Enquiries** (read-only; admins can delete);
+2. emails the team — recipients are set in **Settings → Company details → Enquiry emails**,
+   with reply-to set to the enquirer;
+3. emails the enquirer a confirmation (it repeats none of their free text, so the form
+   can't be used to spam other people);
+4. optionally posts it as JSON to `ENQUIRY_WEBHOOK_URL`.
+
+A failed email never loses a lead: the entry is still saved, shows **Failed** with the
+reason, and the admin dashboard lists alerts to review. Only if nothing works does the
+visitor see an error, with the company email as a fallback; the server log keeps the
+enquiry so it can be recovered.
+
+Spam protection: a hidden honeypot field, a signed form token with a 3-second minimum
+fill time, and at most 5 enquiries per 10 minutes per IP address (kept in memory, so
+per server instance).
+
+Email goes through the company's mailbox over SMTP (`SMTP_*` in `.env`). With
+`SMTP_HOST` empty, email is off and enquiries are only saved in the admin.
 
 ## Production checklist
 
@@ -83,8 +104,11 @@ in development and the form reports an error in production — leads are never s
   Postgres via `@payloadcms/db-postgres`).
 - Uploaded images and PDFs are stored in `cms-data/` on disk. Serverless hosts need a storage
   adapter (e.g. `@payloadcms/storage-s3` or `@payloadcms/storage-vercel-blob`).
-- Password-reset emails need an email adapter (e.g. `@payloadcms/email-nodemailer` with the
-  company's SMTP mailbox); until then they are written to the server log.
+- Email: set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` and `EMAIL_FROM_ADDRESS` for the
+  company mailbox, and `SITE_URL` for links in emails. The same settings send admin password resets.
+- Database schema: locally, Payload syncs the schema automatically (re-run `npm run seed` after
+  changing a collection). Production needs migrations — create them with `npx payload migrate:create`
+  and apply them with `npx payload migrate` before each deploy.
 - Run `npm run seed` once against the production database, then manage content in `/admin`.
 
 ## Project structure
@@ -105,6 +129,7 @@ src/
 │   └── seed/                 Starting content (data.ts) and the seed script
 ├── config/                   Content that stays in code (page copy, menus, labels)
 ├── lib/content/              CMS queries and mappers (server-only)
+├── lib/enquiry/              Form rules, spam checks, delivery and email templates
 ├── lib/                      Pure logic: catalogue, stats, geo, motion, FAQ search, metadata
 ├── types/content.ts          Content model shared by code config and CMS content
 └── components/               ui/, motion/, layout/, chat/, sections/ (grouped by page)

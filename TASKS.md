@@ -28,8 +28,8 @@ The site built from the first brief already covers most of §2. The new work is 
 | Global presence | Partial | 6 markets and a trade-lane map. **No ports** |
 | BOSS Group, Media | Partial | Structure done. No logos or photos |
 | Resources | Partial | Download list exists. Every file is "coming soon" |
-| Partner / business enquiries | Partial | `/partner` links to the contact form; there is no form on the page |
-| Contact and enquiry form | Partial | Validation, success and error states work. Delivers to a webhook only; no email notification |
+| Partner / business enquiries | Done | Registration form on `/partner` (buyer, supplier, partnership); the track buttons pre-select the type |
+| Contact and enquiry form | Done | Fields per enquiry type, saved in the admin, email alert + confirmation, spam protection. Needs the client's SMTP mailbox to send email |
 | FAQs | Done | Dedicated `/faq` page with search, topic filters and FAQ structured data. 13 questions drafted by us: need client approval |
 | Chatbot (§3.4) | Done | FAQ-based assistant on every page; matching runs in the browser, no paid APIs. Answers come from the FAQs in the admin |
 | CMS / Admin panel (§3.2) | Done | Payload CMS at `/admin`: products, markets, FAQs, team, galleries, downloads, group companies, company details. Runs locally on SQLite; production hosting still to decide (D1) |
@@ -42,13 +42,13 @@ The site built from the first brief already covers most of §2. The new work is 
 
 ## 3. Decisions needed before coding
 
-D2 and D3 are settled and built. D1 now only affects deployment; D4–D6 affect tasks C, E and F.
+D2–D5 are settled and built. D1 now only affects deployment; D6 affects tasks E and F.
 
 ### D1. Production hosting (§11: "deploy to the client's hosting") — still open
 The CMS is built and runs locally. Where it goes live decides three concrete things:
 - **Database:** a Turso database (hosted SQLite, free tier), a file on a server with a persistent disk, or Postgres if the host provides one (a one-line adapter change plus a re-seed).
 - **Uploaded images and PDFs:** stored on disk today. Serverless hosts need a storage service (S3 or Vercel Blob).
-- **Email for password resets:** see D4.
+- **Email:** the SMTP mailbox details (D4) go into the host's environment settings.
 
 The earlier notes still apply:
 - A Node.js host is required: the forms already run on the server, and an admin panel needs a server and a database.
@@ -63,14 +63,14 @@ The earlier notes still apply:
 
 ### D3. What becomes admin-editable — ✅ built as proposed
 §3.2 names products, team/leadership, FAQs and media/resources, plus "other agreed repeatable content". Proposed split:
-- **Editable in the admin (built):** products (with their category), markets, team, FAQs, galleries, downloads, BOSS Group companies, and company details (contact info, registration numbers, social links). Ports arrive with B4 and enquiry recipients with C3.
+- **Editable in the admin (built):** products (with their category), markets, team, FAQs, galleries, downloads, BOSS Group companies, and company details (contact info, registration numbers, social links). Enquiry recipients were added with C3; ports arrive with B4.
 - **Stays in code:** page layouts, navigation, headings and long-form page copy. Changing these after launch counts as a change request.
 
-### D4. How enquiry emails are sent
-Recommendation: send through the client's own business mailbox over SMTP, which needs no extra subscription. The same mailbox would also send the admin's password-reset emails, which currently only appear in the server log. Fallback: the Resend free tier (third-party, so it needs approval). The existing webhook can stay as an optional extra.
+### D4. How enquiry emails are sent — ✅ built as recommended (SMTP)
+Needs the client's mailbox details (host, user, password) to switch on. Original note: send through the client's own business mailbox over SMTP, which needs no extra subscription. The same mailbox would also send the admin's password-reset emails, which currently only appear in the server log. Fallback: the Resend free tier (third-party, so it needs approval). The existing webhook can stay as an optional extra.
 
-### D5. Keep a copy of each enquiry in the admin?
-Recommended as a read-only log, so a failed email never loses a lead. It deliberately has no statuses, assignments or pipelines, because §3.2 rules out a CRM. Needs client agreement.
+### D5. Keep a copy of each enquiry in the admin? — ✅ built as recommended; confirm with the client
+Removing it later is simple if the client prefers. Original note: recommended as a read-only log, so a failed email never loses a lead. It deliberately has no statuses, assignments or pipelines, because §3.2 rules out a CRM. Needs client agreement.
 
 ### D6. Who owns the brochure and the video?
 §13 lists both as developer deliverables, but they are design and video-production work. Confirm whether we or Bestverse's creative team produce them, and what the budget is for voice-over and music.
@@ -108,15 +108,20 @@ Built and tested: 20 automated checks cover editing, new products, company detai
 - [x] **B9** Trade wheel orbits the globe; pointing at (or tabbing to) a segment glides it to a stop, enlarges that segment and names it on the globe. Pauses off-screen and for reduced-motion users.
 - [ ] **B8** Replace every "To be added" once inputs arrive: contact details, registrations, social links, leadership.
 
-### C. Forms and notifications (~2 days)
-- [ ] **C1** Agree the fields for each enquiry type (general, buyer, supplier, partnership), and have the form show the right fields for the chosen type.
-- [ ] **C2** Put the partnership form on `/partner` itself, with the type preselected (§3.3).
-- [ ] **C3** Email notification for each type to the agreed recipients, with reply-to set to the enquirer (D4).
-- [ ] **C4** Acknowledgement email to the enquirer (recommended).
-- [ ] **C5** Save each enquiry to the admin log (if D5 is approved).
-- [ ] **C6** Spam protection: keep the existing hidden trap field; add a minimum fill time and a per-IP rate limit.
-- [ ] **C7** If delivery fails, show a clear error with the company's email address as a fallback, and log the failure on the server.
-- [ ] **C8** Test every type: validation errors, success and failure.
+### C. Forms and notifications (~2 days) — ✅ done
+Built and tested: 78 automated checks (every type on both pages, both emails, the webhook, every spam defence, email-server-down and total-failure cases), plus desktop and mobile screenshots.
+- [x] **C1** Fields per enquiry type, shown as the visitor switches type and validated on the server. The proposed fields live in `enquiryFormFields` (`src/config/contact.ts`): **confirm them with the client**.
+  - General: name, email, company, phone, country, message.
+  - Buyer: name, company, email, phone, product, quantity, destination country/port, message.
+  - Supplier: name, company, email, phone, product supplied, supply capacity, country of origin, message.
+  - Partnership: name, company, email, phone, partnership area, country, message.
+- [x] **C2** Registration form on `/partner` (buyer, supplier, partnership); the track buttons open it with the type pre-selected.
+- [x] **C3** Email alert per enquiry, reply-to the enquirer, with a "View in the admin" link. Recipients are set in the admin (Company details → Enquiry emails): "All enquiries" plus extra people per type, falling back to the contact email. Sent over SMTP (D4).
+- [x] **C4** Confirmation email to the enquirer. It deliberately repeats none of their free text, so the form can't be abused to send spam.
+- [x] **C5** Every enquiry saved under Inbox → Enquiries (read-only, admins can delete), with the email outcome recorded (D5).
+- [x] **C6** Spam protection: honeypot kept; signed form token with a 3-second minimum; 5 enquiries per 10 minutes per IP address. The rate limit is in memory, so on serverless hosts it is per instance.
+- [x] **C7** A failed email still counts as delivered (the enquiry is saved) and shows as "Failed" in the admin and on the dashboard. If every channel fails, the visitor sees an error with the company email, and the server log keeps the enquiry.
+- [x] **C8** Tested every type: validation, success, email down, total failure, and each spam defence.
 
 ### D. FAQ chatbot (~3 days)
 No AI or paid APIs (§3.4). Answers come only from client-approved FAQs.
@@ -150,7 +155,7 @@ No AI or paid APIs (§3.4). Answers come only from client-approved FAQs.
 - [ ] **G3** Functional tests: navigation, every form type, the chatbot, creating/editing/deleting in each admin collection, image upload, publishing updating the site, login/logout, and protected admin routes.
 - [ ] **G4** Accessibility and performance pass (Lighthouse).
 - [ ] **G5** Security: secrets only in server environment variables, `/admin` not indexed (done in robots.txt), security headers, dependency audit, database backups. Audit status: 7 moderate/low advisories, all in Payload's own dependencies — `dompurify` (admin code editor, not used by our fields) and `esbuild` inside `drizzle-kit` (database tooling). Neither has a safe fix yet; recheck when upgrading Payload.
-- [ ] **G6** Production deploy: domain, SSL, environment variables, first admin accounts.
+- [ ] **G6** Production deploy: domain, SSL, environment variables (including SMTP), database migrations (`payload migrate`), first admin accounts.
 - [ ] **G7** Handover pack: repo and admin access, list of environment variables, deployment steps, a short admin guide with screenshots, and the support start date.
 
 ### Budget check
@@ -179,7 +184,7 @@ We checked each library the client suggested and took components and patterns on
 ### Sprint 1: Mon 28 Sep (4 working days)
 Show the rethemed site on a preview link, plus:
 - ~~Hosting and CMS decided (D1–D3), and the A2 trial running locally with an admin login.~~ Done and beyond: the full CMS is built (hosting D1 still open).
-- Partnership form on `/partner` (C2).
+- ~~Partnership form on `/partner` (C2).~~ Done.
 - ~~Chatbot prototype running on the current FAQs (D2–D4).~~ Done: the full chatbot is built and tested.
 - Port and product-specification fields on the site, with placeholder data clearly marked (B3, B4).
 - ~~Tablet fixes (B7).~~ Done: tablet widths checked, no fixes needed.
@@ -187,7 +192,7 @@ Show the rethemed site on a preview link, plus:
 
 ### Sprint 2: Fri 2 Oct (4 working days; confirm the date)
 - ~~CMS live for products, FAQs, team, media, resources and company details, with today's content copied in (A3–A8).~~ Done.
-- Enquiry emails reaching test recipients (C3–C7).
+- ~~Enquiry emails reaching test recipients (C3–C7).~~ Done, tested against a local mail server.
 - Chatbot reading its FAQs from the CMS.
 - If they're ours: brochure outline and first pages, and the video script and storyboard (E2, F3–F4).
 
@@ -210,6 +215,7 @@ The 22–25-day clock starts when these arrive (§8).
 | Ports and trade lanes | Markets only | Global presence, brochure |
 | Trade process and quality details | Drafted by us; needs approval | Trade process |
 | Emails, phones, office address, enquiry recipients | Missing | Contact page, footer, form emails |
+| SMTP mailbox for sending email (host, user, password) | Missing | Enquiry alerts, confirmations, admin password resets |
 | FAQs with approved answers | Drafted by us; needs the client's set | FAQ page, chatbot |
 | Photos: website, product, team, facility, events | Missing | Across the site |
 | Social links (LinkedIn, Facebook, Instagram, X, YouTube) | Missing | Footer, contact page |

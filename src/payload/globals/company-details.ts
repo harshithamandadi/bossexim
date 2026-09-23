@@ -1,9 +1,10 @@
 import type { GlobalConfig } from "payload";
 import { compliance } from "@/config/about";
+import { enquiryTypes } from "@/config/contact";
 import { siteConfig } from "@/config/site";
 import type { SocialPlatform } from "@/types/content";
 import { anyone, isSignedIn } from "../access";
-import { ADMIN_GROUPS, urlField } from "../fields";
+import { ADMIN_GROUPS, emailListField, urlField } from "../fields";
 import { revalidateGlobal } from "../hooks/revalidate";
 
 /** Field name used to store a platform's profile link, e.g. "linkedin". */
@@ -16,7 +17,8 @@ export const CompanyDetails: GlobalConfig = {
   hooks: { afterChange: [revalidateGlobal] },
   admin: {
     group: ADMIN_GROUPS.settings,
-    description: "Contact details, social profiles and registration numbers. Empty fields show “To be added” on the site.",
+    description:
+      "Contact details, who receives enquiry emails, social profiles and registration numbers. Empty fields show “To be added” on the site.",
   },
   fields: [
     {
@@ -35,6 +37,18 @@ export const CompanyDetails: GlobalConfig = {
               ],
             },
             { name: "address", label: "Registered office", type: "textarea" },
+          ],
+        },
+        {
+          name: "enquiryEmails",
+          label: "Enquiry emails",
+          description:
+            "Who is emailed when someone sends an enquiry from the website. If nobody is listed, alerts go to the contact email. Every enquiry is also kept under Inbox → Enquiries.",
+          fields: [
+            emailListField("all", "All enquiries", "These people receive every enquiry. Press Enter after each address."),
+            ...enquiryTypes.map((type) =>
+              emailListField(type.id, `${type.label} — also send to`, `Extra recipients for ${type.label.toLowerCase()} only.`),
+            ),
           ],
         },
         {

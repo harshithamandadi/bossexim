@@ -1,15 +1,22 @@
-import type { ServerProps } from "payload";
+import type { Payload, ServerProps } from "payload";
 import { compliance } from "@/config/about";
 import { siteConfig } from "@/config/site";
+import { isEmailConfigured } from "../email";
 import { socialFieldName } from "../globals/company-details";
 
 const ADMIN = "/admin";
+const DAY_MS = 24 * 60 * 60 * 1000;
+const RECENT_DAYS = 30;
+/** Alerts your team never received; "not set up" is covered by the email note instead. */
+const UNSENT_ALERTS = ["failed", "no-recipients"];
 
 interface ChecklistItem {
   label: string;
   missing: number;
   total: number;
   href: string;
+  /** Replaces the default "x of y missing" text. */
+  status?: string;
 }
 
 /**
@@ -17,12 +24,14 @@ interface ChecklistItem {
  * still waiting for, so editors can see at a glance what shows "To be added".
  */
 export async function DashboardWelcome({ payload, user }: ServerProps) {
-  const [company, team, galleries, resources, products] = await Promise.all([
+  const [company, team, galleries, resources, products, recentEnquiries, unsentAlerts] = await Promise.all([
     payload.findGlobal({ slug: "company-details", depth: 0 }),
     payload.count({ collection: "team-members" }),
     payload.find({ collection: "galleries", depth: 0, pagination: false }),
     payload.find({ collection: "resources", depth: 0, pagination: false }),
     payload.count({ collection: "products" }),
+    countRecentEnquiries(payload),
+    payload.count({ collection: "enquiries", where: { notificationStatus: { in: UNSENT_ALERTS } } }),
   ]);
 
   const contact = company.contact ?? {};
@@ -33,8 +42,25 @@ export async function DashboardWelcome({ payload, user }: ServerProps) {
   const registrationValues = compliance.items.map((item) => registrations[item.key]);
   const countEmpty = (values: (string | null | undefined)[]) => values.filter((value) => !value).length;
   const companyHref = `${ADMIN}/globals/company-details`;
+  const enquiriesHref = `${ADMIN}/collections/enquiries`;
+  const hasRecipients =
+    Boolean(contact.email) || Object.values(company.enquiryEmails ?? {}).some((list) => Boolean(list?.length));
 
   const checklist: ChecklistItem[] = [
+    {
+      label: "Enquiry alerts that didn't reach your team",
+      missing: unsentAlerts.totalDocs,
+      total: unsentAlerts.totalDocs,
+      href: `${enquiriesHref}?where[notificationStatus][in]=${UNSENT_ALERTS.join(",")}`,
+      status: `${unsentAlerts.totalDocs} to review`,
+    },
+    {
+      label: "Who receives enquiry emails",
+      missing: hasRecipients ? 0 : 1,
+      total: 1,
+      href: companyHref,
+      status: "Nobody yet",
+    },
     { label: "Contact email, phone and office address", missing: countEmpty(contactValues), total: contactValues.length, href: companyHref },
     { label: "Registration numbers", missing: countEmpty(registrationValues), total: registrationValues.length, href: companyHref },
     { label: "Social profile links", missing: countEmpty(socialValues), total: socialValues.length, href: companyHref },
@@ -60,11 +86,22 @@ export async function DashboardWelcome({ payload, user }: ServerProps) {
         <p className="bg-welcome__eyebrow">{siteConfig.company.name}</p>
         <h2 className="bg-welcome__title">Welcome back{user?.name ? `, ${user.name}` : ""}.</h2>
         <p className="bg-welcome__text">
-          Changes appear on the website as soon as you save. {products.totalDocs} products are live.
+          Changes appear on the website as soon as you save. {products.totalDocs} products are live, and{" "}
+          {recentEnquiries.totalDocs} {recentEnquiries.totalDocs === 1 ? "enquiry has" : "enquiries have"} arrived in the
+          last {RECENT_DAYS} days.
         </p>
+        {!isEmailConfigured() && (
+          <p className="bg-welcome__notice">
+            Email alerts are off until email (SMTP) is set up on the server — enquiries are still saved under Inbox →
+            Enquiries.
+          </p>
+        )}
         <div className="bg-welcome__links">
           <a className="bg-welcome__link bg-welcome__link--primary" href="/" target="_blank" rel="noreferrer">
             View website ↗
+          </a>
+          <a className="bg-welcome__link" href={enquiriesHref}>
+            Enquiries
           </a>
           <a className="bg-welcome__link" href={`${ADMIN}/collections/products/create`}>
             Add a product
@@ -89,7 +126,7 @@ export async function DashboardWelcome({ payload, user }: ServerProps) {
                 <a href={item.href}>
                   <span>{item.label}</span>
                   <span className="bg-welcome__count">
-                    {item.total > 1 ? `${item.missing} of ${item.total} missing` : "None yet"}
+                    {item.status ?? (item.total > 1 ? `${item.missing} of ${item.total} missing` : "None yet")}
                   </span>
                 </a>
               </li>
@@ -101,4 +138,9 @@ export async function DashboardWelcome({ payload, user }: ServerProps) {
       </div>
     </section>
   );
+}
+
+function countRecentEnquiries(payload: Payload) {
+  const since = new Date(Date.now() - RECENT_DAYS * DAY_MS).toISOString();
+  return payload.count({ collection: "enquiries", where: { createdAt: { greater_than: since } } });
 }

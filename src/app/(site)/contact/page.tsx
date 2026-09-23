@@ -8,6 +8,7 @@ import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
 import { contactContent, pageContent, routes, sectionIds } from "@/config";
 import { getCatalogue, getCompanyDetails } from "@/lib/content/queries";
+import { createFormToken } from "@/lib/enquiry/form-token";
 import { toEnquiryType, toProductSlug } from "@/lib/enquiry/schema";
 import { createPageMetadata } from "@/lib/metadata";
 
@@ -52,6 +53,8 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
               initialType={initialType}
               initialProduct={initialProduct}
               products={catalogue.products}
+              formToken={createFormToken()}
+              source={routes.contact}
             />
           </Reveal>
         </div>

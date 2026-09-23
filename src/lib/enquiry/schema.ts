@@ -1,60 +1,73 @@
 /**
  * Enquiry form contract — shared by the client form and the server action.
  * Pure functions only (no server APIs), so it is safe to import anywhere.
+ * Each enquiry type is validated against its own fields (config/contact.ts);
+ * values for fields a type doesn't ask for are dropped.
  */
-import { contactContent, enquiryTypes } from "@/config/contact";
-import type { EnquiryTypeId } from "@/types/content";
+import { contactContent, enquiryFormFields, enquiryTypes, partnershipAreas } from "@/config/contact";
+import type { EnquiryField, EnquiryTypeId } from "@/types/content";
 
 export const OTHER_PRODUCT_VALUE = "other";
 /** Hidden field that real visitors never fill in; bots usually do. */
 export const HONEYPOT_FIELD = "website";
+/** Hidden, server-signed timestamp of when the form was shown (see form-token.ts). */
+export const FORM_TOKEN_FIELD = "formToken";
+/** Hidden field naming the page the form was sent from. */
+export const SOURCE_FIELD = "source";
 
 const MIN_MESSAGE_LENGTH = 10;
 const MAX_FIELD_LENGTH = 200;
 const MAX_MESSAGE_LENGTH = 5000;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const ENQUIRY_FIELDS = ["type", "name", "company", "email", "phone", "country", "product", "message"] as const;
+const FORM_FIELDS = [
+  "type",
+  "name",
+  "company",
+  "email",
+  "phone",
+  "country",
+  "product",
+  "quantity",
+  "partnershipArea",
+  "message",
+] as const;
 
-export type EnquiryField = (typeof ENQUIRY_FIELDS)[number];
-export type EnquiryValues = Partial<Record<EnquiryField, string>>;
-export type EnquiryErrors = Partial<Record<EnquiryField, string>>;
+export type EnquiryFormField = (typeof FORM_FIELDS)[number];
+export type EnquiryValues = Partial<Record<EnquiryFormField, string>>;
+export type EnquiryErrors = Partial<Record<EnquiryFormField, string>>;
 
-export interface Enquiry {
-  type: EnquiryTypeId;
-  name: string;
-  email: string;
-  message: string;
-  company?: string;
-  phone?: string;
-  country?: string;
-  product?: string;
-}
+export type Enquiry = { type: EnquiryTypeId; name: string; email: string; message: string } & Partial<
+  Record<Exclude<EnquiryField, "name" | "email" | "message">, string>
+>;
 
 export type EnquiryFormState =
   | { status: "idle" }
   | { status: "success" }
-  | { status: "error"; message: string; errors?: EnquiryErrors; values?: EnquiryValues };
+  | {
+      status: "error";
+      message: string;
+      errors?: EnquiryErrors;
+      values?: EnquiryValues;
+      /** Shown with the error so the visitor still has a way to reach us. */
+      fallbackEmail?: string;
+    };
 
 type ValidationResult = { ok: true; enquiry: Enquiry } | { ok: false; errors: EnquiryErrors };
 
 const messages = contactContent.form.errors;
 
-function isEnquiryType(value: string): value is EnquiryTypeId {
+export function isEnquiryType(value: unknown): value is EnquiryTypeId {
   return enquiryTypes.some((type) => type.id === value);
 }
 
-function isKnownProduct(value: string, productSlugs: readonly string[]): boolean {
-  return value === OTHER_PRODUCT_VALUE || productSlugs.includes(value);
-}
-
-function maxLengthFor(field: EnquiryField): number {
+function maxLengthFor(field: EnquiryFormField): number {
   return field === "message" ? MAX_MESSAGE_LENGTH : MAX_FIELD_LENGTH;
 }
 
 /** Safely read an enquiry type from a URL parameter. */
 export function toEnquiryType(value: unknown): EnquiryTypeId | undefined {
-  return typeof value === "string" && isEnquiryType(value) ? value : undefined;
+  return isEnquiryType(value) ? value : undefined;
 }
 
 /** Safely read a product slug from a URL parameter. */
@@ -64,7 +77,7 @@ export function toProductSlug(value: unknown, productSlugs: readonly string[]): 
 
 export function readEnquiryValues(formData: FormData): EnquiryValues {
   return Object.fromEntries(
-    ENQUIRY_FIELDS.map((field) => [field, String(formData.get(field) ?? "").trim().slice(0, maxLengthFor(field))]),
+    FORM_FIELDS.map((field) => [field, String(formData.get(field) ?? "").trim().slice(0, maxLengthFor(field))]),
   );
 }
 
@@ -72,29 +85,37 @@ export function isHoneypotFilled(formData: FormData): boolean {
   return String(formData.get(HONEYPOT_FIELD) ?? "").length > 0;
 }
 
+/** The format rule for a filled-in field, or undefined when it passes. */
+function formatError(field: EnquiryField, value: string, productSlugs: readonly string[]): string | undefined {
+  switch (field) {
+    case "email":
+      return EMAIL_PATTERN.test(value) ? undefined : messages.email;
+    case "message":
+      return value.length >= MIN_MESSAGE_LENGTH ? undefined : messages.message;
+    case "product":
+      return value === OTHER_PRODUCT_VALUE || productSlugs.includes(value) ? undefined : messages.product;
+    case "partnershipArea":
+      return partnershipAreas.includes(value) ? undefined : messages.partnershipArea;
+    default:
+      return undefined;
+  }
+}
+
 export function validateEnquiry(values: EnquiryValues, productSlugs: readonly string[]): ValidationResult {
-  const { type = "", name = "", email = "", message = "", company, phone, country, product } = values;
+  const { type } = values;
+  if (!isEnquiryType(type)) return { ok: false, errors: { type: messages.required } };
+
   const errors: EnquiryErrors = {};
+  const accepted: Partial<Record<EnquiryField, string>> = {};
 
-  if (!isEnquiryType(type)) errors.type = messages.required;
-  if (!name) errors.name = messages.required;
-  if (!EMAIL_PATTERN.test(email)) errors.email = email ? messages.email : messages.required;
-  if (message.length < MIN_MESSAGE_LENGTH) errors.message = message ? messages.message : messages.required;
-  if (product && !isKnownProduct(product, productSlugs)) errors.product = messages.product;
+  for (const field of enquiryFormFields[type]) {
+    const value = values[field.name] ?? "";
+    const error = value ? formatError(field.name, value, productSlugs) : field.required ? messages.required : undefined;
+    if (error) errors[field.name] = error;
+    else if (value) accepted[field.name] = value;
+  }
 
-  if (Object.keys(errors).length > 0 || !isEnquiryType(type)) return { ok: false, errors };
-
-  return {
-    ok: true,
-    enquiry: {
-      type,
-      name,
-      email,
-      message,
-      company: company || undefined,
-      phone: phone || undefined,
-      country: country || undefined,
-      product: product || undefined,
-    },
-  };
+  const { name, email, message, ...optional } = accepted;
+  if (Object.keys(errors).length > 0 || !name || !email || !message) return { ok: false, errors };
+  return { ok: true, enquiry: { type, name, email, message, ...optional } };
 }

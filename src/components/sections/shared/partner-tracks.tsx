@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
 import { cardStyles } from "@/components/ui/card";
-import { contactHref, partnerContent } from "@/config";
+import { partnerContent, partnerFormHref } from "@/config";
 import { cn } from "@/lib/cn";
 
 interface PartnerTracksProps {
@@ -29,7 +29,7 @@ export function PartnerTracks({ withAnchors = false, className }: PartnerTracksP
             </ul>
             <div className="mt-auto pt-10">
               <ButtonLink
-                href={contactHref({ type: track.cta.enquiryType })}
+                href={partnerFormHref(track.cta.enquiryType)}
                 variant={track.featured ? "primary" : "secondary"}
                 withArrow
               >

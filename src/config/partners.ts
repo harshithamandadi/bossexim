@@ -2,11 +2,17 @@
 import type { PartnerTrack, SectionContent } from "@/types/content";
 import { sectionIds } from "./routes";
 
-export const partnerContent: { heading: SectionContent; tracks: PartnerTrack[] } = {
+export const partnerContent: { heading: SectionContent; form: SectionContent; tracks: PartnerTrack[] } = {
   heading: {
     eyebrow: "Partner With Us",
     title: "Let's build trade together.",
     description: "Whether you buy, supply or keep trade moving, there's a place for you in the BOSS EXIM network.",
+  },
+  form: {
+    eyebrow: "Register",
+    title: "Tell us about your business.",
+    description:
+      "Choose buyer, supplier or partnership. Your details go straight to the team that handles them, and we'll reply by email.",
   },
   tracks: [
     {

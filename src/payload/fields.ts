@@ -3,6 +3,7 @@ import { iconNames } from "@/lib/icons";
 
 /** Sidebar groups in the admin navigation. */
 export const ADMIN_GROUPS = {
+  inbox: "Inbox",
   catalogue: "Catalogue",
   content: "Website content",
   settings: "Settings",
@@ -51,6 +52,23 @@ export function iconField(description: string): SelectField {
     required: true,
     options: iconNames.map((name) => ({ label: humanize(name), value: name })),
     admin: { description },
+  };
+}
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** A list of email addresses; press Enter after each. */
+export function emailListField(name: string, label: string, description: string): TextField {
+  return {
+    name,
+    label,
+    type: "text",
+    hasMany: true,
+    admin: { description, placeholder: "name@bgexim.com" },
+    validate: (value: string[] | string | null | undefined) =>
+      [value ?? []].flat().every((address) => EMAIL_PATTERN.test(address))
+        ? true
+        : "Enter full email addresses, e.g. trade@bgexim.com.",
   };
 }
 
