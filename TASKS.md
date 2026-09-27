@@ -25,7 +25,7 @@ The site built from the first brief already covers most of §2. The new work is 
 | About, Business model, Vision / Mission / Values | Done | Copy drafted by us from the first brief. Needs client approval |
 | Products and product pages | Partial | 14 product lines, each with a page. No specifications, HS headings or images |
 | Trade process, Quality & verification | Done | Quality is a section of `/trade-process` |
-| Global presence | Partial | 6 markets and a trade-lane map. **No ports** |
+| Global presence | Done | 8 markets, presence tiers and a trade-lane map. Port lists appear once entered in the admin |
 | BOSS Group, Media | Partial | Structure done. No logos or photos |
 | Resources | Partial | Download list exists. Every file is "coming soon" |
 | Partner / business enquiries | Done | Registration form on `/partner` (buyer, supplier, partnership); the track buttons pre-select the type |
@@ -35,7 +35,7 @@ The site built from the first brief already covers most of §2. The new work is 
 | CMS / Admin panel (§3.2) | Done | Payload CMS at `/admin`: products, markets, FAQs, team, galleries, downloads, group companies, company details. Runs locally on SQLite; production hosting still to decide (D1) |
 | Digital brochure (§4) | Not started | |
 | Video + voice-over (§5) | Not started | |
-| Basic SEO (§9) | Mostly | Metadata, sitemap, robots, JSON-LD. No social share image |
+| Basic SEO (§9) | Done | Metadata, sitemap, robots, JSON-LD and a social share image |
 | Responsive (§3.1) | Done | Checked at 390, 768, 1024 and 1440 px on every page: no overflow or errors |
 
 ---
@@ -97,20 +97,20 @@ Built and tested: 20 automated checks cover editing, new products, company detai
 - [x] **A9** Admin usability: help text on fields, drag-to-reorder, "View on site" links, brand styling, and a dashboard checklist of content the site is still waiting for.
 - [x] **A10** Rewrite `README.md`, which currently tells non-developers to edit `src/config` files.
 
-### B. Website gaps (~3 days)
-- [ ] **B1** Replace our placeholder logo with the official logo in the header, footer, favicon and social share image.
-- [ ] **B2** Support images, falling back to the current icons when none is uploaded: product cards and pages, team, group company logos, galleries, and the hero wheel segments (the banner uses photos there).
-- [ ] **B3** Product pages: specifications table, HS headings, grades/varieties and packaging.
-- [ ] **B4** Global presence: add Indian origin ports and destination ports to the map and lists. Recommend a dedicated `/global-presence` page, because §2 lists it as its own section; keep the teaser on the home page.
+### B. Website gaps (~3 days) — ✅ done (B8 waits on client inputs)
+- [x] **B1** Official BOSS logo mark in the header, footer, favicon, admin and chat (E3). Social share image at `/og-image.png` (logo, tagline, focus line); every page links to it, and product pages with a photo share that photo instead.
+- [x] **B2** Images with icon fallbacks: product cards and pages (E2), leadership photos, gallery photos, **group company logos** (new "Logo" field), and **hero wheel segments** (each shows its category's first product photo).
+- [x] **B3** Product pages: specification tables, grades/varieties, packaging and documentation (E2). HS codes: the field exists in the admin and shows in the product facts once filled; the client's documents give none (the Content Note says HS classification varies), so they are left for the client.
+- [x] **B4** Global presence stays a section of `/trade-process`, as the client's Website Structure places it there (this supersedes our `/global-presence` recommendation). Ports: new "Destination ports" per market and "Indian loading ports" in Company details → Ports & video; they appear under Global Presence once entered. The documents name no ports, so none are filled in.
 - [x] **B5** A dedicated `/faq` page with FAQ structured data (an easy SEO win). Home and partner pages keep their short FAQ section.
-- [ ] **B6** A slot for the video on the About or home page that loads only when clicked, so it doesn't slow the page.
+- [x] **B6** Corporate video slot on the About page: paste a YouTube or Vimeo link (plus optional cover image) in Company details → Ports & video. Only the cover loads with the page; the player (youtube-nocookie / Vimeo with do-not-track) loads when the visitor presses play. Hidden until a link is set.
 - [x] **B7** Tablet pass at 768 px and 1024 px, since §3.1 names tablets.
 - [x] **B9** Trade wheel orbits the globe; pointing at (or tabbing to) a segment glides it to a stop, enlarges that segment and names it on the globe. Pauses off-screen and for reduced-motion users.
-- [ ] **B8** Replace every "To be added" once inputs arrive: contact details, registrations, social links, leadership.
+- [ ] **B8** Replace every "To be added" once inputs arrive. Done from the documents: email, office address, leadership profiles. Still waiting on the client: phone/WhatsApp, office hours, map, registration numbers (CIN, PAN, GST, IEC, RCMC, ISO, AD Code), social profile links, photos, logos, ports, video. The admin dashboard's "Still to add" list tracks each of these.
 
 ### C. Forms and notifications (~2 days) — ✅ done
 Built and tested: 78 automated checks (every type on both pages, both emails, the webhook, every spam defence, email-server-down and total-failure cases), plus desktop and mobile screenshots.
-- [x] **C1** Fields per enquiry type, shown as the visitor switches type and validated on the server. The proposed fields live in `enquiryFormFields` (`src/config/contact.ts`): **confirm them with the client**.
+- [x] **C1** Fields per enquiry type, shown as the visitor switches type and validated on the server. Now `enquiryForms` (`src/config/contact.ts`), rebuilt from the Contact Us document in E5.
   - General: name, email, company, phone, country, message.
   - Buyer: name, company, email, phone, product, quantity, destination country/port, message.
   - Supplier: name, company, email, phone, product supplied, supply capacity, country of origin, message.
@@ -246,3 +246,13 @@ Anything new is written down and approved before it's built (§10).
 - **Brochure and video** depend on assets and approval rounds, and their owner is unclear (D6).
 - **Scope creep.** The enquiry log (D5) and editable page copy (D3) can drift towards a CRM or a page builder. Keep them to what's agreed.
 - **2 Oct is a national holiday**, so the Sprint 2 review may move.
+
+### E. Client content from `requirements/` (September 2026) — ✅ done
+
+- [x] **E1** Every page rewritten from the client's page documents (Home, About ×5, Business ×4, Products, Trade Process ×4, Partner ×4, BOSS Group + Container Line, Media & Events, Resources, Contact). The Website Structure document drives the menus; new `/media-events` page.
+- [x] **E2** 14 product pages from the product documents; export lines gain the PRODUCT PORTFOLIO specification tables and photos; packaging and documentation lists.
+- [x] **E3** Official BOSS logo mark (traced SVG) in the header, footer, favicon, admin and chat.
+- [x] **E4** Leadership profiles (Prasad Kalla, Sudhakar C, Sekhar C), office address and email from the documents.
+- [x] **E5** Contact Us forms per the document: sectioned forms per enquiry type, attachments (private in the admin), BGX reference numbers in the success message and emails.
+- [x] **E6** Chatbot workflow: "Aira" with Products, Buying Enquiry (Q1–Q20, summary, edit, submit) and Company Information paths.
+- [ ] **E7** Confirm with the client: portfolio products not in the Website Structure (pomegranate, fresh onion, shrimp, dehydrated fruits, ginger/moringa/amla, mangoes) were **not** added; Project Cargo and Warehouse copy; payment-method and designation option lists; phone/WhatsApp, office hours and map; Media & Events photos; brochures.

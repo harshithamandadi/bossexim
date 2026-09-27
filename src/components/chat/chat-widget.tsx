@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { MessageCircleQuestion, X } from "lucide-react";
+import { MessageCircleMore, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState, type Ref } from "react";
 import { chatbotContent } from "@/config/chatbot";
@@ -9,6 +9,7 @@ import { onOpenChat } from "@/lib/chat-events";
 import { cn } from "@/lib/cn";
 import { EASE_SMOOTH } from "@/lib/motion";
 import type { FaqItem } from "@/types/content";
+import type { AssistantProduct } from "./assistant-flow";
 import type { ChatRequest } from "./chat-panel";
 
 const loadPanel = () => import("./chat-panel");
@@ -18,11 +19,17 @@ const ChatPanel = dynamic(() => loadPanel().then((module) => module.ChatPanel), 
 const LAUNCHER_DELAY_S = 1.2;
 
 /**
- * The FAQ assistant: a floating launcher plus a panel whose code only loads
+ * Aira, the website assistant: a floating launcher plus a panel whose code only loads
  * once a visitor shows intent (hover, focus or click). The panel stays mounted
  * after its first open, so the conversation survives closing and navigating.
  */
-export function ChatWidget({ faqs }: { faqs: FaqItem[] }) {
+interface ChatWidgetProps {
+  faqs: FaqItem[];
+  products: AssistantProduct[];
+  formToken: string;
+}
+
+export function ChatWidget({ faqs, products, formToken }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasOpened, setHasOpened] = useState(false);
   const [request, setRequest] = useState<ChatRequest>();
@@ -44,7 +51,7 @@ export function ChatWidget({ faqs }: { faqs: FaqItem[] }) {
   return (
     <>
       <Launcher ref={launcherRef} isOpen={isOpen} onToggle={() => (isOpen ? close() : open())} />
-      {hasOpened && <ChatPanel faqs={faqs} isOpen={isOpen} onClose={close} request={request} />}
+      {hasOpened && <ChatPanel faqs={faqs} products={products} formToken={formToken} isOpen={isOpen} onClose={close} request={request} />}
     </>
   );
 }
@@ -88,7 +95,7 @@ function Launcher({ ref, isOpen, onToggle }: LauncherProps) {
             transition={{ duration: 0.2, ease: EASE_SMOOTH }}
             className="grid place-items-center"
           >
-            {isOpen ? <X aria-hidden className="size-5" /> : <MessageCircleQuestion aria-hidden className="size-6" />}
+            {isOpen ? <X aria-hidden className="size-5" /> : <MessageCircleMore aria-hidden className="size-6" />}
           </motion.span>
         </AnimatePresence>
       </span>

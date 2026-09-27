@@ -24,12 +24,14 @@ interface ChecklistItem {
  * still waiting for, so editors can see at a glance what shows "To be added".
  */
 export async function DashboardWelcome({ payload, user }: ServerProps) {
-  const [company, team, galleries, resources, products, recentEnquiries, unsentAlerts] = await Promise.all([
+  const [company, team, galleries, resources, products, groupCompanies, markets, recentEnquiries, unsentAlerts] = await Promise.all([
     payload.findGlobal({ slug: "company-details", depth: 0 }),
-    payload.count({ collection: "team-members" }),
+    payload.find({ collection: "team-members", depth: 0, pagination: false }),
     payload.find({ collection: "galleries", depth: 0, pagination: false }),
     payload.find({ collection: "resources", depth: 0, pagination: false }),
-    payload.count({ collection: "products" }),
+    payload.find({ collection: "products", depth: 0, pagination: false }),
+    payload.find({ collection: "group-companies", depth: 0, pagination: false }),
+    payload.find({ collection: "markets", depth: 0, pagination: false }),
     countRecentEnquiries(payload),
     payload.count({ collection: "enquiries", where: { notificationStatus: { in: UNSENT_ALERTS } } }),
   ]);
@@ -65,6 +67,44 @@ export async function DashboardWelcome({ payload, user }: ServerProps) {
     { label: "Registration numbers", missing: countEmpty(registrationValues), total: registrationValues.length, href: companyHref },
     { label: "Social profile links", missing: countEmpty(socialValues), total: socialValues.length, href: companyHref },
     { label: "Leadership profiles", missing: team.totalDocs === 0 ? 1 : 0, total: 1, href: `${ADMIN}/collections/team-members` },
+    {
+      label: "Leadership photos",
+      missing: team.docs.filter((member) => !member.photo).length,
+      total: team.totalDocs,
+      href: `${ADMIN}/collections/team-members`,
+    },
+    {
+      label: "Product photos",
+      missing: products.docs.filter((product) => !product.images?.length).length,
+      total: products.totalDocs,
+      href: `${ADMIN}/collections/products`,
+    },
+    {
+      label: "BOSS Group company logos",
+      missing: groupCompanies.docs.filter((groupCompany) => !groupCompany.logo).length,
+      total: groupCompanies.totalDocs,
+      href: `${ADMIN}/collections/group-companies`,
+    },
+    {
+      label: "Destination ports",
+      missing: markets.docs.filter((market) => !market.ports?.length).length,
+      total: markets.totalDocs,
+      href: `${ADMIN}/collections/markets`,
+    },
+    {
+      label: "Indian loading ports",
+      missing: company.trade?.originPorts?.length ? 0 : 1,
+      total: 1,
+      href: companyHref,
+      status: "None yet",
+    },
+    {
+      label: "Corporate video",
+      missing: company.trade?.video?.url ? 0 : 1,
+      total: 1,
+      href: companyHref,
+      status: "Not added",
+    },
     {
       label: "Gallery photos",
       missing: galleries.docs.filter((gallery) => !gallery.images?.length).length,

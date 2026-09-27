@@ -37,4 +37,10 @@ export const productLabels = {
   },
   marketsTitle: "Where it ships",
   relatedTitle: "Related products",
+  packaging: "Packaging",
+  specificationsTitle: "Specifications",
+  specificationsNote: "Typical specifications. Exact values are agreed for each transaction.",
+  keyFeatures: "Key features",
+  documentationTitle: "Typical documentation",
+  documentationNote: "As applicable — documents depend on the product, destination and transaction.",
 };

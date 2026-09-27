@@ -6,7 +6,7 @@ export function getHighlightStats(catalogue: Catalogue, groupCompanies: GroupCom
   return [
     { value: catalogue.exportProducts.length, label: "Export product lines" },
     { value: catalogue.importProducts.length, label: "Import product lines" },
-    { value: catalogue.activeMarkets.length, label: "Destination markets" },
+    { value: catalogue.markets.length, label: "Markets served" },
     { value: groupCompanies.length, label: "BOSS Group businesses" },
   ];
 }

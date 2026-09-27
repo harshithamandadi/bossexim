@@ -36,7 +36,8 @@ export const getMarkets = cache(async () => (await getMarketDocs()).map(toMarket
 export const getProducts = cache(async () => {
   const [payload, marketDocs] = await Promise.all([getClient(), getMarketDocs()]);
   const marketCodes = new Map(marketDocs.map((market) => [market.id, market.code]));
-  const { docs } = await payload.find({ collection: "products", depth: 0, ...ALL_IN_ORDER });
+  // depth 1 fills in product images; markets are mapped from ids below.
+  const { docs } = await payload.find({ collection: "products", depth: 1, ...ALL_IN_ORDER });
   return docs.map((doc) => toProduct(doc, marketCodes));
 });
 
@@ -71,13 +72,13 @@ export const getResources = cache(async () => {
 
 export const getGroupCompanies = cache(async () => {
   const payload = await getClient();
-  const { docs } = await payload.find({ collection: "group-companies", depth: 0, ...ALL_IN_ORDER });
+  const { docs } = await payload.find({ collection: "group-companies", depth: 1, ...ALL_IN_ORDER });
   return docs.map(toGroupCompany);
 });
 
 const getCompanyDetailsDoc = cache(async () => {
   const payload = await getClient();
-  return payload.findGlobal({ slug: "company-details", depth: 0 });
+  return payload.findGlobal({ slug: "company-details", depth: 1 });
 });
 
 export const getCompanyDetails = cache(async () => toCompanyDetails(await getCompanyDetailsDoc()));

@@ -10,7 +10,7 @@ import type { Product } from "@/types/content";
 /** "We export → To → We import", derived entirely from the catalogue. */
 export async function FocusPanel({ className }: { className?: string }) {
   const { labels } = currentFocus;
-  const { exportProducts, importProducts, activeMarkets } = await getCatalogue();
+  const { exportProducts, importProducts, markets } = await getCatalogue();
 
   return (
     <Reveal className={className}>
@@ -22,7 +22,7 @@ export async function FocusPanel({ className }: { className?: string }) {
           <ProductRows products={exportProducts} />
         </FocusColumn>
         <FocusColumn label={labels.markets}>
-          {activeMarkets.map((market) => (
+          {markets.map((market) => (
             <FocusRow key={market.code} leading={<span className="text-xs font-semibold">{market.code}</span>}>
               {market.name}
             </FocusRow>

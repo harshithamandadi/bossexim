@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Container } from "@/components/ui/container";
+import { cn } from "@/lib/cn";
 import { WaveDivider } from "@/components/ui/wave-divider";
 import { SectionHeader } from "@/components/ui/section-header";
 import type { SectionContent } from "@/types/content";
@@ -11,9 +12,11 @@ interface PageHeroProps {
   leading?: ReactNode;
   /** Rendered below the description, e.g. call-to-action buttons. */
   children?: ReactNode;
+  /** Rendered beside the heading on large screens, e.g. a product photo. */
+  media?: ReactNode;
 }
 
-export function PageHero({ content, align = "start", leading, children }: PageHeroProps) {
+export function PageHero({ content, align = "start", leading, children, media }: PageHeroProps) {
   return (
     <section data-tone="light" className="relative overflow-hidden bg-canvas pt-36 pb-16 text-fg sm:pt-44 sm:pb-20">
       <div aria-hidden className="sky-wash absolute inset-0" />
@@ -24,15 +27,18 @@ export function PageHero({ content, align = "start", leading, children }: PageHe
       <WaveDivider />
       <Container className="relative">
         {leading && <div className="mb-10">{leading}</div>}
-        <SectionHeader
-          level="page"
-          align={align}
-          eyebrow={content.eyebrow}
-          title={content.title}
-          description={content.description}
-        >
-          {children}
-        </SectionHeader>
+        <div className={cn(media && "grid items-center gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16")}>
+          <SectionHeader
+            level="page"
+            align={align}
+            eyebrow={content.eyebrow}
+            title={content.title}
+            description={content.description}
+          >
+            {children}
+          </SectionHeader>
+          {media}
+        </div>
       </Container>
     </section>
   );

@@ -20,7 +20,7 @@ export function VisionMission() {
           </RevealItem>
         ))}
       </RevealGroup>
-      <FeatureGrid items={values} columns={5} variant="plain" className="mt-16" />
+      <FeatureGrid items={values} columns={3} variant="plain" className="mt-16" />
     </>
   );
 }

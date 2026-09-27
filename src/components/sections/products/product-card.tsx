@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { cardStyles } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
@@ -15,19 +16,36 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, markets, className }: ProductCardProps) {
+  const photo = product.images?.[0];
+  const arrow = (
+    <ArrowUpRight
+      aria-hidden
+      className="size-5 text-fg-mute transition-[color,transform] duration-300 ease-smooth group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-fg"
+    />
+  );
+
   return (
     <Link
       href={productHref(product.slug)}
       className={cardStyles({ interactive: true, className: cn("group flex h-full flex-col", className) })}
     >
-      <div className="flex items-start justify-between">
-        <IconTile icon={product.icon} />
-        <ArrowUpRight
-          aria-hidden
-          className="size-5 text-fg-mute transition-[color,transform] duration-300 ease-smooth group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-fg"
-        />
-      </div>
-      <p className="type-eyebrow mt-10 text-fg-mute">{product.category}</p>
+      {photo ? (
+        <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-surface">
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            fill
+            sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+            className="object-cover transition-transform duration-500 ease-smooth group-hover:scale-[1.04]"
+          />
+        </div>
+      ) : (
+        <div className="flex items-start justify-between">
+          <IconTile icon={product.icon} />
+          {arrow}
+        </div>
+      )}
+      <p className={cn("type-eyebrow text-fg-mute", photo ? "mt-6" : "mt-10")}>{product.category}</p>
       <h3 className="type-h4 mt-2">{product.name}</h3>
       <p className="mt-2 text-[15px] leading-relaxed text-fg-mute">{product.summary}</p>
       <ProductTags product={product} markets={markets} className="mt-auto pt-6" />

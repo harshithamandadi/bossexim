@@ -1,4 +1,4 @@
-/** Lets any part of the site open the FAQ assistant, optionally with a question to ask. */
+/** Lets any part of the site open Aira, the website assistant, optionally with a question to ask. */
 const OPEN_CHAT_EVENT = "bgexim:open-chat";
 
 export function openChat(question?: string) {

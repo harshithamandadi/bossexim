@@ -43,6 +43,7 @@ export function toMarket(doc: Cms.Market): Market {
     region: doc.region,
     coordinates: { lat: doc.coordinates.lat, lon: doc.coordinates.lon },
     labelAnchor: optional(doc.labelAnchor),
+    ports: nonEmpty(doc.ports),
   };
 }
 
@@ -58,6 +59,17 @@ export function toProduct(doc: Cms.Product, marketCodes: Map<number, string>): P
     variants: nonEmpty(doc.variants),
     variantsLabel: optional(doc.variantsLabel),
     hsCode: optional(doc.hsCode),
+    images: nonEmpty((doc.images ?? []).flatMap((image) => toImage(image, "card") ?? [])),
+    packaging: optional(doc.packaging),
+    documentation: nonEmpty(doc.documentation),
+    specifications: nonEmpty(
+      (doc.specifications ?? []).map((table) => ({
+        title: table.title,
+        subtitle: optional(table.subtitle),
+        rows: (table.rows ?? []).map((row) => ({ label: row.label, value: row.value })),
+        keyFeatures: nonEmpty(table.keyFeatures),
+      })),
+    ),
   };
   if (doc.direction === "import") return { ...base, direction: "import" };
 
@@ -107,6 +119,7 @@ export function toGroupCompany(doc: Cms.GroupCompany): GroupCompany {
     name: doc.name,
     description: doc.description,
     icon: doc.icon,
+    logo: toImage(doc.logo, "thumbnail"),
     href: optional(doc.href),
     isCurrent: Boolean(doc.isCurrent),
   };
@@ -132,6 +145,14 @@ export function toCompanyDetails(doc: Cms.CompanyDetail): CompanyDetails {
         return value ? [[item.key, value]] : [];
       }),
     ),
+    originPorts: doc.trade?.originPorts ?? [],
+    video: doc.trade?.video?.url
+      ? {
+          url: doc.trade.video.url,
+          title: optional(doc.trade.video.title),
+          poster: toImage(doc.trade.video.poster, "large"),
+        }
+      : undefined,
   };
 }
 

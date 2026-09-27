@@ -32,19 +32,25 @@ export const Enquiries: CollectionConfig = {
   admin: {
     group: ADMIN_GROUPS.inbox,
     useAsTitle: "name",
-    defaultColumns: ["name", "type", "company", "email", "notificationStatus", "createdAt"],
-    listSearchableFields: ["name", "email", "company", "message"],
+    defaultColumns: ["reference", "name", "type", "company", "email", "notificationStatus", "createdAt"],
+    listSearchableFields: ["reference", "name", "email", "company", "message"],
     description:
       "Every enquiry sent from the website, newest first. Reply by email; “Email alert” shows whether your team was notified.",
   },
   defaultSort: "-createdAt",
   fields: [
     {
-      name: "type",
-      type: "select",
-      required: true,
-      options: enquiryTypes.map((type) => ({ label: type.label, value: type.id })),
-      admin: readOnly,
+      type: "row",
+      fields: [
+        {
+          name: "type",
+          type: "select",
+          required: true,
+          options: enquiryTypes.map((type) => ({ label: type.label, value: type.id })),
+          admin: readOnly,
+        },
+        { name: "reference", type: "text", index: true, admin: readOnly },
+      ],
     },
     {
       type: "row",
@@ -57,24 +63,40 @@ export const Enquiries: CollectionConfig = {
       type: "row",
       fields: [
         { name: "email", type: "text", required: true, admin: readOnly },
-        { name: "phone", type: "text", admin: readOnly },
+        { name: "phone", label: "Phone / WhatsApp", type: "text", admin: readOnly },
       ],
     },
     {
       type: "row",
       fields: [
-        { name: "product", type: "text", admin: readOnly },
-        { name: "quantity", type: "text", admin: readOnly },
+        { name: "country", type: "text", admin: readOnly },
+        { name: "website", type: "text", admin: readOnly },
       ],
     },
+    { name: "product", type: "text", admin: readOnly },
     {
-      type: "row",
+      name: "details",
+      type: "array",
+      labels: { singular: "Detail", plural: "Details" },
+      admin: { ...readOnly, description: "Everything else the enquirer told us, as they entered it." },
       fields: [
-        { name: "country", label: "Country / port", type: "text", admin: readOnly },
-        { name: "partnershipArea", type: "text", admin: readOnly },
+        {
+          type: "row",
+          fields: [
+            { name: "label", type: "text", admin: readOnly },
+            { name: "value", type: "text", admin: readOnly },
+          ],
+        },
       ],
     },
-    { name: "message", type: "textarea", required: true, admin: readOnly },
+    { name: "message", type: "textarea", admin: readOnly },
+    {
+      name: "attachments",
+      type: "upload",
+      relationTo: "enquiry-files",
+      hasMany: true,
+      admin: readOnly,
+    },
     {
       name: "notificationStatus",
       label: "Email alert",

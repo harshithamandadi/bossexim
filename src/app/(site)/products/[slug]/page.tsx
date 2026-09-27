@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
+  ProductDocumentation,
   ProductHero,
   ProductMarkets,
   ProductOverview,
+  ProductSpecifications,
   RelatedProducts,
 } from "@/components/sections/products/product-detail";
 import { CtaSection } from "@/components/sections/shared/cta-section";
@@ -29,6 +31,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     title: product.name,
     description: `${product.summary} ${product.description}`,
     path: productHref(product.slug),
+    image: product.images?.[0],
   });
 }
 
@@ -41,6 +44,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
     <>
       <ProductHero product={product} />
       <ProductOverview product={product} catalogue={catalogue} />
+      <ProductSpecifications product={product} />
+      <ProductDocumentation product={product} />
       {product.direction === "export" && <ProductMarkets product={product} catalogue={catalogue} />}
       <RelatedProducts product={product} catalogue={catalogue} />
       <CtaSection />

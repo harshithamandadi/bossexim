@@ -1,12 +1,31 @@
 /**
- * Site menus. Mirrors the sitemap in the brief; used by the header, the footer,
- * the mobile menu, the sitemap.xml and each page's "on this page" bar.
+ * Site menus, following the client's Website Structure document. Used by the
+ * header, the footer, the mobile menu and each page's "on this page" bar.
  */
 import type { LinkItem, NavGroup } from "@/types/content";
 import { enquiryTypes } from "./contact";
-import { anchorHref, contactHref, productsViewHref, routes, sectionIds } from "./routes";
+import { anchorHref, contactHref, partnerFormHref, productsViewHref, routes, sectionIds, toAnchorId } from "./routes";
 
-const { about, business, tradeProcess, partner, group, resources } = sectionIds;
+const { about, business, tradeProcess, group, resources } = sectionIds;
+
+/** Group companies with their own section on the BOSS Group page (see seed data). */
+const GROUP_COMPANY_LINKS = [
+  { name: "BOSS Retail", description: "Convenience and fuel retail in Australia." },
+  { name: "BOSS Constructions", description: "Commercial, retail and property construction." },
+  { name: "BOSS Hospitality", description: "Hotels, motels and accommodation." },
+  { name: "BOSS IT", description: "Digital systems and IT-enabled solutions." },
+  { name: "BOSS BPO", description: "Business-process and operational support." },
+];
+
+/** Photo categories on the Media & Events page (see seed data). */
+const MEDIA_CATEGORIES = [
+  "Leadership",
+  "Business Meetings",
+  "Supplier Visits",
+  "Trade Events",
+  "International Business",
+  "Group Activities",
+];
 
 export const mainNavigation: NavGroup[] = [
   {
@@ -16,7 +35,7 @@ export const mainNavigation: NavGroup[] = [
       {
         label: "About BOSS EXIM",
         href: anchorHref(routes.about, about.overview),
-        description: "Who we are and how we trade.",
+        description: "Our role in international trade.",
       },
       {
         label: "About BOSS Group",
@@ -26,7 +45,7 @@ export const mainNavigation: NavGroup[] = [
       {
         label: "Vision, Mission & Values",
         href: anchorHref(routes.about, about.vision),
-        description: "The principles behind every contract.",
+        description: "How we conduct every transaction.",
       },
       {
         label: "Our Team / Leadership",
@@ -47,12 +66,12 @@ export const mainNavigation: NavGroup[] = [
       {
         label: "Our Business Model",
         href: anchorHref(routes.business, business.model),
-        description: "Merchant export, import & supply chain.",
+        description: "A flexible B2B trading model.",
       },
       {
         label: "Why BOSS EXIM",
         href: anchorHref(routes.business, business.why),
-        description: "What sets us apart as a partner.",
+        description: "One dependable point of contact.",
       },
       {
         label: "Our Current Focus",
@@ -62,7 +81,7 @@ export const mainNavigation: NavGroup[] = [
       {
         label: "Beyond Our Current Focus",
         href: anchorHref(routes.business, business.beyond),
-        description: "Where we're ready to grow next.",
+        description: "Focused today, flexible for tomorrow.",
       },
     ],
   },
@@ -71,14 +90,14 @@ export const mainNavigation: NavGroup[] = [
     href: routes.products,
     items: [
       {
-        label: "Exports",
+        label: "Exports from India",
         href: productsViewHref("export"),
-        description: "Rice, spices, pulses and more from India.",
+        description: "Rice, spices, pulses, dehydrated foods and more.",
       },
       {
         label: "Imports",
         href: productsViewHref("import"),
-        description: "Polymers and metal scrap for Indian industry.",
+        description: "Polymers and recyclable metals for Indian industry.",
       },
     ],
   },
@@ -89,38 +108,32 @@ export const mainNavigation: NavGroup[] = [
       {
         label: "How We Work",
         href: anchorHref(routes.tradeProcess, tradeProcess.howWeWork),
-        description: "From first enquiry to final delivery.",
+        description: "Understand, source, verify, structure, execute, complete.",
       },
       {
         label: "Quality & Verification",
         href: anchorHref(routes.tradeProcess, tradeProcess.quality),
-        description: "How every consignment is checked.",
+        description: "Verify the product, the parties and the documents.",
       },
       {
         label: "Our Global Presence",
         href: anchorHref(routes.tradeProcess, tradeProcess.presence),
-        description: "Where our export lines ship.",
+        description: "Our base, core markets and wider network.",
       },
-    ],
-  },
-  {
-    label: "Partner With Us",
-    href: routes.partner,
-    items: [
       {
         label: "Register as a Buyer",
-        href: anchorHref(routes.partner, partner.buyer),
-        description: "Buy Indian agri-commodities or industrial inputs.",
+        href: partnerFormHref("buyer"),
+        description: "Tell us the product you need.",
       },
       {
         label: "Register as a Supplier",
-        href: anchorHref(routes.partner, partner.supplier),
-        description: "Supply our export or import lines.",
+        href: partnerFormHref("supplier"),
+        description: "Introduce your company and products.",
       },
       {
         label: "Strategic Business Partner",
-        href: anchorHref(routes.partner, partner.strategic),
-        description: "Logistics, warehousing, inspection, finance & representation.",
+        href: partnerFormHref("partnership"),
+        description: "Logistics, inspection, finance & representation.",
       },
     ],
   },
@@ -133,17 +146,20 @@ export const mainNavigation: NavGroup[] = [
         href: anchorHref(routes.group, group.containerLine),
         description: "NVOCC, freight forwarding, trading & break bulk.",
       },
-      {
-        label: "Group Companies",
-        href: anchorHref(routes.group, group.companies),
-        description: "Retail, constructions, hospitality, IT & BPO.",
-      },
-      {
-        label: "Media & Events",
-        href: anchorHref(routes.group, group.media),
-        description: "Meetings, supplier visits, trade events & more.",
-      },
+      ...GROUP_COMPANY_LINKS.map(({ name, description }) => ({
+        label: name,
+        href: anchorHref(routes.group, toAnchorId(name)),
+        description,
+      })),
     ],
+  },
+  {
+    label: "Media & Events",
+    href: routes.media,
+    items: MEDIA_CATEGORIES.map((category) => ({
+      label: category,
+      href: anchorHref(routes.media, toAnchorId(category)),
+    })),
   },
   {
     label: "Resources",
@@ -152,17 +168,17 @@ export const mainNavigation: NavGroup[] = [
       {
         label: "BGEXIM Corporate Brochure",
         href: anchorHref(routes.resources, resources.downloads),
-        description: "Company profile, products and markets.",
+        description: "Company, products, markets and capabilities.",
       },
       {
         label: "BOSS Group Brochure",
         href: anchorHref(routes.resources, resources.downloads),
-        description: "An overview of every group business.",
+        description: "An overview of the wider BOSS ecosystem.",
       },
       {
         label: "Product Specifications",
-        href: anchorHref(routes.resources, resources.downloads),
-        description: "Specification sheets for each product line.",
+        href: anchorHref(routes.resources, resources.specifications),
+        description: "The latest specification, on request.",
       },
       {
         label: "FAQs",

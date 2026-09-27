@@ -1,92 +1,73 @@
-/** Business page content. DRAFT copy — confirm with the client before launch. */
-import type { FeatureSection, SectionContent } from "@/types/content";
+/** Business page content — from the client's Business documents. */
+import type { Highlight, ProseContent } from "@/types/content";
 
-export const businessModel: { heading: SectionContent } = {
+export const businessModel: ProseContent & { models: Highlight[] } = {
   heading: {
     eyebrow: "Our Business Model",
-    title: "Buy right. Ship right. Deliver as one.",
-    description:
-      "As a merchant trader we take title to the goods we sell — so sourcing, compliance and delivery sit with a single, accountable team.",
+    title: "A flexible B2B trading model.",
   },
-};
-
-export const whyUs: FeatureSection = {
-  heading: {
-    eyebrow: "Why BOSS EXIM",
-    title: "A trading partner you can rely on.",
-    description: "What buyers, suppliers and partners gain by working with us.",
-  },
-  items: [
-    {
-      title: "Merchant trader model",
-      description:
-        "We buy and sell in our own name, so you contract, pay and resolve issues with one responsible company.",
-      icon: "shield-check",
-    },
-    {
-      title: "Group logistics strength",
-      description: "Direct access to BOSS Container Line's NVOCC, freight-forwarding and break-bulk capability.",
-      icon: "ship",
-    },
-    {
-      title: "Two-way trade expertise",
-      description: "Export and import desks under one roof, with insight into both sides of the supply chain.",
-      icon: "arrow-left-right",
-    },
-    {
-      title: "Quality you can verify",
-      description: "Specifications agreed upfront and checked before dispatch, with independent inspection on request.",
-      icon: "badge-check",
-    },
-    {
-      title: "Compliance built in",
-      description: "Trade conducted under our statutory registrations — including IEC, RCMC, GST and AD Code.",
-      icon: "file-text",
-    },
-    {
-      title: "A growing network",
-      description: "Producers, buyers and overseas representatives across the Middle East, South-East Asia and Australia.",
-      icon: "network",
-    },
+  paragraphs: [
+    "BGEXIM operates through a flexible B2B trading model designed to connect reliable supply with genuine demand.",
+    "We begin by understanding the buyer’s requirements, including product, grade, quantity, destination, quality expectations and commercial terms. We also coordinate documentation, inspection and logistics through the wider BOSS ecosystem and external partners where required.",
+    "Our public business model focuses on disciplined international trading. Internal commission structures, transaction margins and proprietary commercial arrangements remain confidential.",
+  ],
+  models: [
+    { title: "Global Sourcing & Trade Facilitation", icon: "globe" },
+    { title: "Principal Trading", icon: "handshake" },
+    { title: "Structured / Back-to-Back Trading", icon: "arrow-left-right" },
+    { title: "Supply Chain Coordination", icon: "route" },
   ],
 };
 
-export const currentFocus: { heading: SectionContent; labels: { exports: string; markets: string; imports: string } } = {
+export const whyUs: ProseContent & { strengths: Highlight[] } = {
+  heading: {
+    eyebrow: "Why BOSS Global EXIM",
+    title: "One dependable point of contact.",
+  },
+  paragraphs: [
+    "BGEXIM combines international sourcing, market flexibility, structured transactions and access to established logistics capabilities. We work to understand both the buyer’s and the supplier’s requirements, and focus on long-term relationships with genuine buyers, reliable suppliers and strategic partners.",
+    "BGEXIM does not depend on a single product or country. Our current portfolio gives us a clear starting point, while our broader business model allows us to evaluate additional opportunities when they meet our commercial, quality, logistics and regulatory requirements.",
+    "For customers, this means one dependable point of contact for sourcing, trading, verification, documentation and supply-chain coordination.",
+  ],
+  strengths: [
+    { title: "Access to Indian and international markets", icon: "globe" },
+    { title: "A flexible product strategy", icon: "shapes" },
+    { title: "Product and supplier verification", icon: "search-check" },
+    { title: "Structured documentation", icon: "file-text" },
+    { title: "Secured payment methods", icon: "shield-check" },
+    { title: "Logistics support through the BOSS network", icon: "ship" },
+  ],
+};
+
+export const currentFocus: ProseContent & { labels: { exports: string; markets: string; imports: string } } = {
   heading: {
     eyebrow: "Our Current Focus",
-    title: "Where our trade desk is focused today.",
-    description:
-      "Indian agri-commodities for buyers across the Middle East, South-East Asia and Australia — and polymers and metal scrap for Indian industry.",
+    title: "Two clear trade directions.",
   },
-  labels: { exports: "We export", markets: "To", imports: "We import" },
+  paragraphs: [
+    "From India, we source and export selected agricultural products such as rice, spices, dehydrated onion and garlic, pulses, dried chillies, groundnuts and jaggery. For imports into India, our focus includes polymers, polyester chips and selected ferrous and non-ferrous recyclable metals.",
+    "This focused approach allows us to develop product knowledge, supplier relationships and buyer networks in selected categories while maintaining disciplined transaction control. The current portfolio represents our starting point, not a permanent restriction on the products or markets in which BGEXIM can operate.",
+  ],
+  labels: { exports: "We export", markets: "Core markets", imports: "We import" },
 };
 
-export const beyondFocus: FeatureSection = {
+export const beyondFocus: ProseContent & { criteria: string[]; motto: string } = {
   heading: {
     eyebrow: "Beyond Our Current Focus",
-    title: "Ready for what's next.",
-    description: "Our current lines are where we start, not where we stop. We welcome enquiries in these areas.",
+    title: "Open to genuine opportunities.",
   },
-  items: [
-    {
-      title: "More agri & food commodities",
-      description: "Sourcing additional Indian agri and food products on buyer request.",
-      icon: "sparkles",
-    },
-    {
-      title: "New destination markets",
-      description: "Serving buyers beyond our current markets, supported by overseas representatives.",
-      icon: "compass",
-    },
-    {
-      title: "Additional industrial inputs",
-      description: "Extending our import desk to further raw materials for Indian manufacturers.",
-      icon: "boxes",
-    },
-    {
-      title: "Custom sourcing projects",
-      description: "Dedicated sourcing for specific specifications, volumes and schedules.",
-      icon: "target",
-    },
+  paragraphs: [
+    "BGEXIM is designed to remain flexible. While our current portfolio includes agricultural products, polymers and recyclable metals, we are not limited to these categories or to a fixed list of countries.",
+    "This allows BGEXIM to respond to changing market conditions without losing commercial discipline. If a verified buyer requires a product outside our current portfolio, our team can study the requirement, identify suitable sources, evaluate the transaction and proceed if it meets our internal standards.",
   ],
+  criteria: [
+    "Buyer demand",
+    "Supplier reliability",
+    "Product quality",
+    "Commercial viability",
+    "Logistics feasibility",
+    "Payment security",
+    "Regulatory requirements",
+  ],
+  motto: "Focused Today & Flexible for Tomorrow.",
 };

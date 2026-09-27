@@ -52,9 +52,17 @@ export const Products: CollectionConfig = {
     },
     {
       name: "description",
+      label: "Overview",
       type: "textarea",
       required: true,
-      admin: { description: "The overview paragraph on the product's page." },
+      admin: { description: "The overview on the product's page. Leave a blank line between paragraphs.", rows: 10 },
+    },
+    {
+      name: "images",
+      type: "upload",
+      relationTo: "media",
+      hasMany: true,
+      admin: { description: "Product photos. The first is used on the product card and at the top of the page." },
     },
     {
       name: "markets",
@@ -84,6 +92,57 @@ export const Products: CollectionConfig = {
           label: "Variants heading",
           type: "text",
           admin: { placeholder: "Grades & forms" },
+        },
+      ],
+    },
+    {
+      name: "packaging",
+      type: "textarea",
+      admin: { description: "Typical packaging, e.g. “5 kg to 50 kg in PP, BOPP or jute bags”." },
+    },
+    {
+      name: "documentation",
+      label: "Typical documentation",
+      type: "text",
+      hasMany: true,
+      admin: { description: "Documents usually supplied, e.g. Certificate of origin. Press Enter after each." },
+    },
+    {
+      name: "specifications",
+      label: "Specification tables",
+      type: "array",
+      labels: { singular: "Table", plural: "Tables" },
+      admin: {
+        description: "Optional. One table per variety, e.g. “Basmati Rice” and “Non-Basmati Rice”.",
+        initCollapsed: true,
+      },
+      fields: [
+        {
+          type: "row",
+          fields: [
+            { name: "title", type: "text", required: true, admin: { placeholder: "Basmati Rice" } },
+            { name: "subtitle", type: "text", admin: { placeholder: "Premium Indian Basmati Rice" } },
+          ],
+        },
+        {
+          name: "rows",
+          type: "array",
+          labels: { singular: "Row", plural: "Rows" },
+          fields: [
+            {
+              type: "row",
+              fields: [
+                { name: "label", type: "text", required: true, admin: { placeholder: "Moisture" } },
+                { name: "value", type: "text", required: true, admin: { placeholder: "As per agreed specification" } },
+              ],
+            },
+          ],
+        },
+        {
+          name: "keyFeatures",
+          type: "text",
+          hasMany: true,
+          admin: { description: "Short highlights, e.g. Long Grain. Press Enter after each." },
         },
       ],
     },

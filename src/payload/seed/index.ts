@@ -6,6 +6,8 @@
  * Start over with:   npm run seed -- --reset   (deletes content, keeps users)
  */
 import config from "@payload-config";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   getPayload,
   type CollectionSlug,
@@ -13,7 +15,18 @@ import {
   type RequiredDataFromCollectionSlug,
   type Where,
 } from "payload";
-import { seedFaqs, seedGalleries, seedGroupCompanies, seedMarkets, seedProducts, seedResources } from "./data";
+import {
+  seedCompanyDetails,
+  seedFaqs,
+  seedGalleries,
+  seedGroupCompanies,
+  seedMarkets,
+  seedProducts,
+  seedResources,
+  seedTeam,
+} from "./data";
+
+const IMAGES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "images");
 
 /** Seeding runs outside Next.js, so there are no pages to refresh. */
 const context = { disableRevalidate: true };
@@ -26,6 +39,7 @@ const CONTENT: CollectionSlug[] = [
   "galleries",
   "resources",
   "group-companies",
+  "media",
 ];
 
 const created: Partial<Record<CollectionSlug, number>> = {};
@@ -62,6 +76,27 @@ async function seedAdmin(payload: Payload) {
   payload.logger.info(`Created admin account ${email}.`);
 }
 
+async function uploadPhotos(payload: Payload, photos: { file: string; alt: string }[]): Promise<number[]> {
+  const ids: number[] = [];
+  for (const photo of photos) {
+    const doc = await payload.create({
+      collection: "media",
+      data: { alt: photo.alt },
+      filePath: path.join(IMAGES_DIR, photo.file),
+      context,
+    });
+    ids.push(doc.id);
+  }
+  return ids;
+}
+
+/** Fills in contact details from the brief, without overwriting anything entered in the admin. */
+async function fillCompanyDetails(payload: Payload) {
+  const current = await payload.findGlobal({ slug: "company-details", depth: 0 });
+  const contact = { ...seedCompanyDetails.contact, ...Object.fromEntries(Object.entries(current.contact ?? {}).filter(([, value]) => value)) };
+  await payload.updateGlobal({ slug: "company-details", data: { contact }, context });
+}
+
 async function seed() {
   const payload = await getPayload({ config });
   if (process.argv.includes("--reset")) await reset(payload);
@@ -72,9 +107,15 @@ async function seed() {
     marketIds.set(market.code, doc.id);
   }
 
-  for (const product of seedProducts) {
+  for (const { photos = [], ...product } of seedProducts) {
     const markets = product.direction === "export" ? product.markets.flatMap((code) => marketIds.get(code) ?? []) : [];
-    await ensure(payload, "products", { slug: { equals: product.slug } }, { ...product, markets });
+    const exists = await payload.count({ collection: "products", where: { slug: { equals: product.slug } } });
+    const images = exists.totalDocs > 0 ? [] : await uploadPhotos(payload, photos);
+    await ensure(payload, "products", { slug: { equals: product.slug } }, { ...product, markets, images });
+  }
+
+  for (const member of seedTeam) {
+    await ensure(payload, "team-members", { name: { equals: member.name } }, member);
   }
 
   for (const faq of seedFaqs) {
@@ -90,6 +131,7 @@ async function seed() {
     await ensure(payload, "resources", { title: { equals: resource.title } }, resource);
   }
 
+  await fillCompanyDetails(payload);
   await seedAdmin(payload);
 
   const summary = Object.entries(created).map(([collection, count]) => `${count} ${collection}`);

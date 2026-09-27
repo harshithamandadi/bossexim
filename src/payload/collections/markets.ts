@@ -58,6 +58,15 @@ export const Markets: CollectionConfig = {
       ],
     },
     {
+      name: "ports",
+      label: "Destination ports",
+      type: "text",
+      hasMany: true,
+      admin: {
+        description: "Optional. Ports you ship to in this market, e.g. Jebel Ali. Press Enter after each one. Listed under Global Presence.",
+      },
+    },
+    {
       name: "labelAnchor",
       label: "Map label position",
       type: "select",

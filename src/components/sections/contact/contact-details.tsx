@@ -5,7 +5,7 @@ import type { ContactInfo } from "@/types/content";
 /** Web, email, phone and office — each shows "To be added" until set in the admin. */
 export function ContactDetails({ contact }: { contact: ContactInfo }) {
   const { url } = siteConfig;
-  const { title, labels } = contactContent.details;
+  const { title, labels, pendingNote } = contactContent.details;
 
   const rows = [
     { label: labels.website, value: contact.website, href: url },
@@ -27,6 +27,7 @@ export function ContactDetails({ contact }: { contact: ContactInfo }) {
           </div>
         ))}
       </dl>
+      <p className="mt-5 text-sm text-fg-mute">{pendingNote}</p>
     </div>
   );
 }

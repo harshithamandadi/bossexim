@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Icon } from "@/components/ui/icon";
-import { mediaEvents, uiLabels } from "@/config";
+import { mediaEvents, toAnchorId, uiLabels } from "@/config";
 import { cn } from "@/lib/cn";
 import { getGalleries } from "@/lib/content/queries";
 import type { Gallery } from "@/types/content";
@@ -19,7 +19,7 @@ export async function MediaGrid({ className }: { className?: string }) {
   return (
     <RevealGroup as="ul" className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}>
       {galleries.map((gallery, index) => (
-        <RevealItem as="li" key={gallery.title}>
+        <RevealItem as="li" key={gallery.title} id={toAnchorId(gallery.title)} className="scroll-mt-32">
           <GalleryTile gallery={gallery} wash={PLACEHOLDER_WASHES[index % PLACEHOLDER_WASHES.length]} />
         </RevealItem>
       ))}

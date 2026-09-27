@@ -32,6 +32,18 @@ export interface Feature {
   icon: IconName;
 }
 
+/** A heading with the client's paragraphs of copy. */
+export interface ProseContent {
+  heading: SectionContent;
+  paragraphs: string[];
+}
+
+/** A short labelled point with an icon, e.g. a strength or a business model. */
+export interface Highlight {
+  title: string;
+  icon: IconName;
+}
+
 export interface FeatureSection {
   heading: SectionContent;
   items: Feature[];
@@ -66,6 +78,8 @@ export interface CompanyInfo {
   roles: string[];
   parentGroup: string;
   summary: string;
+  /** Closing line used across the site, e.g. under the hero. */
+  motto: string;
   wordmark: { primary: string; secondary: string };
 }
 
@@ -88,10 +102,20 @@ export interface SocialLink {
 export type RegistrationKey = "cin" | "pan" | "gst" | "iec" | "rcmc" | "iso" | "adCode";
 
 /** Managed in the admin under Settings → Company details. */
+export interface CorporateVideo {
+  /** A YouTube or Vimeo link, as entered in the admin. */
+  url: string;
+  title?: string;
+  poster?: ImageAsset;
+}
+
 export interface CompanyDetails {
   contact: ContactInfo;
   social: SocialLink[];
   registrations: Partial<Record<RegistrationKey, string>>;
+  /** Indian ports we usually ship from. */
+  originPorts: string[];
+  video?: CorporateVideo;
 }
 
 /** Selects the illustration shown inside a service's bento card. */
@@ -147,9 +171,18 @@ export interface Market {
   region: string;
   coordinates: GeoPoint;
   labelAnchor?: LabelAnchor;
+  /** Destination ports we ship to in this market. */
+  ports?: string[];
 }
 
 export type TradeDirection = "export" | "import";
+
+export interface SpecificationTable {
+  title: string;
+  subtitle?: string;
+  rows: { label: string; value: string }[];
+  keyFeatures?: string[];
+}
 
 interface ProductBase {
   slug: string;
@@ -157,7 +190,12 @@ interface ProductBase {
   category: string;
   icon: IconName;
   summary: string;
+  /** Overview paragraphs, separated by blank lines. */
   description: string;
+  images?: ImageAsset[];
+  packaging?: string;
+  documentation?: string[];
+  specifications?: SpecificationTable[];
   /** Grades, forms or varieties, e.g. HDPE / LDPE / LLDPE. */
   variants?: string[];
   variantsLabel?: string;
@@ -209,6 +247,7 @@ export interface GroupCompany {
   name: string;
   description: string;
   icon: IconName;
+  logo?: ImageAsset;
   href?: string;
   isCurrent?: boolean;
 }
@@ -232,17 +271,51 @@ export interface Resource {
 
 export type EnquiryTypeId = "general" | "buyer" | "supplier" | "partnership";
 
-/** Every field the enquiry form can show; each enquiry type picks its own set. */
+/** Every field the enquiry forms can show; each enquiry type picks its own set. */
 export type EnquiryField =
   | "name"
   | "company"
   | "email"
   | "phone"
   | "country"
+  | "website"
+  | "registration"
+  | "designation"
   | "product"
+  | "grade"
   | "quantity"
+  | "frequency"
+  | "destinationCountry"
+  | "destinationPort"
+  | "deliveryDate"
+  | "incoterm"
+  | "paymentMethod"
+  | "originCountry"
+  | "capacity"
+  | "moq"
+  | "packaging"
+  | "loadingPort"
+  | "indicativePrice"
+  | "paymentTerms"
   | "partnershipArea"
-  | "message";
+  | "marketsCovered"
+  | "services"
+  | "licences"
+  | "experience"
+  | "message"
+  | "attachments";
+
+/** How a field is shown and checked. */
+export type EnquiryFieldKind = "text" | "email" | "tel" | "url" | "date" | "textarea" | "select" | "product" | "files";
+
+export interface EnquiryFieldDefinition {
+  kind: EnquiryFieldKind;
+  label: string;
+  placeholder?: string;
+  /** Choices for "select" fields. */
+  options?: string[];
+  autoComplete?: string;
+}
 
 export interface EnquiryFieldConfig {
   name: EnquiryField;
@@ -250,6 +323,11 @@ export interface EnquiryFieldConfig {
   /** Overrides the field's default label or placeholder for this enquiry type. */
   label?: string;
   placeholder?: string;
+}
+
+export interface EnquiryFormSection {
+  title: string;
+  fields: EnquiryFieldConfig[];
 }
 
 export interface EnquiryType {
@@ -263,7 +341,8 @@ export interface PartnerTrack {
   id: string;
   title: string;
   description: string;
-  audiences: string[];
+  pointsLabel: string;
+  points: string[];
   cta: { label: string; enquiryType: EnquiryTypeId };
   featured?: boolean;
 }

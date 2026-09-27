@@ -4,7 +4,7 @@
  * deliberately repeats none of the visitor's free text, so the form can't be
  * used to send someone else a message of an attacker's choosing.
  */
-import { contactContent, enquiryEmails, enquiryFormFields } from "@/config/contact";
+import { enquiryEmails, enquiryFieldDefinitions } from "@/config/contact";
 import { siteConfig } from "@/config/site";
 import type { Enquiry } from "./schema";
 
@@ -13,6 +13,10 @@ export interface ResolvedEnquiry extends Enquiry {
   typeLabel: string;
   /** The product's name, or "Other / not listed". */
   productName?: string;
+  /** e.g. BGX-00042, once the enquiry is saved in the admin. */
+  reference?: string;
+  /** Names of the files the enquirer attached. */
+  attachmentNames: string[];
 }
 
 export interface EmailContent {
@@ -37,14 +41,19 @@ function toSubject(text: string): string {
   return text.replace(/\s+/g, " ").trim().slice(0, MAX_SUBJECT_LENGTH);
 }
 
-/** The enquiry's answers as label/value rows, in the form's order and with its labels. */
+/** Fields with their own column, in the order they're shown; everything else follows as details. */
+const CORE_ROWS = ["name", "email", "phone", "company", "country", "website"] as const;
+
+/** The enquiry's answers as label/value rows (the message is shown separately). */
 function answerRows(enquiry: ResolvedEnquiry): [string, string][] {
-  const defaults = contactContent.form.fields;
-  return enquiryFormFields[enquiry.type].flatMap((field) => {
-    if (field.name === "message") return [];
-    const value = field.name === "product" ? enquiry.productName : enquiry[field.name];
-    return value ? [[field.label ?? defaults[field.name].label, value] as [string, string]] : [];
-  });
+  const copy = enquiryEmails.notification;
+  const rows: [string, string | undefined][] = [
+    [copy.reference, enquiry.reference],
+    ...CORE_ROWS.map((field) => [enquiryFieldDefinitions[field].label, enquiry[field]] as [string, string | undefined]),
+    [enquiryFieldDefinitions.product.label, enquiry.productName],
+    ...enquiry.details.map((detail) => [detail.label, detail.value] as [string, string]),
+  ];
+  return rows.filter((row): row is [string, string] => Boolean(row[1]));
 }
 
 function layout(title: string, body: string): string {
@@ -75,8 +84,10 @@ export function notificationEmail(enquiry: ResolvedEnquiry, { adminUrl, sourceLa
   const rows = answerRows(enquiry);
   const who = enquiry.company ? `${enquiry.name} (${enquiry.company})` : enquiry.name;
   const topic = enquiry.productName ? `: ${enquiry.productName}` : "";
-  const subject = toSubject(`${copy.subjectPrefix} ${enquiry.typeLabel.toLowerCase()}${topic} — ${who}`);
+  const reference = enquiry.reference ? ` [${enquiry.reference}]` : "";
+  const subject = toSubject(`${copy.subjectPrefix} ${enquiry.typeLabel.toLowerCase()}${topic} — ${who}${reference}`);
   const submitted = submittedAt.toUTCString();
+  const attachments = enquiry.attachmentNames.join(", ");
 
   const tableRows = rows
     .map(
@@ -91,7 +102,10 @@ export function notificationEmail(enquiry: ResolvedEnquiry, { adminUrl, sourceLa
     [
       paragraph(escapeHtml(copy.intro)),
       `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 16px;border-collapse:collapse;">${tableRows}</table>`,
-      `<div style="padding:16px;border-radius:12px;background:#eef4fc;font-size:15px;line-height:1.6;white-space:pre-wrap;">${escapeHtml(enquiry.message)}</div>`,
+      enquiry.message
+        ? `<div style="padding:16px;border-radius:12px;background:#eef4fc;font-size:15px;line-height:1.6;white-space:pre-wrap;">${escapeHtml(enquiry.message)}</div>`
+        : "",
+      attachments ? note(`<strong>${escapeHtml(copy.attachments)}:</strong> ${escapeHtml(attachments)} — ${escapeHtml(copy.attachmentsHint)}`) : "",
       note(escapeHtml(copy.replyHint)),
       adminUrl
         ? `<p style="margin:20px 0 0;"><a href="${escapeHtml(adminUrl)}" style="display:inline-block;padding:10px 18px;border-radius:999px;background:${BRAND_BLUE};color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;">${escapeHtml(copy.viewInAdmin)}</a></p>`
@@ -105,8 +119,8 @@ export function notificationEmail(enquiry: ResolvedEnquiry, { adminUrl, sourceLa
     "",
     ...rows.map(([label, value]) => `${label}: ${value}`),
     "",
-    enquiry.message,
-    "",
+    ...(enquiry.message ? [enquiry.message, ""] : []),
+    ...(attachments ? [`${copy.attachments}: ${attachments} (${copy.attachmentsHint})`, ""] : []),
     copy.replyHint,
     ...(adminUrl ? [`${copy.viewInAdmin}: ${adminUrl}`] : []),
     `${copy.submitted}: ${submitted}${sourceLabel ? ` · ${copy.sentFrom}: ${sourceLabel}` : ""}`,
@@ -130,7 +144,7 @@ export function acknowledgementEmail(enquiry: ResolvedEnquiry): EmailContent {
   const person = greetingName(enquiry.name);
   const greeting = person ? `${copy.greeting} ${person},` : `${copy.greeting},`;
   const topic = `${enquiry.typeLabel.toLowerCase()}${enquiry.productName ? ` ${copy.about} ${enquiry.productName}` : ""}`;
-  const received = `${copy.body} ${topic}.`;
+  const received = `${copy.body} ${topic}.${enquiry.reference ? ` ${copy.reference} ${enquiry.reference}.` : ""}`;
 
   const html = layout(
     escapeHtml(copy.subject),

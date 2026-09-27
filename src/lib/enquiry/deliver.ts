@@ -1,6 +1,6 @@
 /**
  * Delivers a validated enquiry through every channel that is set up:
- *  1. saves it in the admin (Inbox → Enquiries) — the safety net;
+ *  1. saves it, with any attachments, in the admin (Inbox → Enquiries) — the safety net;
  *  2. emails the team (Company details → Enquiry emails), with reply-to set to the enquirer;
  *  3. emails the enquirer a confirmation;
  *  4. optionally posts it as JSON to ENQUIRY_WEBHOOK_URL.
@@ -29,12 +29,32 @@ interface ChannelResult {
 type WebhookResult = "sent" | "failed" | "off";
 
 const MAX_DETAIL_LENGTH = 200;
+const REFERENCE_PREFIX = "BGX-";
+const REFERENCE_DIGITS = 5;
+const ATTACHMENT_NOT_SAVED = "(could not be saved — ask the enquirer to resend it)";
 
 /** Pages that host the enquiry form, and how they're named in the admin and emails. */
 const SOURCE_LABELS: Record<string, string> = {
   [routes.contact]: pageContent.contact.metaTitle,
   [routes.partner]: pageContent.partner.metaTitle,
+  assistant: "Website assistant",
 };
+
+export interface DeliveryOptions {
+  /** The page the form was sent from, or "assistant" for the chatbot. */
+  source?: string;
+  files?: File[];
+}
+
+export interface DeliveryResult {
+  delivered: boolean;
+  /** Quoted to the enquirer, e.g. BGX-00042. Only set when the enquiry was saved. */
+  reference?: string;
+}
+
+function toReference(id: number): string {
+  return `${REFERENCE_PREFIX}${String(id).padStart(REFERENCE_DIGITS, "0")}`;
+}
 
 const DETAILS = {
   notConfigured: "Email isn't set up on the server yet (SMTP) — ask your developer.",
@@ -51,17 +71,47 @@ function siteUrl(): string {
   return (process.env.SITE_URL || siteConfig.url).replace(/\/+$/, "");
 }
 
-function resolve(enquiry: Enquiry, catalogue: Catalogue): ResolvedEnquiry {
+function resolve(enquiry: Enquiry, catalogue: Catalogue, files: File[]): ResolvedEnquiry {
   const typeLabel = enquiryTypes.find((type) => type.id === enquiry.type)?.label ?? enquiry.type;
   const productName =
     enquiry.product === OTHER_PRODUCT_VALUE
-      ? contactContent.form.fields.product.other
+      ? contactContent.form.otherProduct
       : enquiry.product && catalogue.getProductBySlug(enquiry.product)?.name;
-  return { ...enquiry, typeLabel, productName: productName || undefined };
+  return { ...enquiry, typeLabel, productName: productName || undefined, attachmentNames: files.map((file) => file.name) };
 }
 
-async function saveEnquiry(payload: Payload, enquiry: ResolvedEnquiry, source?: string): Promise<number | undefined> {
+/**
+ * Stores the attachments privately. A file that fails (e.g. not really a PDF)
+ * is logged and skipped, and flagged in the team's email so they can ask for it.
+ */
+async function saveAttachments(payload: Payload, enquiry: ResolvedEnquiry, files: File[]): Promise<number[]> {
+  const ids: number[] = [];
+  enquiry.attachmentNames = [];
+  for (const file of files) {
+    try {
+      const doc = await payload.create({
+        collection: "enquiry-files",
+        data: {},
+        file: { data: Buffer.from(await file.arrayBuffer()), mimetype: file.type, name: file.name, size: file.size },
+      });
+      ids.push(doc.id);
+      enquiry.attachmentNames.push(file.name);
+    } catch (error) {
+      enquiry.attachmentNames.push(`${file.name} ${ATTACHMENT_NOT_SAVED}`);
+      payload.logger.error({ err: error, msg: `[enquiry] Could not save the attachment "${file.name}".` });
+    }
+  }
+  return ids;
+}
+
+async function saveEnquiry(
+  payload: Payload,
+  enquiry: ResolvedEnquiry,
+  files: File[],
+  source?: string,
+): Promise<number | undefined> {
   try {
+    const attachments = await saveAttachments(payload, enquiry, files);
     const doc = await payload.create({
       collection: "enquiries",
       data: {
@@ -71,10 +121,11 @@ async function saveEnquiry(payload: Payload, enquiry: ResolvedEnquiry, source?: 
         email: enquiry.email,
         phone: enquiry.phone,
         country: enquiry.country,
+        website: enquiry.website,
         product: enquiry.productName,
-        quantity: enquiry.quantity,
-        partnershipArea: enquiry.partnershipArea,
+        details: enquiry.details,
         message: enquiry.message,
+        attachments,
         source,
       },
     });
@@ -138,12 +189,19 @@ async function postToWebhook(payload: Payload, enquiry: ResolvedEnquiry, submitt
   }
 }
 
-async function recordOutcome(payload: Payload, id: number, notification: ChannelResult, acknowledgement: ChannelResult) {
+async function recordOutcome(
+  payload: Payload,
+  id: number,
+  reference: string,
+  notification: ChannelResult,
+  acknowledgement: ChannelResult,
+) {
   try {
     await payload.update({
       collection: "enquiries",
       id,
       data: {
+        reference,
         notificationStatus: notification.status,
         notificationDetail: notification.detail,
         acknowledgementStatus: acknowledgement.status,
@@ -154,19 +212,21 @@ async function recordOutcome(payload: Payload, id: number, notification: Channel
   }
 }
 
-/** Returns true when the enquiry reached the business through at least one channel. */
-export async function deliverEnquiry(enquiry: Enquiry, sourcePath?: string): Promise<boolean> {
+/** Delivered when the enquiry reached the business through at least one channel. */
+export async function deliverEnquiry(enquiry: Enquiry, { source: sourceKey, files = [] }: DeliveryOptions = {}): Promise<DeliveryResult> {
   const payload = await getPayloadClient();
   const [catalogue, recipients, company] = await Promise.all([
     getCatalogue(),
     getEnquiryRecipients(enquiry.type),
     getCompanyDetails(),
   ]);
-  const resolved = resolve(enquiry, catalogue);
-  const source = sourcePath ? SOURCE_LABELS[sourcePath] : undefined;
+  const resolved = resolve(enquiry, catalogue, files);
+  const source = sourceKey ? SOURCE_LABELS[sourceKey] : undefined;
   const submittedAt = new Date();
 
-  const id = await saveEnquiry(payload, resolved, source);
+  const id = await saveEnquiry(payload, resolved, files, source);
+  if (id !== undefined) resolved.reference = toReference(id);
+
   const notification = await notifyTeam(payload, resolved, recipients, {
     adminUrl: id === undefined ? undefined : `${siteUrl()}/admin/collections/enquiries/${id}`,
     sourceLabel: source,
@@ -174,14 +234,16 @@ export async function deliverEnquiry(enquiry: Enquiry, sourcePath?: string): Pro
   });
   const acknowledgement = await acknowledge(payload, resolved, company.contact.email);
   const webhook = await postToWebhook(payload, resolved, submittedAt, source);
-  if (id !== undefined) await recordOutcome(payload, id, notification, acknowledgement);
+  if (id !== undefined && resolved.reference) {
+    await recordOutcome(payload, id, resolved.reference, notification, acknowledgement);
+  }
 
   const delivered = id !== undefined || notification.status === "sent" || webhook === "sent";
   if (delivered) {
-    payload.logger.info(`[enquiry] ${resolved.typeLabel} #${id ?? "unsaved"} — email alert: ${notification.status}.`);
+    payload.logger.info(`[enquiry] ${resolved.typeLabel} ${resolved.reference ?? "(unsaved)"} — email alert: ${notification.status}.`);
   } else {
     // Every channel failed: keep the enquiry in the server log so it can still be recovered.
     payload.logger.error({ enquiry: resolved, msg: "[enquiry] NOT DELIVERED — every channel failed." });
   }
-  return delivered;
+  return { delivered, reference: resolved.reference };
 }

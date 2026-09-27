@@ -17,8 +17,14 @@ export const GroupCompanies: CollectionConfig = {
   },
   fields: [
     { name: "name", type: "text", required: true },
-    { name: "description", type: "text", required: true },
-    iconField("Shown on the company's card."),
+    { name: "description", type: "textarea", required: true, maxLength: 400 },
+    {
+      name: "logo",
+      type: "upload",
+      relationTo: "media",
+      admin: { description: "Optional. Shown on the company's card instead of the icon — a square or wide logo on a transparent or white background works best." },
+    },
+    iconField("Shown on the company's card when there is no logo."),
     urlField("href", "Website", "Optional link to the company's own site."),
     {
       name: "isCurrent",

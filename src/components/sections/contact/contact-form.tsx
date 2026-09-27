@@ -5,9 +5,9 @@ import { LoaderCircle } from "lucide-react";
 import { useActionState, useState } from "react";
 import { submitEnquiry } from "@/app/(site)/contact/actions";
 import { Button } from "@/components/ui/button";
-import { SelectField, TextAreaField, TextField } from "@/components/ui/field";
+import { FileField, SelectField, TextAreaField, TextField } from "@/components/ui/field";
 import { SegmentedControl } from "@/components/ui/segmented-control";
-import { contactContent, enquiryFormFields, enquiryTypes, partnershipAreas } from "@/config/contact";
+import { ATTACHMENT_LIMITS, contactContent, enquiryFieldDefinitions, enquiryForms, enquiryTypes } from "@/config/contact";
 import { tradeDirections } from "@/config/products";
 import { cn } from "@/lib/cn";
 import {
@@ -15,23 +15,40 @@ import {
   HONEYPOT_FIELD,
   OTHER_PRODUCT_VALUE,
   SOURCE_FIELD,
+  fieldLabel,
   type EnquiryFormState,
 } from "@/lib/enquiry/schema";
 import { EASE_SMOOTH, SPRING_SNAPPY } from "@/lib/motion";
-import type { EnquiryField, EnquiryFieldConfig, EnquiryTypeId, Product, TradeDirection } from "@/types/content";
+import type { EnquiryFieldConfig, EnquiryTypeId, Product, TradeDirection } from "@/types/content";
 
 const INITIAL_STATE: EnquiryFormState = { status: "idle" };
 const PRODUCT_GROUPS: TradeDirection[] = ["export", "import"];
 const ALL_TYPES = enquiryTypes.map((type) => type.id);
 const { form } = contactContent;
 
-/** Browser hints: keyboard type and autofill. */
-const INPUT_HINTS: Partial<Record<EnquiryField, { type?: string; autoComplete?: string }>> = {
-  name: { autoComplete: "name" },
-  company: { autoComplete: "organization" },
-  email: { type: "email", autoComplete: "email" },
-  phone: { type: "tel", autoComplete: "tel" },
-};
+/** Text areas and uploads span both columns. */
+function isWideField(field: EnquiryFieldConfig): boolean {
+  const { kind } = enquiryFieldDefinitions[field.name];
+  return kind === "textarea" || kind === "files";
+}
+
+/** Fields that span both grid columns: wide fields, and a field left alone on its row. */
+function wideFieldNames(fields: EnquiryFieldConfig[]): Set<string> {
+  const wide = new Set<string>();
+  let column = 0;
+  fields.forEach((field, index) => {
+    const next = fields[index + 1];
+    if (isWideField(field)) {
+      wide.add(field.name);
+      column = 0;
+    } else if (column === 0 && (!next || isWideField(next))) {
+      wide.add(field.name);
+    } else {
+      column = 1 - column;
+    }
+  });
+  return wide;
+}
 
 interface ContactFormCardProps {
   initialType: EnquiryTypeId;
@@ -68,58 +85,74 @@ function ContactForm({
 }: ContactFormCardProps & { onReset: () => void }) {
   const [state, formAction, isPending] = useActionState(submitEnquiry, INITIAL_STATE);
   const [type, setType] = useState<EnquiryTypeId>(initialType);
+  // React resets the form after each submit, and a <select> ignores a changed
+  // defaultValue — so remount the fields per response to restore what was typed.
+  const [answeredState, setAnsweredState] = useState(state);
+  const [responseCount, setResponseCount] = useState(0);
+  if (state !== answeredState) {
+    setAnsweredState(state);
+    setResponseCount((count) => count + 1);
+  }
 
-  if (state.status === "success") return <FormSuccess onReset={onReset} />;
+  if (state.status === "success") return <FormSuccess reference={state.reference} onReset={onReset} />;
 
   const errors = state.status === "error" ? state.errors : undefined;
   const values = state.status === "error" ? state.values : undefined;
-  const fields = enquiryFormFields[type];
-  const gridFields = fields.filter((field) => field.name !== "message");
   const typeOptions = enquiryTypes
     .filter((enquiryType) => types.includes(enquiryType.id))
     .map((enquiryType) => ({ value: enquiryType.id, label: enquiryType.shortLabel }));
 
   return (
-    <form action={formAction} noValidate className="grid gap-5 sm:grid-cols-2">
-      <h2 className="type-h3 sm:col-span-2">{form.title}</h2>
-
-      <div className="sm:col-span-2">
-        <p className="mb-3 text-sm font-medium">{form.typeLabel}</p>
-        <SegmentedControl
-          label={form.typeLabel}
-          value={type}
-          onChange={setType}
-          options={typeOptions}
-          // Phones get an even grid (2×2 or 3 across) instead of a ragged wrap.
-          className={cn("grid w-full sm:inline-flex sm:w-auto", typeOptions.length % 2 === 0 ? "grid-cols-2" : "grid-cols-3")}
-        />
+    <form action={formAction} noValidate className="flex flex-col gap-8">
+      <div>
+        <h2 className="type-h3">{form.title}</h2>
+        {typeOptions.length > 1 && (
+          <>
+            <p className="mt-6 mb-3 text-sm font-medium">{form.typeLabel}</p>
+            <SegmentedControl
+              label={form.typeLabel}
+              value={type}
+              onChange={setType}
+              options={typeOptions}
+              // Phones get an even grid (2×2 or 3 across) instead of a ragged wrap.
+              className={cn(
+                "grid w-full sm:inline-flex sm:w-auto",
+                typeOptions.length % 2 === 0 ? "grid-cols-2" : "grid-cols-3",
+              )}
+            />
+          </>
+        )}
         <input type="hidden" name="type" value={type} />
       </div>
 
-      <AnimatePresence initial={false} mode="popLayout">
-        {fields.map((field) => {
-          // A field left alone on the last grid row spans both columns; the message always does.
-          const isWide =
-            field.name === "message" || (gridFields.length % 2 === 1 && gridFields.at(-1)?.name === field.name);
-          return (
-            <motion.div
-              key={field.name}
-              layout="position"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, transition: { duration: 0.12 } }}
-              transition={{ duration: 0.24, ease: EASE_SMOOTH }}
-              className={cn(isWide && "sm:col-span-2")}
-            >
-              <EnquiryFieldControl
-                field={field}
-                error={errors?.[field.name]}
-                defaultValue={values?.[field.name] ?? (field.name === "product" ? initialProduct : undefined)}
-                products={products}
-              />
-            </motion.div>
-          );
-        })}
+      <AnimatePresence initial={false} mode="wait">
+        <motion.div
+          key={type}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, transition: { duration: 0.12 } }}
+          transition={{ duration: 0.26, ease: EASE_SMOOTH }}
+          className="flex flex-col gap-10"
+        >
+          {enquiryForms[type].map((section) => {
+            const wide = wideFieldNames(section.fields);
+            return (
+              <fieldset key={section.title} className="grid gap-5 sm:grid-cols-2">
+                <legend className="type-eyebrow mb-5 text-fg-mute">{section.title}</legend>
+                {section.fields.map((field) => (
+                  <div key={`${field.name}:${responseCount}`} className={cn(wide.has(field.name) && "sm:col-span-2")}>
+                    <EnquiryFieldControl
+                      field={field}
+                      error={errors?.[field.name]}
+                      defaultValue={values?.[field.name] ?? (field.name === "product" ? initialProduct : undefined)}
+                      products={products}
+                    />
+                  </div>
+                ))}
+              </fieldset>
+            );
+          })}
+        </motion.div>
       </AnimatePresence>
 
       {/* Honeypot: invisible to people, tempting to bots. */}
@@ -132,28 +165,30 @@ function ContactForm({
       <input type="hidden" name={FORM_TOKEN_FIELD} value={formToken} />
       <input type="hidden" name={SOURCE_FIELD} value={source} />
 
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 pt-2 sm:col-span-2">
-        <Button type="submit" size="lg" variant="brand" disabled={isPending} withArrow={!isPending}>
-          {isPending && <LoaderCircle aria-hidden className="size-4 animate-spin" />}
-          {isPending ? form.submitting : form.submit}
-        </Button>
-        {state.status === "error" && (
-          <p role="alert" className="min-w-0 flex-1 basis-60 text-sm text-danger">
-            {state.message}
-            {state.fallbackEmail && (
-              <>
-                {" "}
-                {form.errors.emailFallback}{" "}
-                <a href={`mailto:${state.fallbackEmail}`} className="font-semibold underline underline-offset-2">
-                  {state.fallbackEmail}
-                </a>
-                .
-              </>
-            )}
-          </p>
-        )}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+          <Button type="submit" size="lg" variant="brand" disabled={isPending} withArrow={!isPending}>
+            {isPending && <LoaderCircle aria-hidden className="size-4 animate-spin" />}
+            {isPending ? form.submitting : form.submit}
+          </Button>
+          {state.status === "error" && (
+            <p role="alert" className="min-w-0 flex-1 basis-60 text-sm text-danger">
+              {state.message}
+              {state.fallbackEmail && (
+                <>
+                  {" "}
+                  {form.errors.emailFallback}{" "}
+                  <a href={`mailto:${state.fallbackEmail}`} className="font-semibold underline underline-offset-2">
+                    {state.fallbackEmail}
+                  </a>
+                  .
+                </>
+              )}
+            </p>
+          )}
+        </div>
+        <p className="text-xs text-fg-mute">{form.privacyNote}</p>
       </div>
-      <p className="text-xs text-fg-mute sm:col-span-2">{form.privacyNote}</p>
     </form>
   );
 }
@@ -166,23 +201,36 @@ interface EnquiryFieldControlProps {
 }
 
 function EnquiryFieldControl({ field, error, defaultValue, products }: EnquiryFieldControlProps) {
-  const defaults = form.fields[field.name];
-  const placeholder = field.placeholder ?? defaults.placeholder;
+  const definition = enquiryFieldDefinitions[field.name];
+  const placeholder = field.placeholder ?? definition.placeholder;
   const common = {
     name: field.name,
-    label: field.label ?? defaults.label,
+    label: fieldLabel(field),
     error,
     required: field.required,
     optionalLabel: field.required ? undefined : form.optional,
-    defaultValue: defaultValue ?? "",
   };
+  const initial = { defaultValue: defaultValue ?? "" };
 
-  switch (field.name) {
-    case "message":
-      return <TextAreaField {...common} placeholder={placeholder} />;
+  switch (definition.kind) {
+    case "textarea":
+      return <TextAreaField {...common} {...initial} placeholder={placeholder} />;
+    case "files":
+      return <FileField {...common} multiple accept={ATTACHMENT_LIMITS.accept} hint={definition.placeholder} />;
+    case "select":
+      return (
+        <SelectField {...common} {...initial}>
+          <option value="">{placeholder}</option>
+          {definition.options?.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </SelectField>
+      );
     case "product":
       return (
-        <SelectField {...common}>
+        <SelectField {...common} {...initial}>
           <option value="">{placeholder}</option>
           {PRODUCT_GROUPS.map((direction) => (
             <optgroup key={direction} label={tradeDirections[direction].label}>
@@ -195,26 +243,23 @@ function EnquiryFieldControl({ field, error, defaultValue, products }: EnquiryFi
                 ))}
             </optgroup>
           ))}
-          <option value={OTHER_PRODUCT_VALUE}>{form.fields.product.other}</option>
-        </SelectField>
-      );
-    case "partnershipArea":
-      return (
-        <SelectField {...common}>
-          <option value="">{placeholder}</option>
-          {partnershipAreas.map((area) => (
-            <option key={area} value={area}>
-              {area}
-            </option>
-          ))}
+          <option value={OTHER_PRODUCT_VALUE}>{form.otherProduct}</option>
         </SelectField>
       );
     default:
-      return <TextField {...common} {...INPUT_HINTS[field.name]} placeholder={placeholder} />;
+      return (
+        <TextField
+          {...common}
+          {...initial}
+          type={definition.kind}
+          autoComplete={definition.autoComplete}
+          placeholder={placeholder}
+        />
+      );
   }
 }
 
-function FormSuccess({ onReset }: { onReset: () => void }) {
+function FormSuccess({ reference, onReset }: { reference?: string; onReset: () => void }) {
   const { success } = form;
 
   return (
@@ -237,6 +282,11 @@ function FormSuccess({ onReset }: { onReset: () => void }) {
       </span>
       <h2 className="type-h3 mt-8">{success.title}</h2>
       <p className="type-body mt-3 max-w-sm text-fg-mute">{success.description}</p>
+      {reference && (
+        <p className="mt-6 rounded-full bg-canvas px-5 py-2 text-sm ring-1 ring-inset ring-border">
+          {success.reference}: <strong className="font-semibold tracking-wide">{reference}</strong>
+        </p>
+      )}
       <Button variant="secondary" className="mt-8" onClick={onReset}>
         {success.again}
       </Button>

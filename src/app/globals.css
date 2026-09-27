@@ -9,6 +9,8 @@
 @theme {
   /* Palette */
   --color-navy: #0e2f73;
+  /* Official BOSS logo blue */
+  --color-logo: #264796;
   --color-navy-deep: #08214f;
   --color-brand: #1560bd;
   --color-brand-deep: #0e4a95;
@@ -94,6 +96,7 @@
 }
 
 [data-tone="dark"] {
+  --color-logo: #ffffff;
   --color-canvas: #08214f;
   --color-surface: #103068;
   --color-elevated: #17407f;

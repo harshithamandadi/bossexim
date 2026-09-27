@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { contactContent } from "@/config/contact";
 import { getCatalogue, getCompanyDetails } from "@/lib/content/queries";
+import { toAssistantEnquiry } from "@/lib/enquiry/assistant";
 import { deliverEnquiry } from "@/lib/enquiry/deliver";
 import { checkFormToken } from "@/lib/enquiry/form-token";
 import { isRateLimited } from "@/lib/enquiry/rate-limit";
@@ -10,6 +11,7 @@ import {
   FORM_TOKEN_FIELD,
   SOURCE_FIELD,
   isHoneypotFilled,
+  readAttachments,
   readEnquiryValues,
   validateEnquiry,
   type EnquiryFormState,
@@ -36,6 +38,7 @@ export async function submitEnquiry(_previous: EnquiryFormState, formData: FormD
 
   const result = validateEnquiry(
     values,
+    readAttachments(formData),
     products.map((product) => product.slug),
   );
   if (!result.ok) return { status: "error", message: errors.invalid, errors: result.errors, values };
@@ -44,6 +47,27 @@ export async function submitEnquiry(_previous: EnquiryFormState, formData: FormD
     return { status: "error", message: errors.rateLimited, values, fallbackEmail };
   }
 
-  const delivered = await deliverEnquiry(result.enquiry, String(formData.get(SOURCE_FIELD) ?? ""));
-  return delivered ? { status: "success" } : { status: "error", message: errors.delivery, values, fallbackEmail };
+  const { delivered, reference } = await deliverEnquiry(result.enquiry, {
+    source: String(formData.get(SOURCE_FIELD) ?? ""),
+    files: result.files,
+  });
+  return delivered ? { status: "success", reference } : { status: "error", message: errors.delivery, values, fallbackEmail };
+}
+
+export type AssistantSubmission = { ok: true; reference?: string } | { ok: false; fallbackEmail?: string };
+
+/** A buying enquiry put together in the chat with Aira (see config/chatbot.ts). */
+export async function submitAssistantEnquiry(answers: unknown, formToken: unknown): Promise<AssistantSubmission> {
+  const [{ products }, { contact }] = await Promise.all([getCatalogue(), getCompanyDetails()]);
+  const fallbackEmail = contact.email;
+
+  if (checkFormToken(formToken) !== "valid") return { ok: false, fallbackEmail };
+  const enquiry = toAssistantEnquiry(
+    answers,
+    products.map((product) => product.slug),
+  );
+  if (!enquiry || isRateLimited(await clientAddress())) return { ok: false, fallbackEmail };
+
+  const { delivered, reference } = await deliverEnquiry(enquiry, { source: "assistant" });
+  return delivered ? { ok: true, reference } : { ok: false, fallbackEmail };
 }

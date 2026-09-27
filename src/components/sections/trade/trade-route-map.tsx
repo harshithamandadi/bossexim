@@ -14,7 +14,7 @@ import type { LabelAnchor, Market, MarketCode } from "@/types/content";
 import { laneInteractionProps, type ActiveLaneChange } from "./lane-interaction";
 
 const MAP_SIZE: MapSize = { width: 1000, height: 690 };
-const MAP_BOUNDS: MapBounds = { west: 40, east: 160, north: 38, south: -45 };
+const MAP_BOUNDS: MapBounds = { west: 30, east: 160, north: 38, south: -45 };
 const GRATICULE_STEP_DEGREES = 15;
 /** Imports are sourced globally, so inbound lanes enter from the map's edges. */
 const IMPORT_ENTRY_POINTS: Point[] = [
@@ -60,9 +60,9 @@ interface TradeRouteMapProps {
 
 /** Abstract, data-driven route map: arcs draw in on scroll, cargo dots travel each lane. */
 export function TradeRouteMap({ catalogue, activeCode, onActiveChange, className }: TradeRouteMapProps) {
-  const { activeMarkets } = catalogue;
-  const exportLanes = useMemo(() => buildExportLanes(activeMarkets), [activeMarkets]);
-  const mapDescription = `Export routes from ${tradeOrigin.name} to ${formatList(activeMarkets.map((market) => market.name))}.`;
+  const { markets } = catalogue;
+  const exportLanes = useMemo(() => buildExportLanes(markets), [markets]);
+  const mapDescription = `Trade routes from ${tradeOrigin.name} to ${formatList(markets.map((market) => market.name))}.`;
   const svgRef = useRef<SVGSVGElement>(null);
   const isInView = useInView(svgRef, { once: true, amount: 0.3 });
   const reduceMotion = useReducedMotion();

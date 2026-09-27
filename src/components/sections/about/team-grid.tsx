@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
+import { toParagraphs } from "@/components/sections/shared/prose";
 import { IconTile } from "@/components/ui/icon";
 import { leadership } from "@/config";
 import { cn } from "@/lib/cn";
@@ -7,8 +8,9 @@ import { getTeamMembers } from "@/lib/content/queries";
 import { getInitials } from "@/lib/format";
 import type { TeamMember } from "@/types/content";
 
-const AVATAR_SIZE = 80;
+const AVATAR_SIZE = 96;
 
+/** Leadership profiles: name and role beside the full profile. */
 export async function TeamGrid({ className }: { className?: string }) {
   const { emptyState } = leadership;
   const members = await getTeamMembers();
@@ -25,15 +27,29 @@ export async function TeamGrid({ className }: { className?: string }) {
   }
 
   return (
-    <RevealGroup as="ul" className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}>
+    <RevealGroup as="ul" className={cn("divide-y divide-border border-y border-border", className)}>
       {members.map((member) => (
-        <RevealItem as="li" key={member.name}>
-          <article className="h-full rounded-card bg-surface p-7 sm:p-8">
+        <RevealItem
+          as="li"
+          key={member.name}
+          className="grid gap-6 py-10 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-12 lg:py-12"
+        >
+          <div className="flex items-center gap-5 md:flex-col md:items-start">
             <Avatar member={member} />
-            <h3 className="type-h4 mt-6">{member.name}</h3>
-            <p className="text-sm font-medium text-brand">{member.role}</p>
-            {member.bio && <p className="mt-4 text-[15px] leading-relaxed text-fg-mute">{member.bio}</p>}
-          </article>
+            <div>
+              <h3 className="type-h3">{member.name}</h3>
+              <p className="mt-1 text-[15px] font-semibold text-brand">{member.role}</p>
+            </div>
+          </div>
+          {member.bio && (
+            <div className="max-w-2xl space-y-4">
+              {toParagraphs(member.bio).map((paragraph) => (
+                <p key={paragraph} className="type-body text-pretty text-fg-mute">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          )}
         </RevealItem>
       ))}
     </RevealGroup>
@@ -48,12 +64,12 @@ function Avatar({ member }: { member: TeamMember }) {
         alt={member.photo.alt}
         width={AVATAR_SIZE}
         height={AVATAR_SIZE}
-        className="size-20 rounded-full object-cover"
+        className="size-20 shrink-0 rounded-full object-cover md:size-24"
       />
     );
   }
   return (
-    <span aria-hidden className="type-h4 grid size-20 place-items-center rounded-full bg-fg text-canvas">
+    <span aria-hidden className="type-h3 grid size-20 shrink-0 place-items-center rounded-full bg-navy text-white md:size-24">
       {getInitials(member.name)}
     </span>
   );

@@ -1,248 +1,114 @@
 /**
- * The site's starting content, loaded into the CMS by `npm run seed`.
- * Once seeded, content is edited in the admin — this file only recreates a
- * fresh database. FAQ answers that list products or markets are written out
- * from this data at seed time; after that they are ordinary editable text.
+ * The site's starting content, loaded into the CMS by `npm run seed`. Text comes
+ * from the client's page documents in /requirements. Once seeded, content is
+ * edited in the admin — this file only recreates a fresh database.
  */
 import { enquiryTypes } from "@/config/contact";
 import { FAQ_CATEGORY } from "@/config/faq";
 import { containerLine } from "@/config/group";
-import { partnerContent } from "@/config/partners";
-import { howWeWork, qualityVerification } from "@/config/process";
-import { anchorHref, contactHref, productsViewHref, routes, sectionIds } from "@/config/routes";
-import { createCatalogue } from "@/lib/catalogue";
+import { howWeWork } from "@/config/process";
+import { anchorHref, contactHref, partnerFormHref, productsViewHref, routes, sectionIds } from "@/config/routes";
 import { formatList } from "@/lib/format";
 import type { IconName } from "@/lib/icons";
-import type { FaqItem, GroupCompany, Market, Product, Resource } from "@/types/content";
+import type { FaqItem, GroupCompany, Market, Resource, TeamMember } from "@/types/content";
+import { seedProducts } from "./products";
 
+export { seedProducts };
+
+/** Destination markets. Saudi Arabia and Indonesia are core markets without a product lane yet. */
 export const seedMarkets: Market[] = [
+  { code: "AE", name: "United Arab Emirates", shortName: "UAE", region: "Middle East", coordinates: { lat: 25.2, lon: 55.3 }, labelAnchor: "top" },
+  { code: "SA", name: "Saudi Arabia", shortName: "Saudi Arabia", region: "Middle East", coordinates: { lat: 21.49, lon: 39.19 }, labelAnchor: "left" },
+  { code: "SG", name: "Singapore", shortName: "Singapore", region: "South-East Asia", coordinates: { lat: 1.35, lon: 103.82 }, labelAnchor: "right" },
+  { code: "MY", name: "Malaysia", shortName: "Malaysia", region: "South-East Asia", coordinates: { lat: 3.14, lon: 101.69 }, labelAnchor: "left" },
+  { code: "TH", name: "Thailand", shortName: "Thailand", region: "South-East Asia", coordinates: { lat: 13.76, lon: 100.5 }, labelAnchor: "top" },
+  { code: "ID", name: "Indonesia", shortName: "Indonesia", region: "South-East Asia", coordinates: { lat: -6.2, lon: 106.85 }, labelAnchor: "bottom" },
+  { code: "VN", name: "Vietnam", shortName: "Vietnam", region: "South-East Asia", coordinates: { lat: 10.82, lon: 106.63 }, labelAnchor: "right" },
+  { code: "AU", name: "Australia", shortName: "Australia", region: "Oceania", coordinates: { lat: -33.87, lon: 151.21 }, labelAnchor: "left" },
+];
+
+export const seedTeam: Omit<TeamMember, "photo">[] = [
   {
-    code: "AE",
-    name: "United Arab Emirates",
-    shortName: "UAE",
-    region: "Middle East",
-    coordinates: { lat: 25.2, lon: 55.3 },
-    labelAnchor: "top",
+    name: "Prasad Kalla",
+    role: "Chairman",
+    bio: [
+      "Mr. Prasad Kalla, Chairman of the BOSS Group, combines technical expertise, business management experience and entrepreneurial leadership. He holds an Engineering degree in Computer Science from Bangalore University and an MBA from Victoria University of Technology, Melbourne, Australia.",
+      "With more than three decades of business exposure, he has been associated with diversified ventures across India and Australia. The Group’s Australian operations span retail, fuel stations and convenience stores, real estate and construction, hospitality, e-Commerce and IT services, complementing its broader interests in logistics, trading and other business sectors.",
+      "Mr. Kalla has played a key role in expanding the Group by combining practical business insight with technology, disciplined operations and modern management systems. His leadership focuses on long-term growth, diversification, customer service and development of new business opportunities.",
+      "Over the years, BOSS Group and its leadership have received several recognitions, including the Commonwealth Bank & Brisbane Indian Times Multicultural Business & Community Award 2012, BP Buying Group – Compliance Winner 2012, a National Award for outstanding commitment to disability and workplace safety, and recognition for Best Hotel in Category Two for 2012 by the Department of Tourism, Andhra Pradesh, India.",
+      "As Chairman, Mr. Kalla continues to guide BOSS Group toward sustainable growth and stronger international business participation.",
+    ].join("\n\n"),
   },
   {
-    code: "SG",
-    name: "Singapore",
-    shortName: "Singapore",
-    region: "South-East Asia",
-    coordinates: { lat: 1.35, lon: 103.82 },
-    labelAnchor: "right",
+    name: "Sudhakar C",
+    role: "Director",
+    bio: [
+      "Business savvy individual with deep exposure in many verticals — IT, Shipping Line, Construction, Hospitality, Retail and Gas Stations.",
+      "Worked as a senior executive in Wipro with widespread global experience in Business Operations, Delivery Management and People Supply Management in the areas of ERP and Microsoft Technologies.",
+      "Well-versed in onshore and offshore delivery execution models.",
+    ].join("\n\n"),
   },
   {
-    code: "MY",
-    name: "Malaysia",
-    shortName: "Malaysia",
-    region: "South-East Asia",
-    coordinates: { lat: 3.14, lon: 101.69 },
-    labelAnchor: "left",
-  },
-  {
-    code: "VN",
-    name: "Vietnam",
-    shortName: "Vietnam",
-    region: "South-East Asia",
-    coordinates: { lat: 10.82, lon: 106.63 },
-    labelAnchor: "right",
-  },
-  {
-    code: "AU",
-    name: "Australia",
-    shortName: "Australia",
-    region: "Oceania",
-    coordinates: { lat: -33.87, lon: 151.21 },
-    labelAnchor: "left",
-  },
-  {
-    code: "TH",
-    name: "Thailand",
-    shortName: "Thailand",
-    region: "South-East Asia",
-    coordinates: { lat: 13.76, lon: 100.5 },
-    labelAnchor: "top",
+    name: "Sekhar C",
+    role: "Chief Executive Officer",
+    bio: [
+      "Mr. Sekhar Chaluvadi is an engineering graduate in Computer Science Engineering from Karnataka University. He has over 27 years of experience in the Shipping Line, Construction, Hospitality and Logistics industries, with good knowledge of Marketing & Sales. His multi-faceted approach to understanding the needs of the organisation and its customers allows him to provide winning solutions for their unique challenges and maintain customer relationships.",
+      "He leads with a passion-driven approach towards achieving excellence in everything he does.",
+    ].join("\n\n"),
   },
 ];
 
-export const seedProducts: Product[] = [
-  /* ─────────────────────────────── Exports ─────────────────────────────── */
-  {
-    slug: "rice",
-    name: "Rice",
-    direction: "export",
-    category: "Grains",
-    icon: "wheat",
-    summary: "Indian rice for importers, wholesalers and distributors.",
-    description:
-      "Rice sourced from established Indian mills, cleaned, graded and packed to the buyer's brand, bag size and specification.",
-    markets: ["AE", "SG", "MY", "VN"],
+export const seedCompanyDetails = {
+  contact: {
+    email: "bgexim@bossgrp.com",
+    address: "BOSS Towers, Street No. 2, Patrika Nagar, Madhapur, Hyderabad – 500081, Telangana, India",
   },
-  {
-    slug: "spices-and-spice-blends",
-    name: "Spices & Spice Blends",
-    direction: "export",
-    category: "Spices",
-    icon: "leaf",
-    summary: "Whole, ground and blended Indian spices.",
-    description:
-      "A range of Indian spices and spice blends for importers, food manufacturers and retail brands, supplied to agreed specifications.",
-    markets: ["AE", "SG", "MY", "AU"],
-  },
-  {
-    slug: "dehydrated-onion-and-garlic",
-    name: "Dehydrated Onion & Garlic",
-    direction: "export",
-    category: "Dehydrated foods",
-    icon: "sun",
-    summary: "Dehydrated onion and garlic for food processors and distributors.",
-    description:
-      "Dehydrated onion and garlic products supplied in the forms and pack sizes our buyers require.",
-    markets: ["AE", "SG", "MY"],
-  },
-  {
-    slug: "pulses-and-dal-products",
-    name: "Pulses & Dal Products",
-    direction: "export",
-    category: "Pulses",
-    icon: "bean",
-    summary: "Whole pulses and dal products from India.",
-    description:
-      "Pulses and dal products sourced from Indian processors and packed for importers, wholesalers and retail.",
-    markets: ["AE", "SG", "MY", "AU"],
-  },
-  {
-    slug: "dried-chillies",
-    name: "Dried Chillies",
-    direction: "export",
-    category: "Spices",
-    icon: "flame",
-    summary: "Indian dried chillies, graded by variety.",
-    description:
-      "Dried chillies from India's growing regions, sorted and graded to the variety and quality the buyer specifies.",
-    markets: ["AE", "SG", "MY", "TH"],
-  },
-  {
-    slug: "groundnuts-and-peanuts",
-    name: "Groundnuts & Peanuts",
-    direction: "export",
-    category: "Oilseeds & nuts",
-    icon: "nut",
-    summary: "Groundnuts and peanuts for food and processing.",
-    description:
-      "Groundnuts and peanuts sourced from Indian growers and processors, graded and packed for export.",
-    markets: ["AE", "MY", "TH"],
-  },
-  {
-    slug: "jaggery",
-    name: "Jaggery",
-    direction: "export",
-    category: "Natural sweeteners",
-    icon: "candy",
-    summary: "Traditional Indian jaggery.",
-    description:
-      "Jaggery — India's traditional unrefined cane sugar — supplied to importers, distributors and food brands.",
-    markets: ["AE", "SG", "MY"],
-  },
+};
 
-  /* ─────────────────────────────── Imports ─────────────────────────────── */
-  {
-    slug: "polypropylene",
-    name: "Polypropylene (PP)",
-    direction: "import",
-    category: "Polymers",
-    icon: "package",
-    summary: "Polypropylene for Indian converters and manufacturers.",
-    description:
-      "Polypropylene sourced from international suppliers for moulding, film, fibre and packaging applications in India.",
-  },
-  {
-    slug: "polyethylene",
-    name: "Polyethylene (PE)",
-    direction: "import",
-    category: "Polymers",
-    icon: "layers",
-    summary: "HDPE, LDPE and LLDPE for Indian industry.",
-    description:
-      "Polyethylene in high-density, low-density and linear low-density grades, sourced internationally for Indian manufacturers.",
-    variants: ["HDPE", "LDPE", "LLDPE"],
-    variantsLabel: "Grades",
-  },
-  {
-    slug: "polyester-chips",
-    name: "Polyester Chips",
-    direction: "import",
-    category: "Polymers",
-    icon: "shapes",
-    summary: "Polyester chips for fibre, film and packaging.",
-    description:
-      "Polyester chips sourced from international producers for Indian fibre, film and packaging manufacturers.",
-  },
-  {
-    slug: "aluminium-scrap",
-    name: "Aluminium Scrap",
-    direction: "import",
-    category: "Metal scrap",
-    icon: "recycle",
-    summary: "Aluminium scrap across six common grades.",
-    description:
-      "Aluminium scrap sourced internationally for Indian recyclers, smelters and foundries.",
-    variants: ["Cable", "Extrusion", "Sheet", "Cast", "UBC", "Formwork"],
-    variantsLabel: "Types",
-  },
-  {
-    slug: "copper-scrap",
-    name: "Copper Scrap",
-    direction: "import",
-    category: "Metal scrap",
-    icon: "cable",
-    summary: "Copper wire, extrusion, sheet and cast scrap.",
-    description: "Copper scrap sourced internationally for Indian refiners, recyclers and manufacturers.",
-    variants: ["Wire", "Extrusion", "Sheet", "Cast"],
-    variantsLabel: "Types",
-  },
-  {
-    slug: "iron-scrap",
-    name: "Iron Scrap",
-    direction: "import",
-    category: "Metal scrap",
-    icon: "hammer",
-    summary: "Iron extrusion, sheet, cast and shuttering scrap.",
-    description: "Iron scrap sourced internationally for Indian steel mills and foundries.",
-    variants: ["Extrusion", "Sheet", "Cast", "Shuttering"],
-    variantsLabel: "Types",
-  },
-  {
-    slug: "stainless-steel-scrap",
-    name: "Stainless Steel Scrap",
-    direction: "import",
-    category: "Metal scrap",
-    icon: "cog",
-    summary: "Stainless steel scrap in grades 202, 304 and 316.",
-    description: "Stainless steel scrap sourced internationally for Indian melters and manufacturers.",
-    variants: ["202", "304", "316"],
-    variantsLabel: "Grades",
-  },
-];
-
-export const seedGroupCompanies: GroupCompany[] = [
+export const seedGroupCompanies: Omit<GroupCompany, "logo">[] = [
   {
     name: "BOSS Global EXIM",
-    description: "International trading — merchant export & import.",
+    description:
+      "The Group’s international trading arm — connecting Indian products with global buyers, and sourcing selected industrial products and recyclable materials for Indian customers.",
     icon: "globe",
     isCurrent: true,
   },
   {
     name: "BOSS Container Line",
-    description: "Shipping & logistics — NVOCC, freight forwarding, trading & break bulk.",
+    description:
+      "The shipping and logistics vertical — NVOCC services, freight forwarding, container trading, break bulk cargo handling and related supply-chain support.",
     icon: "ship",
   },
-  { name: "BOSS Retail", description: "Retail and consumer business.", icon: "store" },
-  { name: "BOSS Constructions", description: "Construction and projects.", icon: "building" },
-  { name: "BOSS Hospitality", description: "Hospitality services.", icon: "hotel" },
-  { name: "BOSS IT", description: "Information technology services.", icon: "cpu" },
-  { name: "BOSS BPO", description: "Business process outsourcing.", icon: "headset" },
+  {
+    name: "BOSS Retail",
+    description:
+      "The Group’s customer-facing retail activities in Australia, operating in the convenience and fuel-retail environment with a focus on accessibility, service and operational efficiency.",
+    icon: "store",
+  },
+  {
+    name: "BOSS Constructions",
+    description:
+      "Commercial, retail and property-related construction across selected markets in India and Australia — building, developing and upgrading commercial facilities and retail infrastructure.",
+    icon: "building",
+  },
+  {
+    name: "BOSS Hospitality",
+    description:
+      "Hotels, motels and accommodation services across selected international locations, focused on practical, accessible and customer-oriented hospitality.",
+    icon: "hotel",
+  },
+  {
+    name: "BOSS IT",
+    description:
+      "The Group’s technology capability — digital systems, business applications, recruitment-related technology and other IT-enabled solutions.",
+    icon: "cpu",
+  },
+  {
+    name: "BOSS BPO",
+    description:
+      "Business-process and operational support — helping businesses manage people, processes and support functions in an organised and efficient manner.",
+    icon: "headset",
+  },
 ];
 
 export const seedGalleries: { title: string; icon: IconName }[] = [
@@ -250,147 +116,168 @@ export const seedGalleries: { title: string; icon: IconName }[] = [
   { title: "Business Meetings", icon: "briefcase" },
   { title: "Supplier Visits", icon: "factory" },
   { title: "Trade Events", icon: "presentation" },
-  { title: "Conferences", icon: "mic" },
+  { title: "International Business", icon: "globe" },
   { title: "Group Activities", icon: "party-popper" },
 ];
 
 export const seedResources: Omit<Resource, "href">[] = [
   {
     title: "BGEXIM Corporate Brochure",
-    description: "Company profile, product lines and markets.",
+    description:
+      "A concise introduction to BOSS Global EXIM — our business model, products, markets, trade process and capabilities.",
     format: "PDF",
     icon: "book-open",
   },
   {
     title: "BOSS Group Brochure",
-    description: "An overview of every BOSS Group business.",
+    description:
+      "A short overview of the wider business ecosystem — logistics, retail, construction, hospitality, IT, BPO and related activities.",
     format: "PDF",
     icon: "building",
   },
-  {
-    title: "Product Specifications",
-    description: "Specification sheets for our export and import lines.",
-    format: "PDF",
-    icon: "file-text",
-  },
 ];
 
-const catalogue = createCatalogue(seedProducts, seedMarkets);
 const CATEGORY = FAQ_CATEGORY;
-const names = (items: { name: string }[]) => formatList(items.map((item) => item.name));
-const lowerFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
-const strategicAudiences = partnerContent.tracks.find((track) => track.featured)?.audiences ?? [];
-const otherGroupCompanies = seedGroupCompanies.filter((company) => !company.isCurrent);
+const exportNames = formatList(seedProducts.filter((p) => p.direction === "export").map((p) => p.name.toLowerCase()));
+const importNames = formatList(seedProducts.filter((p) => p.direction === "import").map((p) => p.name));
+const coreMarkets = "India, Singapore, Malaysia, Australia, UAE, Thailand, Saudi Arabia and Indonesia";
 
 export const seedFaqs: FaqItem[] = [
   {
     category: CATEGORY.company,
-    question: "What does BOSS Global EXIM do?",
+    question: "What is BOSS Global EXIM?",
     answer:
-      "We are a global trading company working as a merchant exporter, merchant importer and supply chain solutions partner. We export Indian agri-commodities and import industrial raw materials for Indian industry.",
-    keywords: ["about", "company", "business", "merchant", "trading", "who", "services"],
+      "BOSS Global EXIM Pvt. Ltd. is an international trading company engaged in Merchant Exports, Merchant Imports, Global Sourcing, International Trading and Supply Chain Solutions. It is part of the wider BOSS Group.",
+    keywords: ["about", "company", "who", "bgexim", "merchant", "trading"],
     action: { label: "About us", href: routes.about },
   },
   {
-    category: CATEGORY.catalogue,
-    question: "Which products do you export?",
-    answer: `We currently export ${names(catalogue.exportProducts)}. Each product page lists the markets it ships to.`,
-    keywords: ["export", "sell", "agri", "agriculture", "commodities", "food", ...catalogue.exportProducts.map((p) => p.name)],
-    action: { label: "See export products", href: productsViewHref("export") },
-  },
-  {
-    category: CATEGORY.catalogue,
-    question: "Which markets do you supply?",
-    answer: `Our export lines currently ship to ${names(catalogue.activeMarkets)}. We also welcome enquiries from buyers in other markets.`,
-    keywords: ["markets", "countries", "destinations", "regions", "ship", ...catalogue.activeMarkets.flatMap((m) => [m.name, m.shortName])],
-    action: {
-      label: "See our trade lanes",
-      href: anchorHref(routes.tradeProcess, sectionIds.tradeProcess.presence),
-    },
-  },
-  {
-    category: CATEGORY.catalogue,
-    question: "What do you import into India?",
-    answer: `We import ${names(catalogue.importProducts)} for manufacturers and recyclers in India.`,
-    keywords: ["import", "raw", "materials", "industrial", "scrap", "polymer", "metal", ...catalogue.importProducts.map((p) => p.name)],
-    action: { label: "See import products", href: productsViewHref("import") },
-  },
-  {
-    category: CATEGORY.catalogue,
-    question: "Where can I get product specifications?",
+    category: CATEGORY.company,
+    question: "What does BOSS Global EXIM do?",
     answer:
-      "Specification sheets will be available under Resources. In the meantime, request them with a Buyer enquiry and we'll share them directly.",
-    keywords: ["specs", "specification", "sheet", "datasheet", "grade", "details", "hs", "code", "brochure"],
-    action: { label: "Request specifications", href: contactHref({ type: "buyer" }) },
-  },
-  {
-    category: CATEGORY.trading,
-    question: "How do I get a price quote?",
-    answer:
-      "Prices depend on the product, grade, quantity, packing and destination. Send a Buyer enquiry with those details and our trade desk will come back with a quote.",
-    keywords: ["price", "quote", "rate", "cost", "quantity", "moq", "minimum", "ton", "tonne", "volume", "packing", "offer"],
-    action: { label: "Request a quote", href: contactHref({ type: "buyer" }) },
-  },
-  {
-    category: CATEGORY.trading,
-    question: "How does an order work, from enquiry to delivery?",
-    answer: `Every trade follows ${howWeWork.steps.length} steps: ${formatList(howWeWork.steps.map((step) => step.title.toLowerCase()))}.`,
-    keywords: ["process", "order", "steps", "procedure", "timeline", "lead", "time", "long", "shipment", "delivery", "contract", "samples"],
-    action: {
-      label: "See the trade process",
-      href: anchorHref(routes.tradeProcess, sectionIds.tradeProcess.howWeWork),
-    },
-  },
-  {
-    category: CATEGORY.trading,
-    question: "How do you check quality?",
-    answer: `${qualityVerification.heading.title} Our checks cover ${formatList(qualityVerification.items.map((item) => item.title.toLowerCase()))}.`,
-    keywords: ["quality", "inspection", "check", "verify", "testing", "standards", "certificate", "certification", "certified", "control"],
-    action: {
-      label: "Quality & verification",
-      href: anchorHref(routes.tradeProcess, sectionIds.tradeProcess.quality),
-    },
-  },
-  {
-    category: CATEGORY.trading,
-    question: "How do I register as a buyer or supplier?",
-    answer:
-      "Visit Partner With Us, or send a Buyer or Supplier enquiry from the Contact page. Our trade desk will follow up with next steps.",
-    keywords: ["register", "registration", "become", "join", "vendor", "seller", "purchase", "onboard", "sign"],
-    action: { label: "Partner with us", href: routes.partner },
-  },
-  {
-    category: CATEGORY.trading,
-    question: "Who can become a Strategic Business Partner?",
-    answer: `We work with ${formatList(strategicAudiences.map((audience) => audience.toLowerCase()))} as strategic business partners.`,
-    keywords: ["partner", "partnership", "collaborate", "agent", "distributor", "logistics", "warehousing", "finance"],
-    action: {
-      label: "Strategic partnerships",
-      href: anchorHref(routes.partner, sectionIds.partner.strategic),
-    },
-  },
-  {
-    category: CATEGORY.trading,
-    question: "How can I contact BOSS Global EXIM?",
-    answer: `Send an enquiry from the Contact page — choose ${formatList(enquiryTypes.map((type) => type.shortLabel))} and our trade desk will respond.`,
-    keywords: ["contact", "email", "phone", "call", "reach", "address", "office", "talk", "person", "team"],
-    action: { label: "Send an enquiry", href: contactHref() },
+      "We connect international buyers with Indian products through sourcing, merchant exports, international trading and supply-chain coordination — and source selected industrial products and recyclable materials from international markets for Indian customers.",
+    keywords: ["do", "business", "services", "work", "role"],
+    action: { label: "Our business model", href: anchorHref(routes.business, sectionIds.business.model) },
   },
   {
     category: CATEGORY.company,
     question: "How is BOSS Global EXIM connected to the BOSS Group?",
-    answer: `BOSS Global EXIM is one of the BOSS Group's businesses, alongside ${names(otherGroupCompanies)}.`,
-    keywords: ["group", "parent", "sister", "companies", "owner", "own", "behind"],
+    answer:
+      "BGEXIM is the international trading arm of the BOSS Group, a diversified business group with activities across Australia, Singapore, Malaysia and India in shipping, retail, construction, hospitality, IT and BPO. Its shipping arm, BOSS Container Line, supports our logistics.",
+    keywords: ["group", "parent", "sister", "companies", "owner", "behind"],
     action: { label: "Explore the BOSS Group", href: routes.group },
   },
   {
     category: CATEGORY.company,
     question: `What is ${containerLine.heading.title}?`,
-    answer: `${containerLine.heading.title} is ${lowerFirst(containerLine.heading.description ?? "")} Its services are ${formatList(containerLine.services.map((service) => service.title))}.`,
-    keywords: ["shipping", "logistics", "freight", "nvocc", "container", "forwarding", "break", "bulk", "vessel"],
-    action: {
-      label: containerLine.heading.title,
-      href: anchorHref(routes.group, sectionIds.group.containerLine),
-    },
+    answer:
+      "BOSS Container Line is the shipping and logistics vertical of the BOSS Group. It provides NVOCC services, freight forwarding, container trading, break bulk cargo handling and related supply-chain support.",
+    keywords: ["shipping", "logistics", "freight", "nvocc", "container", "forwarding", "break", "bulk"],
+    action: { label: containerLine.heading.title, href: anchorHref(routes.group, sectionIds.group.containerLine) },
+  },
+  {
+    category: CATEGORY.catalogue,
+    question: "Which products do you export?",
+    answer: `Our current export portfolio includes ${exportNames}. These are targeted mainly at the Middle East, South-East Asia and selected international markets.`,
+    keywords: ["export", "sell", "agri", "agriculture", "food", "rice", "spices", "chilli", "turmeric", "pulses"],
+    action: { label: "See export products", href: productsViewHref("export") },
+  },
+  {
+    category: CATEGORY.catalogue,
+    question: "What do you import into India?",
+    answer: `Our import focus includes ${importNames} — polymers and selected ferrous and non-ferrous recyclable metals for Indian buyers.`,
+    keywords: ["import", "polymer", "scrap", "metal", "raw", "materials", "industrial", "aluminium", "copper"],
+    action: { label: "See import products", href: productsViewHref("import") },
+  },
+  {
+    category: CATEGORY.catalogue,
+    question: "Which markets do you serve?",
+    answer: `Our core trade markets include ${coreMarkets}. Our wider network, through the BOSS Group and our logistics partners, can support additional international opportunities.`,
+    keywords: ["markets", "countries", "destinations", "regions", "ship", "uae", "saudi", "indonesia", "singapore"],
+    action: { label: "Our global presence", href: anchorHref(routes.tradeProcess, sectionIds.tradeProcess.presence) },
+  },
+  {
+    category: CATEGORY.catalogue,
+    question: "Can you source products outside your current portfolio?",
+    answer:
+      "Yes. Our current portfolio is our starting point, not a restriction. If a verified buyer requires another product, our team studies the requirement, identifies suitable sources and proceeds if it meets our commercial, quality, logistics and regulatory standards.",
+    keywords: ["other", "new", "different", "custom", "outside", "portfolio", "sourcing"],
+    action: { label: "Beyond our current focus", href: anchorHref(routes.business, sectionIds.business.beyond) },
+  },
+  {
+    category: CATEGORY.catalogue,
+    question: "Where do you source your products?",
+    answer:
+      "We source from suitable Indian producers, processors, manufacturers and suppliers based on product requirements, quality specifications, availability and commercial feasibility — and from international suppliers for our import lines.",
+    keywords: ["source", "suppliers", "origin", "from", "producers", "manufacturers"],
+  },
+  {
+    category: CATEGORY.catalogue,
+    question: "Where can I get product specifications?",
+    answer:
+      "Specifications are provided based on your requirement and the latest supplier information, as they vary by grade, supplier and transaction. Send a Buyer enquiry and we’ll share the current specification.",
+    keywords: ["specs", "specification", "sheet", "datasheet", "grade", "tds", "coa", "details"],
+    action: { label: "Request specifications", href: contactHref({ type: "buyer" }) },
+  },
+  {
+    category: CATEGORY.catalogue,
+    question: "Can products be customised to my requirements?",
+    answer:
+      "Where commercially and operationally feasible, product grade, specifications, size, packaging and other requirements can be discussed according to your requirements and applicable regulations. Private labelling is available for several products.",
+    keywords: ["customise", "customize", "private", "label", "packaging", "packing", "tailor"],
+  },
+  {
+    category: CATEGORY.trading,
+    question: "How do I get a price quote?",
+    answer:
+      "We don’t publish fixed prices, because they change with market conditions, freight, currency and supply. Send your product, quantity, specification and destination, and our team will prepare a transaction-specific quotation.",
+    keywords: ["price", "quote", "quotation", "rate", "cost", "moq", "minimum", "quantity"],
+    action: { label: "Request a quote", href: contactHref({ type: "buyer" }) },
+  },
+  {
+    category: CATEGORY.trading,
+    question: "How does a trade work, from enquiry to completion?",
+    answer: `Every transaction follows six stages: ${formatList(howWeWork.steps.map((step) => step.title))}. Behind them sit detailed controls for KYC, documentation, payment security, quality and shipping.`,
+    keywords: ["process", "order", "steps", "procedure", "timeline", "delivery", "how"],
+    action: { label: "See how we work", href: anchorHref(routes.tradeProcess, sectionIds.tradeProcess.howWeWork) },
+  },
+  {
+    category: CATEGORY.trading,
+    question: "How do you check quality?",
+    answer:
+      "Our approach is simple: verify the product, verify the parties, verify the documents, then execute. Depending on the product, that can include manufacturer CoA and TDS, laboratory and residue testing, PSIC, weight checks or independent inspection.",
+    keywords: ["quality", "inspection", "check", "verify", "testing", "certificate", "lab"],
+    action: { label: "Quality & verification", href: anchorHref(routes.tradeProcess, sectionIds.tradeProcess.quality) },
+  },
+  {
+    category: CATEGORY.trading,
+    question: "Do you work with international buyers?",
+    answer:
+      "Yes. We work with international buyers seeking Indian products for import, distribution, trading, manufacturing and other commercial requirements.",
+    keywords: ["international", "buyers", "overseas", "foreign", "abroad", "importer"],
+    action: { label: "Register as a buyer", href: partnerFormHref("buyer") },
+  },
+  {
+    category: CATEGORY.trading,
+    question: "How do I register as a buyer or supplier?",
+    answer:
+      "Use the registration form on Partner With Us. We review every registration before further discussion; registration doesn’t by itself create a commercial commitment, and we contact you when there is a genuine match.",
+    keywords: ["register", "registration", "become", "join", "vendor", "seller", "supplier", "onboard"],
+    action: { label: "Partner with us", href: routes.partner },
+  },
+  {
+    category: CATEGORY.trading,
+    question: "Who can become a Strategic Business Partner?",
+    answer:
+      "Logistics providers, freight forwarders, shipping companies, warehouses, inspection agencies, testing laboratories, financial institutions, trade-finance providers, customs-support companies and overseas representatives.",
+    keywords: ["partner", "partnership", "logistics", "warehouse", "inspection", "finance", "agent", "representative"],
+    action: { label: "Strategic partnerships", href: partnerFormHref("partnership") },
+  },
+  {
+    category: CATEGORY.trading,
+    question: "How can I contact BOSS Global EXIM?",
+    answer: `Email bgexim@bossgrp.com, or send an enquiry from the Contact page — choose ${formatList(enquiryTypes.map((type) => type.shortLabel))}. Our corporate office is at BOSS Towers, Madhapur, Hyderabad, India.`,
+    keywords: ["contact", "email", "phone", "call", "reach", "address", "office", "hyderabad"],
+    action: { label: "Send an enquiry", href: contactHref() },
   },
 ];

@@ -1,96 +1,144 @@
-/** Trade Process page content. DRAFT copy — confirm with the client before launch. */
-import type { FeatureSection, ProcessContent, SectionContent } from "@/types/content";
+/** Trade Process page content — from the client's Trade Process documents. */
+import type { FeatureSection, ProcessContent, ProseContent } from "@/types/content";
 
-export const howWeWork: ProcessContent = {
+export const howWeWork: ProcessContent & { note: string } = {
   stepLabel: "Step",
   heading: {
     eyebrow: "How We Work",
-    title: "From enquiry to delivery, in six clear steps.",
-    description: "The same disciplined process applies to every export and import contract.",
+    title: "Understand → Source → Verify → Structure → Execute → Complete.",
+    description:
+      "Every BGEXIM transaction begins with a clear understanding of the customer’s requirements. This process helps us maintain clarity, accountability and commercial discipline throughout the transaction.",
   },
   steps: [
     {
-      title: "Enquiry",
+      title: "Understand",
       description:
-        "Tell us the product, specification, quantity, packing and destination — our trade desk takes it from there.",
+        "We identify the product, grade, quantity, destination, timing, quality expectation and preferred commercial terms.",
       icon: "messages-square",
     },
     {
-      title: "Offer & samples",
-      description: "We come back with a priced offer matched to your requirement, with samples where needed.",
-      icon: "file-text",
-    },
-    {
-      title: "Contract",
-      description: "Price, specification, terms and shipment schedule are confirmed in a written contract.",
-      icon: "handshake",
-    },
-    {
-      title: "Sourcing & quality",
-      description: "Goods are procured from qualified producers and checked against the agreed specification.",
+      title: "Source",
+      description: "We study suitable sourcing options and identify suppliers who can meet the requirement.",
       icon: "search-check",
     },
     {
-      title: "Documentation",
-      description: "Export, import and compliance documents are prepared so cargo clears smoothly at both ends.",
-      icon: "clipboard-check",
+      title: "Verify",
+      description:
+        "Buyer and supplier information, product specifications and commercial details are reviewed before we move to the next stage.",
+      icon: "badge-check",
     },
     {
-      title: "Shipment & delivery",
+      title: "Structure",
       description:
-        "Shipping is coordinated with the group's logistics arm, BOSS Container Line, and followed through to delivery.",
+        "We structure pricing, Incoterms, payment terms, inspection, documentation and delivery responsibilities.",
+      icon: "file-text",
+    },
+    {
+      title: "Execute",
+      description:
+        "BGEXIM coordinates procurement, quality checks, documentation, banking arrangements, logistics and shipment.",
       icon: "ship",
     },
+    {
+      title: "Complete",
+      description: "The transaction is monitored through delivery and payment closure.",
+      icon: "handshake",
+    },
   ],
+  note: "Behind these six stages, our internal process includes more detailed controls for KYC, documentation, payment security, quality, shipping and transaction closure.",
 };
 
-export const qualityVerification: FeatureSection = {
+export const qualityVerification: FeatureSection & { motto: string } = {
   heading: {
     eyebrow: "Quality & Verification",
-    title: "Quality agreed upfront. Verified before dispatch.",
-    description: "Every consignment is measured against the specification in the contract.",
+    title: "Verify, then execute.",
+    description:
+      "Product quality and business verification are essential parts of international trade. Depending on the product and transaction, we review buyer and supplier information, product specifications, available certificates, quality reports and commercial documentation before execution.",
   },
   items: [
     {
-      title: "Agreed specifications",
-      description: "Grade, quality parameters, packing and tolerances are fixed in writing before sourcing begins.",
-      icon: "ruler",
+      title: "Manufactured products",
+      description: "For polymers and similar products, we may review the manufacturer CoA, TDS and technical data.",
+      icon: "layers",
     },
     {
-      title: "Qualified suppliers",
-      description: "We source from producers and suppliers assessed for quality and consistency.",
-      icon: "users",
+      title: "Agricultural products",
+      description: "Laboratory testing, phytosanitary documents, residue reports or other certificates may be required.",
+      icon: "leaf",
     },
     {
-      title: "Pre-shipment checks",
-      description: "Lots are inspected against the contract specification before dispatch.",
-      icon: "scan-search",
+      title: "Scrap & metals",
+      description:
+        "Grade verification, weight checks, PSIC, radiation or contamination declarations and third-party inspection may be relevant.",
+      icon: "recycle",
     },
     {
       title: "Independent inspection",
-      description: "Third-party inspection agencies can be appointed at the buyer's request.",
+      description: "Where necessary, independent surveyors, laboratories or inspection agencies can be involved.",
       icon: "microscope",
     },
     {
-      title: "Complete documentation",
-      description: "Commercial, regulatory and origin documents prepared for customs clearance.",
+      title: "Transaction documents",
+      description: "We also review the shipping, insurance, customs and transaction documentation required for the trade.",
       icon: "clipboard-check",
     },
     {
-      title: "Shipment visibility",
-      description: "Status updates shared from dispatch through to arrival.",
-      icon: "radar",
+      title: "Verified parties",
+      description: "Buyer and supplier information is reviewed before any trade is executed.",
+      icon: "users",
     },
   ],
+  motto: "Verify the product, verify the parties, verify the documents, then execute.",
 };
 
-export const globalPresence: { heading: SectionContent } = {
+export interface PresenceTier {
+  title: string;
+  description: string;
+  places: string[];
+}
+
+export const globalPresence: ProseContent & {
+  tiers: PresenceTier[];
+  ports: { market: string; origin: string };
+} = {
+  /** Shown only once ports are entered in the admin (Markets, and Company details → Ports & video). */
+  ports: { market: "Ports", origin: "Loading ports in India" },
   heading: {
     eyebrow: "Our Global Presence",
-    title: "From India to the world.",
-    description:
-      "Where each of our export lines ships today — with polymers and metal scrap sourced internationally for Indian industry.",
+    title: "From our base in India to an international network.",
   },
+  paragraphs: [
+    "BGEXIM’s current core trade markets include India, Singapore, Malaysia, Australia, UAE, Thailand, Saudi Arabia and Indonesia. India is our corporate base and a key sourcing and destination market.",
+    "We do not present every country as a BGEXIM office. Instead, we distinguish between our own corporate base, BOSS Group logistics presence, core trade markets and extended network capability — which allows us to support opportunities even where BGEXIM does not maintain a dedicated office.",
+  ],
+  tiers: [
+    {
+      title: "Corporate base",
+      description: "Our office, and a key sourcing and destination market.",
+      places: ["Hyderabad, India"],
+    },
+    {
+      title: "BOSS Group logistics presence",
+      description: "Supported by BOSS Container Line’s presence and logistics capabilities.",
+      places: ["Singapore", "Malaysia"],
+    },
+    {
+      title: "Core trade markets",
+      description: "Where our trade is focused today.",
+      places: ["India", "Singapore", "Malaysia", "Australia", "UAE", "Thailand", "Saudi Arabia", "Indonesia"],
+    },
+    {
+      title: "Extended network",
+      description: "Through the BOSS Group, shipping relationships, logistics partners and agent networks.",
+      places: [
+        "Indian Subcontinent",
+        "Southeast Asia",
+        "Middle East & Gulf",
+        "Red Sea & Africa",
+        "CIS markets",
+      ],
+    },
+  ],
 };
 
 /** Labels for the interactive trade-route map. */

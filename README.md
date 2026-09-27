@@ -32,15 +32,16 @@ refreshes the website straight away. The dashboard lists what the site is still 
 
 | Admin section | What it controls |
 | --- | --- |
-| Inbox → **Enquiries** | Every enquiry sent from the website, with whether the email alert reached your team |
+| Inbox → **Enquiries** | Every enquiry sent from the website or by Aira, with its BGX reference and whether the email alert reached your team |
+| Inbox → **Enquiry attachments** | Files visitors attached (private: staff only) |
 | Catalogue → **Products** | Export and import lines. Each product gets its own page; drag rows to reorder |
-| Catalogue → **Markets** | Destination countries and their map positions |
+| Catalogue → **Markets** | Destination countries, their map positions and destination ports |
 | Website content → **FAQs** | FAQ page, FAQ sections and the website assistant's answers |
 | Website content → **Team / Leadership** | Leadership profiles on the About page |
-| Website content → **Media & events** | Photo galleries on the BOSS Group page |
+| Website content → **Media & events** | Photo galleries on the Media & Events page |
 | Website content → **Downloads** | Brochures and specification sheets (PDF) |
-| Website content → **BOSS Group companies** | Company cards on the BOSS Group page |
-| Settings → **Company details** | Email, phone, office address, who receives enquiry emails, social links, registration numbers (CIN, PAN, GST…) |
+| Website content → **BOSS Group companies** | Company cards (with optional logo) on the BOSS Group and About pages |
+| Settings → **Company details** | Email, phone, office address, Indian loading ports, the corporate video (YouTube/Vimeo link), who receives enquiry emails, social links, registration numbers (CIN, PAN, GST…) |
 | Settings → **Users** | Who can sign in. **Editors** manage content; **admins** also manage users |
 
 Empty values show as **"To be added"** or **"Coming soon"** on the site. Counts such as
@@ -50,7 +51,8 @@ Page copy, navigation and labels stay in code, in **`src/config/`** — e.g. `pa
 headings and SEO text), `about.ts`, `business.ts`, `process.ts`, `partners.ts`, `contact.ts`
 (enquiry form wording), `chatbot.ts` (assistant wording) and `navigation.ts` (menus).
 
-> Longer descriptions and the FAQ answers are draft copy for client review.
+> Page and product copy comes from the client's documents in `requirements/` (git-ignored).
+> Items the documents don't cover are marked "Details to be confirmed" or drafted for review.
 
 ## How content reaches the page
 
@@ -72,12 +74,15 @@ Pages ◀── src/lib/content/queries.ts ◀── Payload Local API (no HTTP)
 ## Enquiries
 
 The enquiry form (Contact page, and the registration form on Partner With Us) asks each
-enquiry type — general, buyer, supplier, partnership — for its own fields, set in
-`enquiryFormFields` in `src/config/contact.ts`. The server action
-(`src/app/(site)/contact/actions.ts`) validates against the same list, and
-`src/lib/enquiry/deliver.ts` then:
+enquiry type — general, buyer, supplier, partnership — for its own sections and fields,
+set in `enquiryForms` in `src/config/contact.ts` (field kinds and wording in
+`enquiryFieldDefinitions`). Buyer, supplier and partnership forms accept up to 3
+attachments of 5 MB (`ATTACHMENT_LIMITS`). The server action
+(`src/app/(site)/contact/actions.ts`) validates against the same config; fields without
+their own admin column are kept as labelled **details**. `src/lib/enquiry/deliver.ts` then:
 
-1. saves the enquiry in the admin under **Inbox → Enquiries** (read-only; admins can delete);
+1. saves the enquiry (and its attachments) in the admin under **Inbox → Enquiries** and gives it a
+   reference such as **BGX-00042**, shown to the visitor and quoted in both emails;
 2. emails the team — recipients are set in **Settings → Company details → Enquiry emails**,
    with reply-to set to the enquirer;
 3. emails the enquirer a confirmation (it repeats none of their free text, so the form
@@ -92,6 +97,20 @@ enquiry so it can be recovered.
 Spam protection: a hidden honeypot field, a signed form token with a 3-second minimum
 fill time, and at most 5 enquiries per 10 minutes per IP address (kept in memory, so
 per server instance).
+
+### Aira, the website assistant
+
+The chat launcher on every page opens **Aira**, scripted from the client's chatbot workflow
+(`src/config/chatbot.ts`; logic in `src/components/chat/assistant-flow.ts`). No AI service
+or paid API is involved:
+
+- **Products** — pick an export line, then specifications, grades, packaging, MOQ,
+  documentation or a quote. Answers come from the product's data in the admin.
+- **Buying Enquiry** — up to 20 short questions (`buyingSteps`), a summary to confirm or
+  edit, then it is submitted as a buyer enquiry (source "Website assistant") and the visitor
+  gets a BGX reference.
+- **Company Information** — five short answers, then an offer to start an enquiry.
+- Anything typed outside a flow is answered from the FAQs.
 
 Email goes through the company's mailbox over SMTP (`SMTP_*` in `.env`). With
 `SMTP_HOST` empty, email is off and enquiries are only saved in the admin.

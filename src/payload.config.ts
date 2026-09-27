@@ -1,4 +1,5 @@
 import { sqliteAdapter } from "@payloadcms/db-sqlite";
+import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildConfig } from "payload";
@@ -6,6 +7,7 @@ import sharp from "sharp";
 import { requiredEnv } from "./lib/env";
 import { Documents } from "./payload/collections/documents";
 import { Enquiries } from "./payload/collections/enquiries";
+import { EnquiryFiles } from "./payload/collections/enquiry-files";
 import { Faqs } from "./payload/collections/faqs";
 import { Galleries } from "./payload/collections/galleries";
 import { GroupCompanies } from "./payload/collections/group-companies";
@@ -19,6 +21,13 @@ import { smtpEmailAdapter } from "./payload/email";
 import { CompanyDetails } from "./payload/globals/company-details";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/** SQLite creates the database file but not its folder, e.g. cms-data/ on a fresh clone. */
+function databaseUrl(): string {
+  const url = requiredEnv("DATABASE_URL");
+  if (url.startsWith("file:")) mkdirSync(path.dirname(path.resolve(url.slice("file:".length))), { recursive: true });
+  return url;
+}
 
 export default buildConfig({
   admin: {
@@ -40,6 +49,7 @@ export default buildConfig({
   // Order sets the admin's sidebar groups: Inbox, Catalogue, Website content, Settings (with Company details), Files.
   collections: [
     Enquiries,
+    EnquiryFiles,
     Products,
     Markets,
     Faqs,
@@ -55,7 +65,7 @@ export default buildConfig({
   secret: requiredEnv("PAYLOAD_SECRET"),
   db: sqliteAdapter({
     client: {
-      url: requiredEnv("DATABASE_URL"),
+      url: databaseUrl(),
       authToken: process.env.DATABASE_AUTH_TOKEN,
     },
   }),

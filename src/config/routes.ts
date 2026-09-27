@@ -9,6 +9,7 @@ export const routes = {
   tradeProcess: "/trade-process",
   partner: "/partner",
   group: "/boss-group",
+  media: "/media-events",
   resources: "/resources",
   faq: "/faq",
   contact: "/contact",
@@ -43,10 +44,10 @@ export const sectionIds = {
   group: {
     containerLine: "boss-container-line",
     companies: "group-companies",
-    media: "media-events",
   },
   resources: {
     downloads: "downloads",
+    specifications: "product-specifications",
   },
   contact: {
     form: "enquiry",
@@ -55,6 +56,15 @@ export const sectionIds = {
 
 export function anchorHref(route: string, id: string): string {
   return `${route}#${id}`;
+}
+
+/** In-page anchor for a gallery or group company, from its name: "BOSS Retail" → "boss-retail". */
+export function toAnchorId(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 export function productHref(slug: string): string {

@@ -10,14 +10,30 @@ import {
 } from "framer-motion";
 import { ArrowRight, RotateCcw, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useId, useMemo, useRef, useState, type PointerEvent, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, useTransition, type PointerEvent, type ReactNode } from "react";
+import { submitAssistantEnquiry } from "@/app/(site)/contact/actions";
 import { LogoMark } from "@/components/ui/logo";
 import { chatbotContent } from "@/config/chatbot";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/cn";
-import { CONFIDENT_MATCH, createFaqSearch, pickAcrossCategories, relatedQuestions } from "@/lib/faq-search";
+import type { BuyingAnswers } from "@/lib/enquiry/assistant";
+import { createFaqSearch } from "@/lib/faq-search";
 import { EASE_SMOOTH, SPRING_PANEL } from "@/lib/motion";
-import type { FaqItem, LinkItem } from "@/types/content";
+import type { FaqItem } from "@/types/content";
+import {
+  INITIAL_FLOW,
+  composerHints,
+  greetingMessage,
+  respond,
+  submissionReply,
+  type AssistantMessage,
+  type AssistantProduct,
+  type ChatChoice,
+  type ChatMessage,
+  type Flow,
+  type Suggestions,
+  type VisitorInput,
+} from "./assistant-flow";
 import { ChatBubble, TypingBubble } from "./chat-bubble";
 import { ChatComposer } from "./chat-composer";
 
@@ -27,31 +43,24 @@ export interface ChatRequest {
   question: string;
 }
 
-interface Suggestions {
-  label?: string;
-  items: FaqItem[];
-}
-
-type ChatMessage =
-  | { from: "visitor"; text: string }
-  | { from: "assistant"; text: string; action?: LinkItem; suggestions?: Suggestions };
-
 /** A short pause before each answer, so replies read as a conversation rather than a jump. */
 const TYPING_DELAY_MS = 450;
 const SHEET_CLOSE_DISTANCE_PX = 120;
 const SHEET_CLOSE_VELOCITY = 500;
-const GREETING_PATTERN = /^(hi|hello|hey|hiya|good (morning|afternoon|evening)|namaste)\b/i;
-const THANKS_PATTERN = /^(thanks|thank you|thx|cheers|great|ok|okay)\b/i;
 const content = chatbotContent;
 
 interface ChatPanelProps {
   faqs: FaqItem[];
+  /** Products Aira can talk about and take enquiries for. */
+  products: AssistantProduct[];
+  /** Server-signed token that lets the assistant submit an enquiry (see form-token.ts). */
+  formToken: string;
   isOpen: boolean;
   onClose: () => void;
   request?: ChatRequest;
 }
 
-export function ChatPanel({ faqs, isOpen, onClose, request }: ChatPanelProps) {
+export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request }: ChatPanelProps) {
   const isDesktop = useMediaQuery("(min-width: 640px)");
   const reduceMotion = useReducedMotion();
   const dragControls = useDragControls();
@@ -59,52 +68,33 @@ export function ChatPanel({ faqs, isOpen, onClose, request }: ChatPanelProps) {
   const logRef = useRef<HTMLDivElement>(null);
 
   const search = useMemo(() => createFaqSearch(faqs), [faqs]);
-  const greeting = useMemo<ChatMessage>(
-    () => ({
-      from: "assistant",
-      text: content.greeting,
-      suggestions: { label: content.suggestionsLabel, items: pickAcrossCategories(faqs, content.suggestionCount) },
-    }),
-    [faqs],
-  );
-
-  const [messages, setMessages] = useState<ChatMessage[]>(() => [greeting]);
-  const [pendingReply, setPendingReply] = useState<ChatMessage | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [greetingMessage]);
+  const [pendingReplies, setPendingReplies] = useState<AssistantMessage[]>([]);
+  const [flow, setFlow] = useState<Flow>(INITIAL_FLOW);
+  const [isSubmitting, startSubmitting] = useTransition();
   const [handledRequestId, setHandledRequestId] = useState<number>();
 
-  function answerFor(item: FaqItem): ChatMessage {
-    const related = relatedQuestions(faqs, item, content.relatedCount);
-    return {
-      from: "assistant",
-      text: item.answer,
-      action: item.action,
-      suggestions: related.length > 0 ? { label: content.relatedLabel, items: related } : undefined,
-    };
+  function submit(answers: BuyingAnswers) {
+    startSubmitting(async () => {
+      const result = await submitAssistantEnquiry(answers, formToken).catch(() => ({ ok: false as const }));
+      setMessages((current) => [...current, submissionReply(result)]);
+      setFlow(result.ok ? INITIAL_FLOW : { kind: "confirm", answers });
+    });
   }
 
-  function replyTo(question: string): ChatMessage {
-    const matches = search(question);
-    const best = matches[0];
-    if (best && best.score >= CONFIDENT_MATCH) return answerFor(best.item);
-    if (GREETING_PATTERN.test(question)) return { ...greeting, text: content.smallTalk.greeting };
-    if (THANKS_PATTERN.test(question)) return { from: "assistant", text: content.smallTalk.thanks };
-    if (matches.length > 0) {
-      return {
-        from: "assistant",
-        text: content.didYouMean,
-        action: content.fallbackAction,
-        suggestions: { items: matches.slice(0, 3).map((match) => match.item) },
-      };
-    }
-    return { from: "assistant", text: content.fallback, action: content.fallbackAction };
+  /** Echoes the visitor's message and queues Aira's replies (delivering any still "typing" first). */
+  function send(input: VisitorInput, echo: string) {
+    if (isSubmitting) return;
+    const response = respond(flow, input, { faqs, products, search });
+    setMessages((current) => [...current, ...pendingReplies, { from: "visitor", text: echo }]);
+    setPendingReplies(response.replies);
+    setFlow(response.flow);
+    if (response.submit) submit(response.submit);
   }
 
-  /** Adds the visitor's message and queues the reply (delivering any reply still "typing" first). */
-  function ask(question: string, item?: FaqItem) {
-    const reply = item ? answerFor(item) : replyTo(question);
-    setMessages((current) => [...current, ...(pendingReply ? [pendingReply] : []), { from: "visitor", text: question }]);
-    setPendingReply(reply);
-  }
+  const ask = (question: string, item?: FaqItem) =>
+    send(item ? { kind: "faq", item } : { kind: "text", text: question }, question);
+  const choose = (choice: ChatChoice) => send({ kind: "choice", choice }, choice.label);
 
   // A question sent from another page (e.g. the FAQ search) — handled once per request.
   if (request && request.id !== handledRequestId) {
@@ -113,22 +103,24 @@ export function ChatPanel({ faqs, isOpen, onClose, request }: ChatPanelProps) {
   }
 
   useEffect(() => {
-    if (!pendingReply) return;
+    if (pendingReplies.length === 0) return;
     const timer = window.setTimeout(
       () => {
-        setMessages((current) => [...current, pendingReply]);
-        setPendingReply(null);
+        setMessages((current) => [...current, ...pendingReplies]);
+        setPendingReplies([]);
       },
       reduceMotion ? 0 : TYPING_DELAY_MS,
     );
     return () => window.clearTimeout(timer);
-  }, [pendingReply, reduceMotion]);
+  }, [pendingReplies, reduceMotion]);
+
+  const isTyping = pendingReplies.length > 0 || isSubmitting;
 
   useEffect(() => {
     const log = logRef.current;
     if (!isOpen || !log) return;
     log.scrollTo({ top: log.scrollHeight, behavior: reduceMotion ? "auto" : "smooth" });
-  }, [messages, pendingReply, isOpen, reduceMotion]);
+  }, [messages, isTyping, isOpen, reduceMotion]);
 
   // The mobile sheet covers the page, so the page behind it shouldn't scroll.
   useEffect(() => {
@@ -141,8 +133,9 @@ export function ChatPanel({ faqs, isOpen, onClose, request }: ChatPanelProps) {
   }, [isOpen, isDesktop]);
 
   function restart() {
-    setMessages([greeting]);
-    setPendingReply(null);
+    setMessages([greetingMessage]);
+    setPendingReplies([]);
+    setFlow(INITIAL_FLOW);
   }
 
   /** On mobile the sheet covers the page, so following a link should reveal it. */
@@ -178,7 +171,7 @@ export function ChatPanel({ faqs, isOpen, onClose, request }: ChatPanelProps) {
           <PanelHeader
             titleId={titleId}
             showHandle={!isDesktop}
-            canRestart={messages.length > 1}
+            canRestart={messages.length > 1 && !isSubmitting}
             onRestart={restart}
             onClose={onClose}
             onDragStart={(event) => dragControls.start(event)}
@@ -196,16 +189,17 @@ export function ChatPanel({ faqs, isOpen, onClose, request }: ChatPanelProps) {
                 key={index}
                 message={message}
                 joinsPrevious={messages[index - 1]?.from === message.from}
-                isLatest={index === lastIndex && !pendingReply}
+                isLatest={index === lastIndex && !isTyping}
                 onAsk={ask}
+                onChoose={choose}
                 onNavigate={handleNavigate}
               />
             ))}
-            {pendingReply && <TypingBubble label={content.typing} />}
+            {isTyping && <TypingBubble label={isSubmitting ? content.buying.submitting : content.typing} />}
           </div>
 
           <div className="border-t border-border px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-4">
-            <ChatComposer onSend={(text) => ask(text)} autoFocus={isDesktop} />
+            <ChatComposer onSend={(text) => ask(text)} autoFocus={isDesktop} disabled={isSubmitting} {...composerHints(flow)} />
             <p className="mt-2 text-center text-[11px] text-fg-mute">
               {content.disclaimer}{" "}
               <Link
@@ -276,7 +270,7 @@ function PanelSurface({ isDesktop, titleId, dragControls, onClose, children }: P
       className={cn(
         "fixed z-[70] flex flex-col overflow-hidden bg-canvas text-fg",
         isDesktop
-          ? "right-6 bottom-24 h-[min(40rem,calc(100dvh-8.5rem))] w-[24rem] origin-bottom-right rounded-[1.75rem] shadow-[0_32px_80px_-24px_rgb(8_33_79/0.45)] ring-1 ring-border"
+          ? "right-6 bottom-24 h-[min(42rem,calc(100dvh-8.5rem))] w-[25rem] origin-bottom-right rounded-[1.75rem] shadow-[0_32px_80px_-24px_rgb(8_33_79/0.45)] ring-1 ring-border"
           : "inset-x-0 bottom-0 h-[88dvh] rounded-t-[1.75rem] shadow-[0_-12px_48px_-12px_rgb(8_33_79/0.35)]",
       )}
     >
@@ -306,7 +300,9 @@ function PanelHeader({ titleId, showHandle, canRestart, onRestart, onClose, onDr
       {showHandle && (
         <span aria-hidden title={content.dragHandle} className="absolute top-2 left-1/2 h-1 w-10 -translate-x-1/2 rounded-full bg-fg/15" />
       )}
-      <LogoMark className="size-9 shrink-0" />
+      <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-logo text-white">
+        <LogoMark className="h-3.5 w-auto" />
+      </span>
       <div className="min-w-0 flex-1">
         <p id={titleId} className="font-display text-[15px] leading-tight font-bold">
           {content.title}
@@ -343,16 +339,23 @@ function HeaderButton({ label, onClick, children }: { label: string; onClick: ()
   );
 }
 
+const ACTION_STYLES =
+  "mt-2 inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1.5 text-[13px] font-semibold text-brand transition-colors duration-150 hover:bg-brand/15";
+
+const CHIP_STYLES =
+  "rounded-2xl bg-canvas px-3 py-1.5 text-left text-[13px] leading-snug font-medium text-brand ring-1 ring-brand/25 transition-colors duration-150 ring-inset hover:bg-brand hover:text-white";
+
 interface MessageViewProps {
   message: ChatMessage;
   joinsPrevious: boolean;
-  /** Suggestions are only offered on the newest reply, so the thread stays calm. */
+  /** Options and suggestions are only offered on the newest reply, so the thread stays calm. */
   isLatest: boolean;
   onAsk: (question: string, item?: FaqItem) => void;
+  onChoose: (choice: ChatChoice) => void;
   onNavigate: () => void;
 }
 
-function MessageView({ message, joinsPrevious, isLatest, onAsk, onNavigate }: MessageViewProps) {
+function MessageView({ message, joinsPrevious, isLatest, onAsk, onChoose, onNavigate }: MessageViewProps) {
   if (message.from === "visitor") {
     return (
       <ChatBubble from="visitor" joinsPrevious={joinsPrevious}>
@@ -361,23 +364,72 @@ function MessageView({ message, joinsPrevious, isLatest, onAsk, onNavigate }: Me
     );
   }
 
+  const { action } = message;
+
   return (
     <div>
       <ChatBubble from="assistant" joinsPrevious={joinsPrevious}>
-        {message.text}
+        <p className="whitespace-pre-line">{message.text}</p>
+        {message.tables?.map((table, index) => (
+          <div key={table.title ?? index} className="mt-3">
+            {table.title && <p className="mb-1 text-[13px] font-semibold">{table.title}</p>}
+            <dl className="divide-y divide-border rounded-xl bg-canvas px-3 text-[13px]">
+              {table.rows.map(([label, value]) => (
+                <div key={label} className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-3 py-1.5">
+                  <dt className="text-fg-mute">{label}</dt>
+                  <dd className="font-medium break-words">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))}
+        {message.list && (
+          <ul className="mt-2 list-disc space-y-0.5 pl-5 text-[14px]">
+            {message.list.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        )}
+        {message.footer && <p className="mt-3">{message.footer}</p>}
+        {message.reference && (
+          <p className="mt-3 rounded-xl bg-canvas px-3 py-2 text-[13px]">
+            {message.reference.label}: <strong className="font-semibold tracking-wide">{message.reference.value}</strong>
+          </p>
+        )}
       </ChatBubble>
-      {message.action && (
-        <Link
-          href={message.action.href}
-          onClick={onNavigate}
-          className="group mt-2 inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1.5 text-[13px] font-semibold text-brand transition-colors duration-150 hover:bg-brand/15"
-        >
-          {message.action.label}
-          <ArrowRight aria-hidden className="size-3.5 transition-transform duration-200 ease-smooth group-hover:translate-x-0.5" />
-        </Link>
-      )}
+      {action &&
+        (action.href.startsWith("mailto:") ? (
+          <a href={action.href} className={ACTION_STYLES}>
+            {action.label}
+          </a>
+        ) : (
+          <Link href={action.href} onClick={onNavigate} className={cn("group", ACTION_STYLES)}>
+            {action.label}
+            <ArrowRight aria-hidden className="size-3.5 transition-transform duration-200 ease-smooth group-hover:translate-x-0.5" />
+          </Link>
+        ))}
+      {isLatest && message.choices && <ChoiceList choices={message.choices} onChoose={onChoose} />}
       {isLatest && message.suggestions && <SuggestionList suggestions={message.suggestions} onAsk={onAsk} />}
     </div>
+  );
+}
+
+function ChoiceList({ choices, onChoose }: { choices: ChatChoice[]; onChoose: (choice: ChatChoice) => void }) {
+  return (
+    <motion.ul
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.12, duration: 0.24, ease: EASE_SMOOTH }}
+      className="mt-3 flex flex-wrap gap-1.5"
+    >
+      {choices.map((choice) => (
+        <li key={choice.id}>
+          <button type="button" onClick={() => onChoose(choice)} className={CHIP_STYLES}>
+            {choice.label}
+          </button>
+        </li>
+      ))}
+    </motion.ul>
   );
 }
 
@@ -393,11 +445,7 @@ function SuggestionList({ suggestions, onAsk }: { suggestions: Suggestions; onAs
       <ul className="mt-2 flex flex-wrap gap-1.5">
         {suggestions.items.map((item) => (
           <li key={item.question}>
-            <button
-              type="button"
-              onClick={() => onAsk(item.question, item)}
-              className="rounded-2xl bg-canvas px-3 py-1.5 text-left text-[13px] leading-snug font-medium text-brand ring-1 ring-brand/25 transition-colors duration-150 ring-inset hover:bg-brand hover:text-white"
-            >
+            <button type="button" onClick={() => onAsk(item.question, item)} className={CHIP_STYLES}>
               {item.question}
             </button>
           </li>

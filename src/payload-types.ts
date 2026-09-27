@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     enquiries: Enquiry;
+    'enquiry-files': EnquiryFile;
     products: Product;
     markets: Market;
     faqs: Faq;
@@ -86,6 +87,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
+    'enquiry-files': EnquiryFilesSelect<false> | EnquiryFilesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     markets: MarketsSelect<false> | MarketsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
@@ -148,15 +150,26 @@ export interface UserAuthOperations {
 export interface Enquiry {
   id: number;
   type: 'general' | 'buyer' | 'supplier' | 'partnership';
+  reference?: string | null;
   name: string;
   company?: string | null;
   email: string;
   phone?: string | null;
-  product?: string | null;
-  quantity?: string | null;
   country?: string | null;
-  partnershipArea?: string | null;
-  message: string;
+  website?: string | null;
+  product?: string | null;
+  /**
+   * Everything else the enquirer told us, as they entered it.
+   */
+  details?:
+    | {
+        label?: string | null;
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  message?: string | null;
+  attachments?: (number | EnquiryFile)[] | null;
   /**
    * The email to your team about this enquiry.
    */
@@ -166,6 +179,26 @@ export interface Enquiry {
   source?: string | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Files attached to website enquiries. Open them from the enquiry they belong to.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiry-files".
+ */
+export interface EnquiryFile {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * Every export and import line. Each product gets its own page; drag rows to change the order.
@@ -247,9 +280,13 @@ export interface Product {
    */
   summary: string;
   /**
-   * The overview paragraph on the product's page.
+   * The overview on the product's page. Leave a blank line between paragraphs.
    */
   description: string;
+  /**
+   * Product photos. The first is used on the product card and at the top of the page.
+   */
+  images?: (number | Media)[] | null;
   /**
    * Where this export line ships. Drives the trade-route map and market filters.
    */
@@ -260,87 +297,38 @@ export interface Product {
   variants?: string[] | null;
   variantsLabel?: string | null;
   /**
+   * Typical packaging, e.g. “5 kg to 50 kg in PP, BOPP or jute bags”.
+   */
+  packaging?: string | null;
+  /**
+   * Documents usually supplied, e.g. Certificate of origin. Press Enter after each.
+   */
+  documentation?: string[] | null;
+  /**
+   * Optional. One table per variety, e.g. “Basmati Rice” and “Non-Basmati Rice”.
+   */
+  specifications?:
+    | {
+        title: string;
+        subtitle?: string | null;
+        rows?:
+          | {
+              label: string;
+              value: string;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Short highlights, e.g. Long Grain. Press Enter after each.
+         */
+        keyFeatures?: string[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Leave empty until confirmed.
    */
   hsCode?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Destination countries for export lines. A market appears on the site once a product ships there.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "markets".
- */
-export interface Market {
-  id: number;
-  _order?: string | null;
-  name: string;
-  /**
-   * Used where space is tight, e.g. the map.
-   */
-  shortName: string;
-  /**
-   * Two-letter country code.
-   */
-  code: string;
-  region: string;
-  /**
-   * The main port city, used to draw the trade route on the map.
-   */
-  coordinates: {
-    lat: number;
-    lon: number;
-  };
-  /**
-   * Move the label if it overlaps a neighbouring market.
-   */
-  labelAnchor?: ('top' | 'bottom' | 'left' | 'right') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Shown on the FAQ page and answered by the website's assistant. The first six appear on the home and partner pages.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faqs".
- */
-export interface Faq {
-  id: number;
-  _order?: string | null;
-  question: string;
-  answer: string;
-  category: 'About us' | 'Products & markets' | 'Working with us';
-  /**
-   * Other words visitors might type, e.g. price, quote, MOQ. They help the assistant find this answer. Press Enter after each.
-   */
-  keywords?: string[] | null;
-  /**
-   * A link shown under the answer, e.g. “Request a quote” → /contact.
-   */
-  action?: {
-    label?: string | null;
-    href?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Leadership profiles on the About page. Drag rows to change the order.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team-members".
- */
-export interface TeamMember {
-  id: number;
-  _order?: string | null;
-  name: string;
-  role: string;
-  bio?: string | null;
-  /**
-   * A square, high-resolution portrait works best.
-   */
-  photo?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -393,6 +381,91 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * Destination countries for export lines. A market appears on the site once a product ships there.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "markets".
+ */
+export interface Market {
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * Used where space is tight, e.g. the map.
+   */
+  shortName: string;
+  /**
+   * Two-letter country code.
+   */
+  code: string;
+  region: string;
+  /**
+   * The main port city, used to draw the trade route on the map.
+   */
+  coordinates: {
+    lat: number;
+    lon: number;
+  };
+  /**
+   * Optional. Ports you ship to in this market, e.g. Jebel Ali. Press Enter after each one. Listed under Global Presence.
+   */
+  ports?: string[] | null;
+  /**
+   * Move the label if it overlaps a neighbouring market.
+   */
+  labelAnchor?: ('top' | 'bottom' | 'left' | 'right') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Shown on the FAQ page and answered by the website's assistant. The first six appear on the home and partner pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs".
+ */
+export interface Faq {
+  id: number;
+  _order?: string | null;
+  question: string;
+  answer: string;
+  category: 'About us' | 'Products & markets' | 'Working with us';
+  /**
+   * Other words visitors might type, e.g. price, quote, MOQ. They help the assistant find this answer. Press Enter after each.
+   */
+  keywords?: string[] | null;
+  /**
+   * A link shown under the answer, e.g. “Request a quote” → /contact.
+   */
+  action?: {
+    label?: string | null;
+    href?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Leadership profiles on the About page. Drag rows to change the order.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team-members".
+ */
+export interface TeamMember {
+  id: number;
+  _order?: string | null;
+  name: string;
+  role: string;
+  /**
+   * Leave a blank line between paragraphs.
+   */
+  bio?: string | null;
+  /**
+   * A square, high-resolution portrait works best.
+   */
+  photo?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Photo galleries on the BOSS Group page. A gallery without photos shows “Photos coming soon”.
@@ -571,7 +644,11 @@ export interface GroupCompany {
   name: string;
   description: string;
   /**
-   * Shown on the company's card.
+   * Optional. Shown on the company's card instead of the icon — a square or wide logo on a transparent or white background works best.
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Shown on the company's card when there is no logo.
    */
   icon:
     | 'anchor'
@@ -699,6 +776,10 @@ export interface PayloadLockedDocument {
         value: number | Enquiry;
       } | null)
     | ({
+        relationTo: 'enquiry-files';
+        value: number | EnquiryFile;
+      } | null)
+    | ({
         relationTo: 'products';
         value: number | Product;
       } | null)
@@ -786,21 +867,46 @@ export interface PayloadMigration {
  */
 export interface EnquiriesSelect<T extends boolean = true> {
   type?: T;
+  reference?: T;
   name?: T;
   company?: T;
   email?: T;
   phone?: T;
-  product?: T;
-  quantity?: T;
   country?: T;
-  partnershipArea?: T;
+  website?: T;
+  product?: T;
+  details?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
   message?: T;
+  attachments?: T;
   notificationStatus?: T;
   notificationDetail?: T;
   acknowledgementStatus?: T;
   source?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiry-files_select".
+ */
+export interface EnquiryFilesSelect<T extends boolean = true> {
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -815,9 +921,27 @@ export interface ProductsSelect<T extends boolean = true> {
   icon?: T;
   summary?: T;
   description?: T;
+  images?: T;
   markets?: T;
   variants?: T;
   variantsLabel?: T;
+  packaging?: T;
+  documentation?: T;
+  specifications?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        rows?:
+          | T
+          | {
+              label?: T;
+              value?: T;
+              id?: T;
+            };
+        keyFeatures?: T;
+        id?: T;
+      };
   hsCode?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -838,6 +962,7 @@ export interface MarketsSelect<T extends boolean = true> {
         lat?: T;
         lon?: T;
       };
+  ports?: T;
   labelAnchor?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -908,6 +1033,7 @@ export interface GroupCompaniesSelect<T extends boolean = true> {
   _order?: T;
   name?: T;
   description?: T;
+  logo?: T;
   icon?: T;
   href?: T;
   isCurrent?: T;
@@ -1061,6 +1187,23 @@ export interface CompanyDetail {
     phone?: string | null;
     address?: string | null;
   };
+  trade?: {
+    /**
+     * Ports in India you usually ship from, e.g. Mundra. Press Enter after each one. Listed under Global Presence.
+     */
+    originPorts?: string[] | null;
+    /**
+     * Shown on the About page. The video only loads when a visitor presses play, so it doesn't slow the page.
+     */
+    video?: {
+      url?: string | null;
+      title?: string | null;
+      /**
+       * Optional. Shown before the video plays; YouTube's own thumbnail is used otherwise.
+       */
+      poster?: (number | null) | Media;
+    };
+  };
   enquiryEmails?: {
     /**
      * These people receive every enquiry. Press Enter after each address.
@@ -1134,6 +1277,18 @@ export interface CompanyDetailsSelect<T extends boolean = true> {
         email?: T;
         phone?: T;
         address?: T;
+      };
+  trade?:
+    | T
+    | {
+        originPorts?: T;
+        video?:
+          | T
+          | {
+              url?: T;
+              title?: T;
+              poster?: T;
+            };
       };
   enquiryEmails?:
     | T

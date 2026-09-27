@@ -44,9 +44,10 @@
 }
 
 .bg-admin-logo__mark {
-  width: 48px;
-  height: 48px;
+  width: auto;
+  height: 40px;
   flex-shrink: 0;
+  color: #264796;
 }
 
 .bg-admin-logo__name {
@@ -72,8 +73,9 @@
 }
 
 .bg-admin-icon {
-  width: 28px;
-  height: 28px;
+  width: auto;
+  height: 18px;
+  color: #264796;
 }
 
 /* Dashboard welcome */

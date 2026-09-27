@@ -88,3 +88,29 @@ export function SelectField({ label, error, optionalLabel, className, id, childr
     </FieldShell>
   );
 }
+
+export function FileField({ label, error, optionalLabel, className, id, hint, ...props }: FieldBaseProps & { hint?: string } & ComponentProps<"input">) {
+  const { fieldId, errorId, controlProps } = useField(id, error);
+  const hintId = `${fieldId}-hint`;
+  return (
+    <FieldShell {...{ fieldId, errorId, label, error, optionalLabel, className }}>
+      <input
+        type="file"
+        className={cn(
+          controlStyles,
+          "cursor-pointer border-dashed py-3 text-sm text-fg-mute",
+          "file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-brand/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-brand",
+          "hover:file:bg-brand/15",
+        )}
+        {...controlProps}
+        aria-describedby={cn(hint && hintId, controlProps["aria-describedby"]) || undefined}
+        {...props}
+      />
+      {hint && (
+        <p id={hintId} className="text-xs text-fg-mute">
+          {hint}
+        </p>
+      )}
+    </FieldShell>
+  );
+}

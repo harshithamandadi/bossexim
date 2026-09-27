@@ -1,21 +1,47 @@
+import { useId } from "react";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/cn";
 
-/** Brand blues are fixed here: a logo keeps its colour in every section tone. */
-const BRAND_BLUE = "#1560bd";
-const DEEP_BLUE = "#0e4a95";
+/* The BOSS mark, traced from the official artwork: a "B" (a block with two
+   round lobes and two slots) beside a disc that keeps an even gap around it. */
+const B_LOBE_X = 92.3;
+const B_LOBE_RADIUS = 46.7;
+const GAP = 16; // stroke width of the cut-out, i.e. an 8-unit gap each side
 
-export function LogoMark({ className }: { className?: string }) {
+function BShape(props: React.SVGProps<SVGGElement>) {
   return (
-    <svg viewBox="0 0 32 32" aria-hidden className={className}>
-      <rect width="32" height="32" rx="9" fill={BRAND_BLUE} />
-      <path d="M32 18c0 7.7-6.3 14-14 14h14V18Z" fill={DEEP_BLUE} opacity="0.55" />
-      <g fill="none" stroke="#ffffff" strokeWidth="1.7">
-        <circle cx="16" cy="16" r="8" />
-        <ellipse cx="16" cy="16" rx="3.4" ry="8" />
-        <path d="M8 16h16" />
+    <g {...props}>
+      <rect x="1" y="2" width={B_LOBE_X} height="170" />
+      <circle cx={B_LOBE_X} cy="45" r={B_LOBE_RADIUS} />
+      <circle cx={B_LOBE_X} cy="129" r={B_LOBE_RADIUS} />
+    </g>
+  );
+}
+
+/** Draws in `currentColor`: brand blue on light sections, white on dark ones. */
+export function LogoMark({ className }: { className?: string }) {
+  const id = useId().replace(/[^a-zA-Z0-9_-]/g, "");
+
+  return (
+    <svg viewBox="0 0 272 174" aria-hidden className={className} fill="currentColor">
+      <defs>
+        <clipPath id={`${id}-bounds`}>
+          <rect x="1" y="2" width="270" height="170" />
+        </clipPath>
+        <mask id={`${id}-gap`}>
+          <rect width="272" height="174" fill="#fff" />
+          <BShape fill="#000" stroke="#000" strokeWidth={GAP} />
+        </mask>
+        <mask id={`${id}-slots`}>
+          <rect width="272" height="174" fill="#fff" />
+          <rect x="0" y="39" width="58" height="14" fill="#000" />
+          <rect x="0" y="118" width="58" height="13" fill="#000" />
+        </mask>
+      </defs>
+      <circle cx="185" cy="87" r="85" mask={`url(#${id}-gap)`} />
+      <g clipPath={`url(#${id}-bounds)`} mask={`url(#${id}-slots)`}>
+        <BShape />
       </g>
-      <circle cx="24.6" cy="8.4" r="2.9" fill="#ffffff" stroke={BRAND_BLUE} strokeWidth="1.5" />
     </svg>
   );
 }
@@ -25,7 +51,7 @@ export function Logo({ className, showDescriptor = false }: { className?: string
 
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <LogoMark className="size-8 shrink-0" />
+      <LogoMark className="h-6 w-auto shrink-0 text-logo" />
       <span className="flex flex-col leading-none">
         <span className="font-display text-[15px] font-extrabold tracking-tight whitespace-nowrap">
           {wordmark.primary} <span className="font-semibold text-fg-mute">{wordmark.secondary}</span>

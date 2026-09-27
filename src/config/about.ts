@@ -1,31 +1,35 @@
-/** About Us page content. DRAFT copy — confirm with the client before launch. */
-import type {
-  ComplianceItem,
-  Feature,
-  LinkItem,
-  SectionContent,
-  Statement,
-} from "@/types/content";
+/** About Us page content — from the client's About documents. */
+import type { ComplianceItem, Feature, LinkItem, ProseContent, SectionContent, Statement } from "@/types/content";
 import { routes } from "./routes";
 
-export const aboutOverview: { heading: SectionContent; paragraphs: string[] } = {
+/** The corporate video on the About page; hidden until a link is added in the admin. */
+export const corporateVideo = {
+  playLabel: "Play the corporate video",
+};
+
+export const aboutOverview: ProseContent = {
   heading: {
-    eyebrow: "About BOSS EXIM",
-    title: "An Indian trading house, built for cross-border trade.",
+    eyebrow: "About BOSS Global EXIM",
+    title: "Connecting products, markets and people.",
   },
   paragraphs: [
-    "BOSS Global EXIM Pvt. Ltd is a global trading company and part of the BOSS Group. We work as a merchant exporter and merchant importer — buying, selling and shipping goods across borders in our own name — and add supply chain solutions so our partners deal with one team from sourcing to delivery.",
-    "On the export side, we connect Indian agriculture with buyers in the Middle East, South-East Asia and Australia. On the import side, we source polymers and metal scrap internationally for manufacturers and recyclers in India.",
+    "BOSS Global EXIM Pvt. Ltd. is an international trading arm within the wider BOSS business ecosystem. BGEXIM was created to connect Indian products with global buyers and to source selected industrial products and recyclable materials from international markets for Indian customers.",
+    "Our role is to identify genuine opportunities, study buyer requirements, find reliable suppliers, evaluate products, structure commercial terms and coordinate the trade process from enquiry to delivery. We aim to make international trading simple, organised and dependable for our business partners.",
+    "Our current business focus includes agricultural products, polymers, industrial raw materials and ferrous and non-ferrous metals. However, BGEXIM is not limited to these products or to a fixed list of countries. We remain open to new opportunities where there is genuine demand, reliable supply, acceptable commercial value, logistics feasibility and regulatory compliance.",
+    "Supported by the wider BOSS Group and its logistics capabilities, BGEXIM follows a disciplined approach built on transparency, quality verification, structured documentation, secured payment methods and long-term relationships.",
+    "Our goal is simple: to connect products, markets and people through trusted international trade.",
   ],
 };
 
-export const aboutGroup: { heading: SectionContent; cta: LinkItem } = {
+export const aboutGroup: ProseContent & { cta: LinkItem } = {
   heading: {
     eyebrow: "About BOSS Group",
-    title: "Backed by a diversified group.",
-    description:
-      "BOSS Global EXIM is part of the BOSS Group, whose businesses span shipping and logistics, retail, construction, hospitality, IT and BPO. Its shipping arm, BOSS Container Line, gives our trade desk direct access to NVOCC and freight-forwarding capability.",
+    title: "An established business ecosystem.",
   },
+  paragraphs: [
+    "BOSS Group is a diversified business group with activities across Australia, Singapore, Malaysia and India. Over the years, the Group has developed experience in shipping line, retail, construction, hospitality, IT and BPO services. Each business operates with a focus on customer service, practical execution and long-term growth.",
+    "For BGEXIM, the strongest advantage of being part of the BOSS Group is access to an established business ecosystem and international logistics capability. BOSS Container Line supports shipping, freight forwarding, container trading, break bulk and related logistics services through offices and partner networks across important trade markets.",
+  ],
   cta: { label: "Explore the BOSS Group", href: routes.group },
 };
 
@@ -36,24 +40,37 @@ export const visionMissionValues: {
 } = {
   heading: {
     eyebrow: "Vision, Mission & Values",
-    title: "What guides every contract we sign.",
+    title: "The values that guide every transaction.",
   },
   statements: [
     {
       label: "Vision",
-      text: "To be a trusted global trading house that carries the best of India to the world — and brings the world's resources to Indian industry.",
+      text: "To build a trusted global trading network that connects quality products, reliable suppliers and genuine buyers across international markets.",
     },
     {
       label: "Mission",
-      text: "To trade with integrity, deliver consistent quality and make cross-border supply simple for every buyer, supplier and partner we work with.",
+      text: "To simplify international trade through reliable sourcing, transparent commercial practices, structured transactions, quality verification and dependable supply-chain coordination.",
     },
   ],
   values: [
-    { title: "Integrity", description: "Honest pricing, clear terms and commitments we keep.", icon: "scale" },
-    { title: "Quality first", description: "Every consignment matched to the agreed specification.", icon: "badge-check" },
-    { title: "Accountability", description: "One responsible partner from contract to delivery.", icon: "shield-check" },
-    { title: "Compliance", description: "Trade conducted under full statutory registration.", icon: "file-text" },
-    { title: "Partnership", description: "Relationships built to last beyond a single shipment.", icon: "handshake" },
+    { title: "Integrity", description: "Dealing honestly and transparently with business partners.", icon: "scale" },
+    { title: "Reliability", description: "Working to meet agreed commitments.", icon: "shield-check" },
+    {
+      title: "Compliance",
+      description: "Conducting trade through recognised legal, customs and banking channels.",
+      icon: "file-text",
+    },
+    { title: "Quality", description: "Focusing on agreed specifications and appropriate verification.", icon: "badge-check" },
+    {
+      title: "Responsibility",
+      description: "Evaluating commercial and operational risks before execution.",
+      icon: "search-check",
+    },
+    {
+      title: "Partnership",
+      description: "Building long-term and repeat business relationships, not one-time transactions.",
+      icon: "handshake",
+    },
   ],
 };
 
@@ -61,20 +78,21 @@ export const visionMissionValues: {
 export const leadership: { heading: SectionContent; emptyState: string } = {
   heading: {
     eyebrow: "Our Team / Leadership",
-    title: "The people behind BOSS EXIM.",
-    description: "Experienced leadership across trade, sourcing and logistics.",
+    title: "The people who lead BOSS.",
+    description: "Leadership experience across shipping, logistics, construction, hospitality, retail and technology.",
   },
   emptyState: "Leadership profiles will be published here soon.",
 };
 
 /** The registrations we list; their numbers are entered in the admin (Settings → Company details). */
-export const compliance: { heading: SectionContent; items: ComplianceItem[] } = {
+export const compliance: { heading: SectionContent; note: string; items: ComplianceItem[] } = {
   heading: {
     eyebrow: "Registrations, Certifications & Compliance",
-    title: "The registrations we trade under.",
+    title: "Trade built on proper registration.",
     description:
-      "Our statutory registrations and certifications. Registration numbers will be listed here once verified.",
+      "BGEXIM believes that international trade should be supported by proper registration, documentation and regulatory compliance. The company maintains all applicable corporate, tax, customs and trade registrations required for its operations, as and when applicable and obtained.",
   },
+  note: "Product-specific approvals, inspection reports, laboratory certificates, certificates of origin, phytosanitary certificates, quality documents and other statutory documents are arranged according to the product, origin, destination and transaction requirements.",
   items: [
     { key: "cin", code: "CIN", name: "Corporate Identity Number", issuer: "Ministry of Corporate Affairs" },
     { key: "pan", code: "PAN", name: "Permanent Account Number", issuer: "Income Tax Department" },

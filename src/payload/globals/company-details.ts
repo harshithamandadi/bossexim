@@ -7,6 +7,8 @@ import { anyone, isSignedIn } from "../access";
 import { ADMIN_GROUPS, emailListField, urlField } from "../fields";
 import { revalidateGlobal } from "../hooks/revalidate";
 
+const VIDEO_URL = /^https:\/\/(www\.)?(youtube\.com|youtu\.be|vimeo\.com|player\.vimeo\.com)\//i;
+
 /** Field name used to store a platform's profile link, e.g. "linkedin". */
 export const socialFieldName = (platform: SocialPlatform) => platform.toLowerCase();
 
@@ -37,6 +39,46 @@ export const CompanyDetails: GlobalConfig = {
               ],
             },
             { name: "address", label: "Registered office", type: "textarea" },
+          ],
+        },
+        {
+          name: "trade",
+          label: "Ports & video",
+          description: "Optional extras. Anything left empty is simply not shown on the site.",
+          fields: [
+            {
+              name: "originPorts",
+              label: "Indian loading ports",
+              type: "text",
+              hasMany: true,
+              admin: {
+                description: "Ports in India you usually ship from, e.g. Mundra. Press Enter after each one. Listed under Global Presence.",
+              },
+            },
+            {
+              name: "video",
+              label: "Corporate video",
+              type: "group",
+              admin: { description: "Shown on the About page. The video only loads when a visitor presses play, so it doesn't slow the page." },
+              fields: [
+                {
+                  name: "url",
+                  label: "YouTube or Vimeo link",
+                  type: "text",
+                  validate: (value: string | null | undefined) =>
+                    !value || VIDEO_URL.test(value) || "Paste a YouTube or Vimeo link, e.g. https://www.youtube.com/watch?v=…",
+                  admin: { placeholder: "https://www.youtube.com/watch?v=…" },
+                },
+                { name: "title", type: "text", admin: { placeholder: "BOSS Global EXIM — corporate film" } },
+                {
+                  name: "poster",
+                  label: "Cover image",
+                  type: "upload",
+                  relationTo: "media",
+                  admin: { description: "Optional. Shown before the video plays; YouTube's own thumbnail is used otherwise." },
+                },
+              ],
+            },
           ],
         },
         {

@@ -11,10 +11,13 @@ interface ChatComposerProps {
   onSend: (text: string) => void;
   disabled?: boolean;
   autoFocus?: boolean;
+  /** Overrides the default prompt, e.g. while Aira asks for an email address. */
+  placeholder?: string;
+  inputMode?: "text" | "email" | "tel" | "url";
 }
 
 /** Grows with its text. Enter sends; Shift+Enter adds a line; IME composition is never cut short. */
-export function ChatComposer({ onSend, disabled = false, autoFocus = false }: ChatComposerProps) {
+export function ChatComposer({ onSend, disabled = false, autoFocus = false, placeholder, inputMode }: ChatComposerProps) {
   const { composer } = chatbotContent;
   const inputId = useId();
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -58,7 +61,8 @@ export function ChatComposer({ onSend, disabled = false, autoFocus = false }: Ch
         value={value}
         rows={1}
         maxLength={MAX_LENGTH}
-        placeholder={composer.placeholder}
+        placeholder={placeholder ?? composer.placeholder}
+        inputMode={inputMode}
         autoFocus={autoFocus}
         onChange={(event) => {
           setValue(event.target.value);

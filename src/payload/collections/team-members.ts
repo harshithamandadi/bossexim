@@ -23,7 +23,13 @@ export const TeamMembers: CollectionConfig = {
         { name: "role", label: "Designation", type: "text", required: true, admin: { placeholder: "Managing Director" } },
       ],
     },
-    { name: "bio", label: "Short profile", type: "textarea", maxLength: 400 },
+    {
+      name: "bio",
+      label: "Profile",
+      type: "textarea",
+      maxLength: 3000,
+      admin: { description: "Leave a blank line between paragraphs.", rows: 8 },
+    },
     {
       name: "photo",
       type: "upload",

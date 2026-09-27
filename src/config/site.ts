@@ -17,16 +17,17 @@ import { routes, sectionIds, anchorHref } from "./routes";
 
 export const siteConfig: SiteConfig = {
   company: {
-    legalName: "BOSS Global EXIM Pvt. Ltd",
+    legalName: "BOSS Global EXIM Pvt. Ltd.",
     name: "BOSS Global EXIM",
     shortName: "BGEXIM",
     descriptor: "Global Trading Company",
     tagline: "Trade Beyond Boundaries",
-    focus: "Global Sourcing & International Trading",
+    focus: "Global Sourcing | International Trading | Supply Chain Solutions",
     roles: ["Merchant Exporter", "Merchant Importer", "Supply Chain Solutions"],
     parentGroup: "BOSS Group",
     summary:
-      "A global trading company of the BOSS Group — merchant exporter, merchant importer and supply chain solutions partner, trading from India to the world.",
+      "BOSS Global EXIM Pvt. Ltd. (BGEXIM) connects reliable suppliers, genuine buyers and international markets through structured sourcing, trading and supply-chain coordination.",
+    motto: "Connecting Products. Markets. Opportunities.",
     wordmark: { primary: "BOSS", secondary: "Global EXIM" },
   },
 
@@ -38,7 +39,7 @@ export const siteConfig: SiteConfig = {
 
   seo: {
     description:
-      "BOSS Global EXIM Pvt. Ltd is a global trading company — merchant exporter of Indian agri-commodities, merchant importer of polymers and metal scrap, and supply chain solutions partner.",
+      "BOSS Global EXIM Pvt. Ltd. (BGEXIM) connects reliable suppliers, genuine buyers and international markets through structured sourcing, trading and supply-chain coordination. Part of the BOSS Group.",
     keywords: [
       "BOSS Global EXIM",
       "BGEXIM",
@@ -60,11 +61,11 @@ export const siteConfig: SiteConfig = {
       title: "Merchant Export",
       icon: "ship",
       summary:
-        "We buy agri-commodities from Indian producers and sell them to overseas buyers in our own name.",
+        "Selected agricultural products sourced from India for international buyers — planned around the product, variety, quantity, packaging, destination and documentation you need.",
       points: [
-        "Staple agri-commodities & food ingredients",
-        "Buyers across the Middle East, South-East Asia & Australia",
-        "Packed to the buyer's requirements",
+        "Rice, spices, pulses, dehydrated foods & more",
+        "The Middle East, South-East Asia & selected markets",
+        "Quality reports, certificates & inspection coordinated",
       ],
       visual: "exports",
       href: anchorHref(routes.business, sectionIds.business.model),
@@ -74,11 +75,11 @@ export const siteConfig: SiteConfig = {
       title: "Merchant Import",
       icon: "factory",
       summary:
-        "We source industrial raw materials internationally and supply them to manufacturers in India.",
+        "Polymers and industrial raw materials sourced internationally for Indian buyers, based on confirmed grades, technical specifications and commercial requirements.",
       points: [
         "Polymers — PP, PE & polyester chips",
-        "Aluminium, copper, iron & stainless steel scrap",
-        "Graded to the buyer's specification",
+        "Ferrous & non-ferrous recyclable metals",
+        "Technical documents confirmed before execution",
       ],
       visual: "imports",
       href: anchorHref(routes.business, sectionIds.business.model),
@@ -88,8 +89,8 @@ export const siteConfig: SiteConfig = {
       title: "Supply Chain Solutions",
       icon: "route",
       summary:
-        "Sourcing, documentation and shipping coordinated as one service, backed by the group's own container line.",
-      points: ["Backed by BOSS Container Line", "NVOCC & freight forwarding", "Break-bulk capability"],
+        "Documentation, inspection, banking and logistics coordinated through the wider BOSS ecosystem and trusted external partners.",
+      points: ["Backed by BOSS Container Line", "NVOCC, freight forwarding & break bulk", "Customs & shipment coordination"],
       visual: "logistics",
       href: anchorHref(routes.group, sectionIds.group.containerLine),
     },
@@ -98,8 +99,8 @@ export const siteConfig: SiteConfig = {
       title: "Global Sourcing",
       icon: "globe",
       summary:
-        "Finding and qualifying the right producers for your specification — in India and abroad.",
-      points: ["Supplier discovery & vetting", "Specification matching", "Consolidated procurement"],
+        "Understanding the requirement, identifying suitable sources and verifying commercial and quality details before a trade is structured.",
+      points: ["Supplier identification & verification", "Specification matching", "Structured, transparent transactions"],
       visual: "sourcing",
       href: routes.partner,
     },

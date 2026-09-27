@@ -67,7 +67,7 @@ function LaneList({ catalogue, activeCode, onActiveChange }: LaneListProps) {
   return (
     <div className="flex flex-col gap-8 lg:border-l lg:border-border lg:pl-10">
       <LaneGroup title={tradeLanes.outbound}>
-        {catalogue.activeMarkets.map((market) => {
+        {catalogue.markets.map((market) => {
           const isActive = market.code === activeCode;
           return (
             <li key={market.code}>

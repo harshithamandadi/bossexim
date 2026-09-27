@@ -9,7 +9,9 @@ import { CtaSection } from "@/components/sections/shared/cta-section";
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
 import { SplitLayout } from "@/components/ui/split-layout";
-import { compliance, leadership, pageContent, routes, sectionIds } from "@/config";
+import { VideoSlot } from "@/components/ui/video-slot";
+import { compliance, corporateVideo, leadership, pageContent, routes, sectionIds } from "@/config";
+import { getCompanyDetails } from "@/lib/content/queries";
 import { createPageMetadata } from "@/lib/metadata";
 import { getLocalNavItems } from "@/lib/navigation";
 
@@ -22,7 +24,9 @@ export const metadata = createPageMetadata({
   path: routes.about,
 });
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { video } = await getCompanyDetails();
+
   return (
     <>
       <PageHero content={content} />
@@ -30,6 +34,7 @@ export default function AboutPage() {
 
       <Section id={ids.overview}>
         <AboutOverview />
+        {video && <VideoSlot video={video} playLabel={corporateVideo.playLabel} className="mx-auto mt-16 max-w-5xl" />}
       </Section>
 
       <Section id={ids.group} tone="mist">
@@ -48,6 +53,7 @@ export default function AboutPage() {
       <Section id={ids.compliance}>
         <SplitLayout aside={<SectionHeader {...compliance.heading} />} stickyAside>
           <ComplianceTable />
+          <p className="mt-8 max-w-2xl text-[15px] leading-relaxed text-fg-mute">{compliance.note}</p>
         </SplitLayout>
       </Section>
 

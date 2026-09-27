@@ -6,7 +6,8 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { uiLabels } from "@/config";
 import { cn } from "@/lib/cn";
-import { getCompanyDetails, getFaqs } from "@/lib/content/queries";
+import { getCatalogue, getCompanyDetails, getFaqs } from "@/lib/content/queries";
+import { createFormToken } from "@/lib/enquiry/form-token";
 import { getOrganizationJsonLd, serializeJsonLd } from "@/lib/structured-data";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -17,7 +18,19 @@ const interTight = Inter_Tight({ subsets: ["latin"], variable: "--font-inter-tig
  * markup. Shared by the site layout and the app-wide 404 page.
  */
 export async function SiteShell({ children }: { children: ReactNode }) {
-  const [faqs, company] = await Promise.all([getFaqs(), getCompanyDetails()]);
+  const [faqs, company, catalogue] = await Promise.all([getFaqs(), getCompanyDetails(), getCatalogue()]);
+  // Aira talks about the products we export: she helps overseas buyers source from India.
+  const assistantProducts = catalogue.products
+    .filter((product) => product.direction === "export")
+    .map(({ slug, name, variants, variantsLabel, packaging, documentation, specifications }) => ({
+      slug,
+      name,
+      variants,
+      variantsLabel,
+      packaging,
+      documentation,
+      specifications,
+    }));
 
   return (
     <html lang="en" className={cn(inter.variable, interTight.variable)}>
@@ -36,7 +49,7 @@ export async function SiteShell({ children }: { children: ReactNode }) {
           <SiteHeader />
           <main id="main">{children}</main>
           <SiteFooter />
-          <ChatWidget faqs={faqs} />
+          <ChatWidget faqs={faqs} products={assistantProducts} formToken={createFormToken()} />
         </MotionProvider>
       </body>
     </html>

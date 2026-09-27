@@ -1,5 +1,15 @@
-/** Contact page content, the enquiry form's fields and wording, and the enquiry emails. */
-import type { EnquiryFieldConfig, EnquiryTypeId, EnquiryType, SectionContent } from "@/types/content";
+/**
+ * Contact page content, the enquiry forms and the enquiry emails — from the
+ * client's Contact Us and Partner With Us documents.
+ */
+import type {
+  EnquiryField,
+  EnquiryFieldDefinition,
+  EnquiryFormSection,
+  EnquiryType,
+  EnquiryTypeId,
+  SectionContent,
+} from "@/types/content";
 
 export const enquiryTypes: EnquiryType[] = [
   {
@@ -12,13 +22,13 @@ export const enquiryTypes: EnquiryType[] = [
     id: "buyer",
     label: "Buyer Enquiry",
     shortLabel: "Buyer",
-    description: "Pricing, availability and specifications for our product lines.",
+    description: "Looking to source a product — pricing, availability and specifications.",
   },
   {
     id: "supplier",
     label: "Supplier Enquiry",
     shortLabel: "Supplier",
-    description: "Offer your products for our export or import lines.",
+    description: "Introduce your company, products and supply capability.",
   },
   {
     id: "partnership",
@@ -28,106 +38,259 @@ export const enquiryTypes: EnquiryType[] = [
   },
 ];
 
-/** Choices for "Partnership area" on partnership enquiries. */
-export const partnershipAreas = [
-  "Logistics & shipping",
-  "Warehousing",
-  "Inspection & certification",
-  "Trade finance",
-  "Overseas representation",
-  "Other",
-];
+/** Attachment rules: specifications, licences, certificates, CoA or photos. */
+export const ATTACHMENT_LIMITS = {
+  maxFiles: 3,
+  maxMegabytes: 5,
+  accept: ".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx",
+  mimeTypes: [
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ],
+};
+
+/** Every field's default label, placeholder and kind; forms below may override the wording. */
+export const enquiryFieldDefinitions: Record<EnquiryField, EnquiryFieldDefinition> = {
+  name: { kind: "text", label: "Full name", placeholder: "Your name", autoComplete: "name" },
+  company: { kind: "text", label: "Company (legal name)", placeholder: "Registered company name", autoComplete: "organization" },
+  email: { kind: "email", label: "Business email", placeholder: "you@company.com", autoComplete: "email" },
+  phone: { kind: "tel", label: "Phone / WhatsApp", placeholder: "Include country code", autoComplete: "tel" },
+  country: { kind: "text", label: "Country", placeholder: "Where your company is based", autoComplete: "country-name" },
+  website: { kind: "url", label: "Company website", placeholder: "www.company.com", autoComplete: "url" },
+  registration: {
+    kind: "text",
+    label: "Registration details",
+    placeholder: "e.g. trade licence, VAT or import licence number",
+  },
+  designation: {
+    kind: "select",
+    label: "Designation",
+    placeholder: "Select your role",
+    options: [
+      "Owner",
+      "Director",
+      "CEO",
+      "Procurement Manager",
+      "Purchasing Manager",
+      "Import Manager",
+      "Sourcing Manager",
+      "Sales / Export Manager",
+      "Other",
+    ],
+  },
+  product: { kind: "product", label: "Product", placeholder: "Select a product" },
+  grade: { kind: "text", label: "Grade / specification", placeholder: "e.g. 1121 Basmati, Sortexed" },
+  quantity: { kind: "text", label: "Quantity", placeholder: "e.g. 25 MT or 1 × 20' container" },
+  frequency: {
+    kind: "select",
+    label: "Purchase frequency",
+    placeholder: "Select frequency",
+    options: ["One-time purchase", "Monthly", "Quarterly", "Half-yearly", "As required"],
+  },
+  destinationCountry: { kind: "text", label: "Destination country", placeholder: "Where the goods are going" },
+  destinationPort: { kind: "text", label: "Destination port", placeholder: "e.g. Jebel Ali, UAE" },
+  deliveryDate: { kind: "date", label: "Required delivery date" },
+  incoterm: {
+    kind: "select",
+    label: "Preferred Incoterm",
+    placeholder: "Select an Incoterm",
+    options: ["FOB", "CFR", "CIF", "Other", "Not sure"],
+  },
+  paymentMethod: {
+    kind: "select",
+    label: "Preferred payment method",
+    placeholder: "Select a method",
+    options: ["Letter of Credit (LC)", "Advance payment (TT)", "Cash against documents (CAD)", "To be discussed"],
+  },
+  originCountry: { kind: "text", label: "Country of origin", placeholder: "Where the goods are produced" },
+  capacity: { kind: "text", label: "Monthly capacity", placeholder: "e.g. 100 MT per month" },
+  moq: { kind: "text", label: "Minimum order quantity (MOQ)", placeholder: "e.g. 1 × 20' container" },
+  packaging: { kind: "text", label: "Packaging", placeholder: "e.g. 25 kg PP bags" },
+  loadingPort: { kind: "text", label: "Loading port", placeholder: "e.g. Mundra, India" },
+  indicativePrice: { kind: "text", label: "Indicative price", placeholder: "e.g. USD 950 / MT FOB" },
+  paymentTerms: { kind: "text", label: "Payment terms", placeholder: "e.g. 30% advance, balance against documents" },
+  partnershipArea: {
+    kind: "select",
+    label: "Partnership area",
+    placeholder: "Select an area",
+    options: [
+      "Logistics / freight forwarding",
+      "Shipping company",
+      "Warehouse",
+      "Inspection agency",
+      "Testing laboratory",
+      "Financial institution / trade finance",
+      "Customs support",
+      "Overseas representative",
+      "Other",
+    ],
+  },
+  marketsCovered: { kind: "text", label: "Markets covered", placeholder: "Countries or regions you serve" },
+  services: { kind: "textarea", label: "Services offered", placeholder: "What your company provides…" },
+  licences: { kind: "text", label: "Licences & certifications", placeholder: "e.g. ISO 9001, FMC licence" },
+  experience: { kind: "text", label: "Years of experience", placeholder: "e.g. 12 years" },
+  message: { kind: "textarea", label: "Message", placeholder: "Tell us more…" },
+  attachments: {
+    kind: "files",
+    label: "Supporting documents",
+    placeholder: `Up to ${ATTACHMENT_LIMITS.maxFiles} files, ${ATTACHMENT_LIMITS.maxMegabytes} MB each — PDF, image, Word or Excel`,
+  },
+};
+
+const companySection = (extra: EnquiryFormSection["fields"] = []): EnquiryFormSection => ({
+  title: "Company",
+  fields: [
+    { name: "company", required: true },
+    { name: "country", required: true },
+    { name: "website" },
+    ...extra,
+  ],
+});
+
+const contactSection = (phoneRequired: boolean): EnquiryFormSection => ({
+  title: "Contact person",
+  fields: [
+    { name: "name", required: true },
+    { name: "designation" },
+    { name: "email", required: true },
+    { name: "phone", required: phoneRequired },
+  ],
+});
 
 /**
- * The fields each enquiry type asks for, in order. Fields fill a two-column
- * grid; a field left alone on its row spans both columns, and the message
- * always comes last. DRAFT — confirm the fields with the client.
+ * The sections and fields each enquiry type asks for. Fields sit in a
+ * two-column grid; a field left alone on its row, and text areas and uploads,
+ * span both columns. DRAFT — confirm the fields with the client.
  */
-export const enquiryFormFields: Record<EnquiryTypeId, EnquiryFieldConfig[]> = {
+export const enquiryForms: Record<EnquiryTypeId, EnquiryFormSection[]> = {
   general: [
-    { name: "name", required: true },
-    { name: "email", required: true },
-    { name: "company" },
-    { name: "phone" },
-    { name: "country" },
-    { name: "message", required: true, placeholder: "How can we help?" },
+    {
+      title: "Your details",
+      fields: [
+        { name: "name", required: true },
+        { name: "email", required: true, label: "Email" },
+        { name: "phone" },
+        { name: "company", label: "Company" },
+        { name: "country" },
+      ],
+    },
+    {
+      title: "Your message",
+      fields: [{ name: "message", required: true, label: "How can we help?", placeholder: "Your question or message…" }],
+    },
   ],
   buyer: [
-    { name: "name", required: true },
-    { name: "company", required: true },
-    { name: "email", required: true },
-    { name: "phone" },
-    { name: "product", required: true },
-    { name: "quantity", label: "Quantity required", placeholder: "e.g. 25 MT per month" },
-    { name: "country", label: "Destination country or port", placeholder: "e.g. Jebel Ali, UAE" },
+    companySection([{ name: "registration" }]),
+    contactSection(true),
     {
-      name: "message",
-      required: true,
-      placeholder: "Grade or specification, packing, delivery terms and timeline…",
+      title: "Your requirement",
+      fields: [
+        { name: "product", required: true, label: "Product required" },
+        { name: "grade" },
+        { name: "quantity", required: true, label: "Quantity required" },
+        { name: "frequency" },
+        { name: "destinationCountry", required: true },
+        { name: "destinationPort" },
+        { name: "deliveryDate" },
+        { name: "incoterm" },
+        { name: "paymentMethod" },
+        {
+          name: "message",
+          label: "Anything else we should know?",
+          placeholder: "Packaging, documentation, quality expectations…",
+        },
+      ],
+    },
+    {
+      title: "Documents (optional)",
+      fields: [
+        {
+          name: "attachments",
+          label: "Product specification, import licence or other business documents",
+        },
+      ],
     },
   ],
   supplier: [
-    { name: "name", required: true },
-    { name: "company", required: true },
-    { name: "email", required: true },
-    { name: "phone" },
-    { name: "product", required: true, label: "Product you supply" },
-    { name: "quantity", label: "Supply capacity", placeholder: "e.g. 100 MT per month" },
-    { name: "country", label: "Country of origin", placeholder: "Where the goods are produced" },
+    companySection([{ name: "registration" }]),
+    contactSection(true),
     {
-      name: "message",
-      required: true,
-      placeholder: "Grades, certifications, packing and lead times…",
+      title: "What you supply",
+      fields: [
+        { name: "product", required: true, label: "Product you supply" },
+        { name: "grade" },
+        { name: "originCountry", required: true },
+        { name: "capacity" },
+        { name: "moq" },
+        { name: "packaging" },
+        { name: "loadingPort" },
+        { name: "indicativePrice" },
+        { name: "paymentTerms" },
+        { name: "message", label: "Anything else we should know?", placeholder: "Certifications, lead times, experience…" },
+      ],
+    },
+    {
+      title: "Documents (optional)",
+      fields: [{ name: "attachments", label: "Company profile, specifications, certificates, CoA or product photos" }],
     },
   ],
   partnership: [
-    { name: "name", required: true },
-    { name: "company", required: true },
-    { name: "email", required: true },
-    { name: "phone" },
-    { name: "partnershipArea", required: true },
-    { name: "country", placeholder: "Where you operate" },
+    companySection([{ name: "experience" }, { name: "licences" }]),
+    contactSection(false),
     {
-      name: "message",
-      required: true,
-      placeholder: "Tell us about your company and how you'd like to work together…",
+      title: "Partnership",
+      fields: [
+        { name: "partnershipArea", required: true },
+        { name: "marketsCovered" },
+        { name: "services" },
+        {
+          name: "message",
+          required: true,
+          label: "How would you like to work together?",
+          placeholder: "Tell us about your company and the partnership you have in mind…",
+        },
+      ],
+    },
+    {
+      title: "Documents (optional)",
+      fields: [{ name: "attachments", label: "Company profile, licences or certifications" }],
     },
   ],
 };
 
 export const contactContent = {
   heading: {
-    eyebrow: "Enquiry types",
+    eyebrow: "Enquiry routes",
     title: "Four ways to reach us.",
-    description: "One trade desk — we route your message to the team best placed to help.",
+    description:
+      "Each form collects the company and transaction information our team needs to carry out basic background work before responding.",
   } satisfies SectionContent,
   details: {
     title: "Reach us directly",
     labels: { website: "Web", email: "Email", phone: "Phone", address: "Office" },
+    pendingNote: "Phone, WhatsApp, office hours and map details will be added once finalised.",
   },
   social: { title: "Follow us" },
   form: {
     title: "Send an enquiry",
     typeLabel: "Enquiry type",
     optional: "Optional",
-    /** Default label and placeholder for each field; enquiry types may override them. */
-    fields: {
-      name: { label: "Full name", placeholder: "Your name" },
-      company: { label: "Company", placeholder: "Company name" },
-      email: { label: "Email", placeholder: "you@company.com" },
-      phone: { label: "Phone", placeholder: "Include country code" },
-      country: { label: "Country", placeholder: "Where you're based" },
-      product: { label: "Product of interest", placeholder: "Select a product", other: "Other / not listed" },
-      quantity: { label: "Quantity", placeholder: "e.g. 25 MT" },
-      partnershipArea: { label: "Partnership area", placeholder: "Select an area" },
-      message: { label: "Message", placeholder: "Tell us more…" },
-    },
+    otherProduct: "Other / not listed",
     submit: "Send enquiry",
     submitting: "Sending…",
-    privacyNote: "We use your details only to reply to your enquiry.",
+    privacyNote:
+      "We use your details only for internal business evaluation and to reply to your enquiry. Submitting a form does not create a commercial commitment.",
+    files: { choose: "Choose files", remove: "Remove", selected: "selected" },
     success: {
       title: "Thank you — enquiry received.",
-      description: "Our trade desk will review your message and get back to you.",
+      description: "Our trade desk will review your requirement and contact you if a suitable opportunity is identified.",
+      reference: "Your reference",
       again: "Send another enquiry",
     },
     errors: {
@@ -139,9 +302,13 @@ export const contactContent = {
       emailFallback: "You can also email us at",
       required: "This field is required.",
       email: "Enter a valid email address.",
+      phone: "Enter a phone number with its country code.",
+      url: "Enter a website address, e.g. www.company.com.",
+      date: "Choose a valid date.",
+      option: "Choose an option from the list.",
       message: "Please add a few more details.",
       product: "Choose a product from the list.",
-      partnershipArea: "Choose an area from the list.",
+      files: `Attach up to ${ATTACHMENT_LIMITS.maxFiles} files of ${ATTACHMENT_LIMITS.maxMegabytes} MB or less — PDF, image, Word or Excel.`,
     },
   },
 };
@@ -153,15 +320,20 @@ export const enquiryEmails = {
     intro: "A new enquiry was sent from the website.",
     replyHint: "Reply to this email to answer the enquirer directly.",
     viewInAdmin: "View in the admin",
+    attachments: "Attachments",
+    attachmentsHint: "Open the enquiry in the admin to download them.",
     submitted: "Submitted",
     sentFrom: "Sent from",
+    reference: "Reference",
   },
   acknowledgement: {
     subject: "We've received your enquiry",
     greeting: "Hello",
-    body: "Thank you for contacting us. Our trade desk has received your",
+    body: "Thank you for contacting BOSS Global EXIM. Our team has received your",
     about: "about",
-    closing: "We'll review it and get back to you soon. If you'd like to add anything, simply reply to this email.",
+    reference: "Your reference is",
+    closing:
+      "Every enquiry is reviewed by our team before further discussion, and we will contact you regarding availability, specifications, pricing and next steps. If you'd like to add anything, simply reply to this email.",
     signOff: "Kind regards,",
   },
 };

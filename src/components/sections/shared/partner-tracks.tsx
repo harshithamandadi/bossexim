@@ -19,11 +19,12 @@ export function PartnerTracks({ withAnchors = false, className }: PartnerTracksP
           <article data-tone={track.featured ? "dark" : undefined} className={cardStyles({ className: "flex h-full flex-col" })}>
             <h3 className="type-h3">{track.title}</h3>
             <p className="type-body mt-3 text-pretty text-fg-mute">{track.description}</p>
-            <ul className="mt-8 space-y-3 border-t border-border pt-6">
-              {track.audiences.map((audience) => (
-                <li key={audience} className="flex items-center gap-3 text-[15px]">
-                  <Check aria-hidden className="size-4 shrink-0 text-brand" />
-                  {audience}
+            <p className="type-eyebrow mt-8 border-t border-border pt-6 text-fg-mute">{track.pointsLabel}</p>
+            <ul className="mt-4 space-y-3">
+              {track.points.map((point) => (
+                <li key={point} className="flex items-start gap-3 text-[15px]">
+                  <Check aria-hidden className="mt-1 size-4 shrink-0 text-brand" />
+                  {point}
                 </li>
               ))}
             </ul>

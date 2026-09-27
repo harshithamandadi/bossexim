@@ -1,5 +1,5 @@
-/** Page headers, SEO text and the home page's section copy. DRAFT — confirm with the client. */
-import type { CallToAction, LinkItem, PageContent, SectionContent } from "@/types/content";
+/** Page headers, SEO text and the home page's copy — from the client's page documents. */
+import type { CallToAction, LinkItem, PageContent, ProseContent, SectionContent } from "@/types/content";
 import { contactHref, routes } from "./routes";
 import { siteConfig } from "./site";
 
@@ -7,6 +7,8 @@ const { company } = siteConfig;
 
 export const homeContent: {
   hero: SectionContent & { highlight: string; primaryCta: LinkItem; secondaryCta: LinkItem };
+  intro: ProseContent & { cta: LinkItem };
+  markets: SectionContent & { names: string[] };
   services: SectionContent;
   products: SectionContent & { cta: LinkItem };
 } = {
@@ -15,29 +17,54 @@ export const homeContent: {
     title: company.tagline,
     highlight: "Boundaries",
     description:
-      "BOSS Global EXIM connects Indian agriculture with buyers across the Middle East, South-East Asia and Australia — and sources polymers and metal scrap for industry in India.",
+      "BOSS Global EXIM Pvt. Ltd. (BGEXIM) connects reliable suppliers, genuine buyers and international markets through structured sourcing, trading and supply-chain coordination.",
     primaryCta: { label: "Explore products", href: routes.products },
-    secondaryCta: { label: "Partner with us", href: routes.partner },
+    secondaryCta: { label: "Buy, sell or partner", href: routes.partner },
+  },
+  intro: {
+    heading: {
+      eyebrow: "How we trade",
+      title: company.motto,
+    },
+    paragraphs: [
+      "We work with a simple approach: understanding the requirement, identifying suitable sources, verifying commercial and quality details, structuring the transaction, coordinating documentation and logistics, and completing the trade in a transparent manner.",
+      "BGEXIM is part of the wider BOSS Group and benefits from the Group’s experience in shipping, freight forwarding, logistics, retail, construction, hospitality, IT and BPO. This wider ecosystem gives us access to practical business experience and international logistics support.",
+    ],
+    cta: { label: "About BOSS Global EXIM", href: routes.about },
+  },
+  markets: {
+    eyebrow: "Core markets",
+    title: "Where we trade today.",
+    description:
+      "Our current core markets include India, Singapore, Malaysia, Australia, UAE, Thailand, Saudi Arabia and Indonesia, while our wider network can support additional international opportunities.",
+    names: ["India", "Singapore", "Malaysia", "Australia", "UAE", "Thailand", "Saudi Arabia", "Indonesia"],
   },
   services: {
     eyebrow: "What we do",
-    title: "Everything cross-border trade needs, under one roof.",
-    description: company.summary,
+    title: "Sourcing, trading and supply-chain coordination.",
+    description:
+      "Merchant exporter, merchant importer and supply-chain solutions partner — with global sourcing behind every trade.",
   },
   products: {
     eyebrow: "Products",
-    title: "Agri out of India. Industry into India.",
-    description: "Staple agri-commodities for global buyers, and industrial raw materials for Indian manufacturers.",
-    cta: { label: "View the full catalogue", href: routes.products },
+    title: "From India to the world. From the world to Indian industry.",
+    description:
+      "Selected agricultural products for international buyers, and polymers and recyclable metals for Indian manufacturers and recyclers.",
+    cta: { label: "View all products", href: routes.products },
   },
 };
 
 export const closingCta: CallToAction = {
   title: "Ready to trade beyond boundaries?",
-  description: "Tell us what you need to buy, sell or ship — our trade desk will take it from there.",
+  description:
+    "If you have a genuine business opportunity and would like to explore international trade with BGEXIM, we invite you to buy, sell or partner with us.",
   primary: { label: "Send an enquiry", href: contactHref() },
-  secondary: { label: "Become a partner", href: routes.partner },
+  secondary: { label: "Partner with us", href: routes.partner },
 };
+
+/** Shown with product information: the client's content note. */
+export const contentNote =
+  "Product availability, specifications, certifications, regulatory requirements and documentation vary by product, HS classification, origin, destination and transaction. All requirements should be confirmed before commercial execution.";
 
 export type PageKey =
   | "about"
@@ -46,6 +73,7 @@ export type PageKey =
   | "tradeProcess"
   | "partner"
   | "group"
+  | "media"
   | "resources"
   | "faq"
   | "contact";
@@ -53,67 +81,77 @@ export type PageKey =
 export const pageContent: Record<PageKey, PageContent> = {
   about: {
     eyebrow: "About Us",
-    title: "Rooted in India. Trading with the world.",
+    title: "Trusted international trade.",
     description:
-      "Who we are, the group behind us, what we stand for, the people who lead us and the registrations we trade under.",
+      "BOSS Global EXIM Pvt. Ltd. is an international trading arm within the wider BOSS business ecosystem — connecting products, markets and people.",
     metaTitle: "About Us",
     metaDescription:
-      "About BOSS Global EXIM Pvt. Ltd — a merchant exporter and importer of the BOSS Group. Vision, mission, values, leadership and registrations.",
+      "About BOSS Global EXIM Pvt. Ltd. (BGEXIM), the international trading arm of the BOSS Group — vision, mission, values, leadership and registrations.",
   },
   business: {
     eyebrow: "Business",
-    title: "Built for two-way trade.",
-    description:
-      "How we work as a merchant exporter, merchant importer and supply chain partner — and where we're focused today.",
+    title: "Focused today. Flexible for tomorrow.",
+    description: "A flexible B2B trading model designed to connect reliable supply with genuine demand.",
     metaTitle: "Business",
     metaDescription:
-      "BOSS Global EXIM's business model: merchant export, merchant import, supply chain solutions and global sourcing.",
+      "BGEXIM's business model: global sourcing & trade facilitation, principal trading, structured / back-to-back trading and supply-chain coordination.",
   },
   products: {
     eyebrow: "Products",
-    title: "Our product lines.",
-    description: "Agri-commodity exports from India, and industrial raw material imports for Indian manufacturers.",
+    title: "Our product portfolio.",
+    description:
+      "Agricultural products sourced from India for international buyers, and polymers and recyclable metals sourced internationally for Indian industry.",
     metaTitle: "Products",
     metaDescription:
-      "Export lines — rice, spices, dehydrated onion & garlic, pulses, dried chillies, groundnuts and jaggery. Import lines — polymers and metal scrap.",
+      "Exports from India — rice, spices, dehydrated onion & garlic, pulses, dried chillies, groundnuts and jaggery. Imports — polymers, polyester chips and recyclable metals.",
   },
   tradeProcess: {
     eyebrow: "Trade Process",
-    title: "Simple, transparent, end to end.",
+    title: "Clear from enquiry to completion.",
     description:
-      "How an enquiry becomes a delivered shipment, how we verify quality, and where our products travel.",
+      "A structured trade process designed to reduce uncertainty and keep every transaction clear — with quality verification and a growing international network behind it.",
     metaTitle: "Trade Process",
     metaDescription:
-      "How BOSS Global EXIM works — our six-step trade process, quality verification and global presence.",
+      "How BGEXIM works: Understand → Source → Verify → Structure → Execute → Complete. Quality verification, global presence and partnerships.",
   },
   partner: {
     eyebrow: "Partner With Us",
-    title: "Grow with BOSS EXIM.",
-    description: "Register as a buyer or supplier, or join our network as a strategic business partner.",
+    title: "Buy, sell or partner with us.",
+    description:
+      "BGEXIM welcomes long-term relationships with genuine buyers, reliable suppliers and experienced strategic business partners.",
     metaTitle: "Partner With Us",
     metaDescription:
-      "Register as a buyer or supplier with BOSS Global EXIM, or become a strategic business partner in logistics, warehousing, inspection, finance or representation.",
+      "Register as a buyer or supplier with BOSS Global EXIM, or become a strategic business partner — logistics, warehousing, inspection, finance or representation.",
   },
   group: {
     eyebrow: "BOSS Group",
-    title: "Part of something bigger.",
+    title: "Backed by a diversified group.",
     description:
-      "BOSS Global EXIM is part of the BOSS Group — with businesses spanning shipping, retail, construction, hospitality, IT and BPO.",
+      "BGEXIM is part of the wider BOSS Group — a diversified business ecosystem with interests in logistics, retail, construction, hospitality, IT, BPO and business services.",
     metaTitle: "BOSS Group",
     metaDescription:
-      "The BOSS Group: BOSS Container Line, BOSS Global EXIM, BOSS Retail, BOSS Constructions, BOSS Hospitality, BOSS IT and BOSS BPO.",
+      "The BOSS Group: BOSS Container Line (NVOCC, freight forwarding, trading, break bulk), BOSS Retail, BOSS Constructions, BOSS Hospitality, BOSS IT and BOSS BPO.",
+  },
+  media: {
+    eyebrow: "Media & Events",
+    title: "Our business journey, in pictures.",
+    description:
+      "Real photographs of the people, places, products and partnerships behind BGEXIM — a growing record of our market development and international trade.",
+    metaTitle: "Media & Events",
+    metaDescription:
+      "BGEXIM media and events: leadership, business meetings, supplier visits, trade events, international business and BOSS Group activities.",
   },
   resources: {
     eyebrow: "Resources",
-    title: "Brochures & specifications.",
-    description: "Company and group brochures, plus specification sheets for our export and import lines.",
+    title: "Corporate & product information.",
+    description: "Useful corporate and product information for buyers, suppliers and business partners.",
     metaTitle: "Resources",
-    metaDescription: "Download the BGEXIM corporate brochure, the BOSS Group brochure and product specifications.",
+    metaDescription: "BGEXIM corporate brochure, BOSS Group brochure and product specifications on request.",
   },
   faq: {
     eyebrow: "FAQ",
     title: "Answers for buyers, suppliers and partners.",
-    description: "Search our most common questions — or ask our assistant, who answers from the same list.",
+    description: "Search our most common questions — or ask Aira, our assistant, who answers from the same list.",
     metaTitle: "Frequently Asked Questions",
     metaDescription:
       "Answers about BOSS Global EXIM's export and import products, markets, trade process, quality checks, pricing and partnerships.",
@@ -121,9 +159,10 @@ export const pageContent: Record<PageKey, PageContent> = {
   contact: {
     eyebrow: "Contact Us",
     title: "Let's talk trade.",
-    description: "General, buyer, supplier or partnership enquiries — tell us what you need and we'll respond.",
+    description:
+      "BGEXIM welcomes enquiries from buyers, suppliers and strategic business partners interested in genuine international trade opportunities.",
     metaTitle: "Contact Us",
     metaDescription:
-      "Contact BOSS Global EXIM — general enquiries, buyer enquiries, supplier enquiries and business partnerships.",
+      "Contact BOSS Global EXIM, BOSS Towers, Madhapur, Hyderabad — general enquiries, buyer enquiries, supplier enquiries and business partnerships.",
   },
 };
