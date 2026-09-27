@@ -188,6 +188,8 @@ export interface Enquiry {
  */
 export interface EnquiryFile {
   id: number;
+  prefix?: string | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -344,6 +346,8 @@ export interface Media {
    * What the image shows, e.g. “Rice being packed at the mill”.
    */
   alt: string;
+  prefix?: string | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -620,6 +624,8 @@ export interface Resource {
  */
 export interface Document {
   id: number;
+  prefix?: string | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -896,6 +902,8 @@ export interface EnquiriesSelect<T extends boolean = true> {
  * via the `definition` "enquiry-files_select".
  */
 export interface EnquiryFilesSelect<T extends boolean = true> {
+  prefix?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1071,6 +1079,8 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1122,6 +1132,8 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "documents_select".
  */
 export interface DocumentsSelect<T extends boolean = true> {
+  prefix?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

@@ -38,10 +38,13 @@ export const enquiryTypes: EnquiryType[] = [
   },
 ];
 
-/** Attachment rules: specifications, licences, certificates, CoA or photos. */
+/**
+ * Attachment rules: specifications, licences, certificates, CoA or photos.
+ * The total stays under 4 MB because hosts such as Vercel refuse requests over 4.5 MB.
+ */
 export const ATTACHMENT_LIMITS = {
   maxFiles: 3,
-  maxMegabytes: 5,
+  maxTotalMegabytes: 4,
   accept: ".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx",
   mimeTypes: [
     "application/pdf",
@@ -139,7 +142,7 @@ export const enquiryFieldDefinitions: Record<EnquiryField, EnquiryFieldDefinitio
   attachments: {
     kind: "files",
     label: "Supporting documents",
-    placeholder: `Up to ${ATTACHMENT_LIMITS.maxFiles} files, ${ATTACHMENT_LIMITS.maxMegabytes} MB each — PDF, image, Word or Excel`,
+    placeholder: `Up to ${ATTACHMENT_LIMITS.maxFiles} files, ${ATTACHMENT_LIMITS.maxTotalMegabytes} MB in total — PDF, image, Word or Excel`,
   },
 };
 
@@ -308,7 +311,7 @@ export const contactContent = {
       option: "Choose an option from the list.",
       message: "Please add a few more details.",
       product: "Choose a product from the list.",
-      files: `Attach up to ${ATTACHMENT_LIMITS.maxFiles} files of ${ATTACHMENT_LIMITS.maxMegabytes} MB or less — PDF, image, Word or Excel.`,
+      files: `Attach up to ${ATTACHMENT_LIMITS.maxFiles} files, ${ATTACHMENT_LIMITS.maxTotalMegabytes} MB in total — PDF, image, Word or Excel. Larger files can be shared by email once our team replies.`,
     },
   },
 };

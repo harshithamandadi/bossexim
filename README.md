@@ -77,7 +77,7 @@ The enquiry form (Contact page, and the registration form on Partner With Us) as
 enquiry type — general, buyer, supplier, partnership — for its own sections and fields,
 set in `enquiryForms` in `src/config/contact.ts` (field kinds and wording in
 `enquiryFieldDefinitions`). Buyer, supplier and partnership forms accept up to 3
-attachments of 5 MB (`ATTACHMENT_LIMITS`). The server action
+attachments, 4 MB in total (`ATTACHMENT_LIMITS`). The server action
 (`src/app/(site)/contact/actions.ts`) validates against the same config; fields without
 their own admin column are kept as labelled **details**. `src/lib/enquiry/deliver.ts` then:
 
@@ -115,20 +115,57 @@ or paid API is involved:
 Email goes through the company's mailbox over SMTP (`SMTP_*` in `.env`). With
 `SMTP_HOST` empty, email is off and enquiries are only saved in the admin.
 
-## Production checklist
+## Deploying to Vercel
 
-- `PAYLOAD_SECRET` — a long random string, unique to production.
-- `DATABASE_URL` — a persistent database: a Turso URL (`libsql://…`, plus `DATABASE_AUTH_TOKEN`)
-  or a file path on a server with persistent disk. Serverless hosts need Turso (or a switch to
-  Postgres via `@payloadcms/db-postgres`).
-- Uploaded images and PDFs are stored in `cms-data/` on disk. Serverless hosts need a storage
-  adapter (e.g. `@payloadcms/storage-s3` or `@payloadcms/storage-vercel-blob`).
-- Email: set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` and `EMAIL_FROM_ADDRESS` for the
-  company mailbox, and `SITE_URL` for links in emails. The same settings send admin password resets.
-- Database schema: locally, Payload syncs the schema automatically (re-run `npm run seed` after
-  changing a collection). Production needs migrations — create them with `npx payload migrate:create`
-  and apply them with `npx payload migrate` before each deploy.
-- Run `npm run seed` once against the production database, then manage content in `/admin`.
+Vercel keeps nothing written to disk, so production needs a hosted database (Turso, free
+tier available) and Vercel Blob for uploaded images and files. The build refuses to run on
+Vercel without them, so a half-configured deploy never replaces a working site.
+
+> Vercel's free **Hobby** plan is for non-commercial use. It is fine for a client preview;
+> the live company site needs **Pro** or the client's own hosting (TASKS.md, D1).
+
+**One-time setup**
+
+1. **Database** — create a Turso database (turso.tech) and note its URL (`libsql://…`) and
+   an auth token.
+2. **Vercel project** — import the GitHub repo. Under **Storage**, create a **Blob** store
+   and connect it to the project; that adds `BLOB_READ_WRITE_TOKEN`.
+3. **Environment variables** (Project → Settings → Environment Variables):
+
+   | Variable | Value |
+   | --- | --- |
+   | `PAYLOAD_SECRET` | A long random string, different from your local one |
+   | `DATABASE_URL` | The Turso URL, `libsql://….turso.io` |
+   | `DATABASE_AUTH_TOKEN` | The Turso token |
+   | `SITE_URL` | The site's public address, used for links in emails |
+   | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM_ADDRESS` | Optional — the company mailbox. Without them, enquiries are only saved in the admin |
+   | `ENQUIRY_WEBHOOK_URL` | Optional — also post each enquiry as JSON |
+
+4. **Create the tables and load the content** — from this folder on your computer, with the
+   production values in the shell (PowerShell shown; the seed uploads the product photos to
+   Blob):
+
+   ```powershell
+   $env:DATABASE_URL="libsql://….turso.io"; $env:DATABASE_AUTH_TOKEN="…"
+   $env:BLOB_READ_WRITE_TOKEN="…"; $env:PAYLOAD_SECRET="<the production secret>"
+   $env:SEED_ADMIN_EMAIL="…"; $env:SEED_ADMIN_PASSWORD="<a strong password>"
+   npm run migrate
+   $env:NODE_ENV="production"; npm run seed
+   ```
+
+   Setting `NODE_ENV=production` stops the seed from syncing the schema itself, which would
+   clash with migrations.
+5. **Deploy** — push to `main`. Vercel runs `npm run vercel-build`: it applies any new
+   migrations, then builds the site.
+
+**Changing a collection later**: run `npm run migrate:create <name>` locally and commit the new
+file in `src/migrations/`; the next deploy applies it. Locally, Payload keeps syncing the
+schema by itself — if the dev server stops on a schema prompt or an "index already exists"
+error, move `cms-data/` aside and run `npm run seed` for a fresh local database.
+
+**Limits on Vercel**: requests are capped at 4.5 MB, so enquiry attachments are limited to
+4 MB in total (checked in the browser before sending). The enquiry rate limit is kept in
+memory, so it applies per server instance.
 
 ## Project structure
 

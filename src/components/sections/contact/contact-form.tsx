@@ -15,6 +15,7 @@ import {
   HONEYPOT_FIELD,
   OTHER_PRODUCT_VALUE,
   SOURCE_FIELD,
+  exceedsAttachmentLimits,
   fieldLabel,
   type EnquiryFormState,
 } from "@/lib/enquiry/schema";
@@ -89,6 +90,8 @@ function ContactForm({
   // defaultValue — so remount the fields per response to restore what was typed.
   const [answeredState, setAnsweredState] = useState(state);
   const [responseCount, setResponseCount] = useState(0);
+  // Oversized uploads are stopped here: the server would refuse the whole request before our code sees it.
+  const [attachmentError, setAttachmentError] = useState<string>();
   if (state !== answeredState) {
     setAnsweredState(state);
     setResponseCount((count) => count + 1);
@@ -103,7 +106,18 @@ function ContactForm({
     .map((enquiryType) => ({ value: enquiryType.id, label: enquiryType.shortLabel }));
 
   return (
-    <form action={formAction} noValidate className="flex flex-col gap-8">
+    <form
+      action={formAction}
+      noValidate
+      onSubmit={(event) => {
+        const input = event.currentTarget.elements.namedItem("attachments");
+        const files = input instanceof HTMLInputElement && input.files ? Array.from(input.files) : [];
+        const tooLarge = exceedsAttachmentLimits(files);
+        setAttachmentError(tooLarge ? form.errors.files : undefined);
+        if (tooLarge) event.preventDefault();
+      }}
+      className="flex flex-col gap-8"
+    >
       <div>
         <h2 className="type-h3">{form.title}</h2>
         {typeOptions.length > 1 && (
@@ -143,7 +157,7 @@ function ContactForm({
                   <div key={`${field.name}:${responseCount}`} className={cn(wide.has(field.name) && "sm:col-span-2")}>
                     <EnquiryFieldControl
                       field={field}
-                      error={errors?.[field.name]}
+                      error={(field.name === "attachments" && attachmentError) || errors?.[field.name]}
                       defaultValue={values?.[field.name] ?? (field.name === "product" ? initialProduct : undefined)}
                       products={products}
                     />

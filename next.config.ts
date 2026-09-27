@@ -18,8 +18,8 @@ const nextConfig: NextConfig = {
     // The site and the admin each have their own root layout, so unmatched URLs
     // need an app-wide 404 (app/global-not-found.tsx).
     globalNotFound: true,
-    // Enquiry forms accept up to 3 attachments of 5 MB each (see ATTACHMENT_LIMITS).
-    serverActions: { bodySizeLimit: "16mb" },
+    // Enquiry attachments total at most 4 MB (see ATTACHMENT_LIMITS); Vercel caps requests at 4.5 MB.
+    serverActions: { bodySizeLimit: "4.5mb" },
   },
   turbopack: {
     root: path.resolve(dirname),

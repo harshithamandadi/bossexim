@@ -104,11 +104,15 @@ export function isHoneypotFilled(formData: FormData): boolean {
   return String(formData.get(HONEYPOT_FIELD) ?? "").length > 0;
 }
 
+/** Count and total size — also checked in the browser before sending (see contact-form.tsx). */
+export function exceedsAttachmentLimits(files: { size: number }[]): boolean {
+  const { maxFiles, maxTotalMegabytes } = ATTACHMENT_LIMITS;
+  const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+  return files.length > maxFiles || totalBytes > maxTotalMegabytes * BYTES_PER_MEGABYTE;
+}
+
 function attachmentsError(files: File[]): string | undefined {
-  const { maxFiles, maxMegabytes, mimeTypes } = ATTACHMENT_LIMITS;
-  const valid =
-    files.length <= maxFiles &&
-    files.every((file) => file.size <= maxMegabytes * BYTES_PER_MEGABYTE && mimeTypes.includes(file.type));
+  const valid = !exceedsAttachmentLimits(files) && files.every((file) => ATTACHMENT_LIMITS.mimeTypes.includes(file.type));
   return valid ? undefined : messages.files;
 }
 
