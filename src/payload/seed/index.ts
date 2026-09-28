@@ -28,8 +28,12 @@ import {
 
 const IMAGES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "images");
 
-/** Seeding runs outside Next.js, so there are no pages to refresh. */
-const context = { disableRevalidate: true };
+/**
+ * Seeding runs outside Next.js, so there are no pages to refresh. Each call gets its own
+ * object: Payload writes per-request state into `context` (the cloud-storage plugin keeps the
+ * uploaded file there), so a shared object makes every upload after the first one fail.
+ */
+const seedContext = () => ({ disableRevalidate: true });
 
 const CONTENT: CollectionSlug[] = [
   "products",
@@ -54,12 +58,12 @@ async function ensure<T extends CollectionSlug>(
   const { docs } = await payload.find({ collection, where, limit: 1, depth: 0 });
   if (docs[0]) return docs[0];
   created[collection] = (created[collection] ?? 0) + 1;
-  return payload.create({ collection, data, context });
+  return payload.create({ collection, data, context: seedContext() });
 }
 
 async function reset(payload: Payload) {
   for (const collection of CONTENT) {
-    await payload.delete({ collection, where: { id: { exists: true } }, context });
+    await payload.delete({ collection, where: { id: { exists: true } }, context: seedContext() });
   }
   payload.logger.info("Removed existing content (users kept).");
 }
@@ -72,7 +76,7 @@ async function seedAdmin(payload: Payload) {
     payload.logger.info("No users yet — create the first admin account at /admin.");
     return;
   }
-  await payload.create({ collection: "users", data: { email, password, name: "Site admin", role: "admin" }, context });
+  await payload.create({ collection: "users", data: { email, password, name: "Site admin", role: "admin" }, context: seedContext() });
   payload.logger.info(`Created admin account ${email}.`);
 }
 
@@ -83,7 +87,7 @@ async function uploadPhotos(payload: Payload, photos: { file: string; alt: strin
       collection: "media",
       data: { alt: photo.alt },
       filePath: path.join(IMAGES_DIR, photo.file),
-      context,
+      context: seedContext(),
     });
     ids.push(doc.id);
   }
@@ -94,7 +98,7 @@ async function uploadPhotos(payload: Payload, photos: { file: string; alt: strin
 async function fillCompanyDetails(payload: Payload) {
   const current = await payload.findGlobal({ slug: "company-details", depth: 0 });
   const contact = { ...seedCompanyDetails.contact, ...Object.fromEntries(Object.entries(current.contact ?? {}).filter(([, value]) => value)) };
-  await payload.updateGlobal({ slug: "company-details", data: { contact }, context });
+  await payload.updateGlobal({ slug: "company-details", data: { contact }, context: seedContext() });
 }
 
 async function seed() {
