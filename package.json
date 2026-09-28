@@ -14,7 +14,7 @@
     "seed": "payload run src/payload/seed/index.ts",
     "migrate": "payload migrate",
     "migrate:create": "payload migrate:create",
-    "vercel-build": "payload migrate && next build"
+    "vercel-build": "payload migrate && npm run seed && next build"
   },
   "dependencies": {
     "@payloadcms/db-sqlite": "^3.90.1",

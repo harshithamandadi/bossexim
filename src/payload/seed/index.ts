@@ -98,6 +98,13 @@ async function fillCompanyDetails(payload: Payload) {
 }
 
 async function seed() {
+  // Vercel runs this on every build; it only seeds when SEED_ON_BUILD=true, so a later
+  // deploy never brings back content an editor deleted.
+  if (process.env.VERCEL && process.env.SEED_ON_BUILD !== "true") {
+    console.log("Seed skipped (set SEED_ON_BUILD=true to load the starting content).");
+    return;
+  }
+
   const payload = await getPayload({ config });
   if (process.argv.includes("--reset")) await reset(payload);
 

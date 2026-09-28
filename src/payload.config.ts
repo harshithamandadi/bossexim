@@ -34,9 +34,17 @@ if (onVercel && !blobToken) {
   throw new Error("BLOB_READ_WRITE_TOKEN is missing — connect a Vercel Blob store to this project (see README → Deploying to Vercel).");
 }
 
+/**
+ * Turso's Vercel integration names its variables TURSO_DATABASE_URL / TURSO_AUTH_TOKEN,
+ * with the prefix chosen when connecting (this project uses "DATABASE_").
+ */
+const firstEnv = (...names: string[]) => names.map((name) => process.env[name]).find(Boolean);
+const DATABASE_URL_NAMES = ["DATABASE_URL", "DATABASE_TURSO_DATABASE_URL", "TURSO_DATABASE_URL"];
+const DATABASE_TOKEN_NAMES = ["DATABASE_AUTH_TOKEN", "DATABASE_TURSO_AUTH_TOKEN", "TURSO_AUTH_TOKEN"];
+
 /** SQLite creates the database file but not its folder, e.g. cms-data/ on a fresh clone. */
 function databaseUrl(): string {
-  const url = requiredEnv("DATABASE_URL");
+  const url = firstEnv(...DATABASE_URL_NAMES) || requiredEnv("DATABASE_URL");
   if (onVercel && url.startsWith("file:")) {
     throw new Error("DATABASE_URL must be a hosted libSQL database on Vercel (e.g. libsql://….turso.io), not a local file.");
   }
@@ -81,7 +89,7 @@ export default buildConfig({
   db: sqliteAdapter({
     client: {
       url: databaseUrl(),
-      authToken: process.env.DATABASE_AUTH_TOKEN,
+      authToken: firstEnv(...DATABASE_TOKEN_NAMES),
     },
     // Production schema changes ship as migrations (`npm run migrate:create`); locally the schema syncs itself.
     migrationDir: path.resolve(dirname, "migrations"),

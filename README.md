@@ -126,37 +126,30 @@ Vercel without them, so a half-configured deploy never replaces a working site.
 
 **One-time setup**
 
-1. **Database** — create a Turso database (turso.tech) and note its URL (`libsql://…`) and
-   an auth token.
-2. **Vercel project** — import the GitHub repo. Under **Storage**, create a **Blob** store
-   and connect it to the project; that adds `BLOB_READ_WRITE_TOKEN`.
+1. **Vercel project** — import the GitHub repo (Add New → Project).
+2. **Storage** (Project → Storage), both free on Hobby:
+   - **Blob** → Create → connect to the project. Adds `BLOB_READ_WRITE_TOKEN`.
+   - **Turso** (from the Marketplace) → free Starter plan → create a database and connect it,
+     with **database branching off** (so every deploy shares one database) and the prefix
+     `DATABASE`. That adds `DATABASE_TURSO_DATABASE_URL` and `DATABASE_TURSO_AUTH_TOKEN`, which
+     the site reads directly. (A database made on turso.tech works too: set `DATABASE_URL` and
+     `DATABASE_AUTH_TOKEN` instead.)
 3. **Environment variables** (Project → Settings → Environment Variables):
 
    | Variable | Value |
    | --- | --- |
    | `PAYLOAD_SECRET` | A long random string, different from your local one |
-   | `DATABASE_URL` | The Turso URL, `libsql://….turso.io` |
-   | `DATABASE_AUTH_TOKEN` | The Turso token |
+   | `SEED_ON_BUILD` | `true` for the first deploy — loads the starting content and product photos |
+   | `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` | The first admin login, created by the seed |
    | `SITE_URL` | The site's public address, used for links in emails |
    | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM_ADDRESS` | Optional — the company mailbox. Without them, enquiries are only saved in the admin |
    | `ENQUIRY_WEBHOOK_URL` | Optional — also post each enquiry as JSON |
 
-4. **Create the tables and load the content** — from this folder on your computer, with the
-   production values in the shell (PowerShell shown; the seed uploads the product photos to
-   Blob):
-
-   ```powershell
-   $env:DATABASE_URL="libsql://….turso.io"; $env:DATABASE_AUTH_TOKEN="…"
-   $env:BLOB_READ_WRITE_TOKEN="…"; $env:PAYLOAD_SECRET="<the production secret>"
-   $env:SEED_ADMIN_EMAIL="…"; $env:SEED_ADMIN_PASSWORD="<a strong password>"
-   npm run migrate
-   $env:NODE_ENV="production"; npm run seed
-   ```
-
-   Setting `NODE_ENV=production` stops the seed from syncing the schema itself, which would
-   clash with migrations.
-5. **Deploy** — push to `main`. Vercel runs `npm run vercel-build`: it applies any new
-   migrations, then builds the site.
+4. **Deploy** (Deployments → Redeploy, or push to `main`). Vercel runs `npm run vercel-build`:
+   it applies migrations, seeds when `SEED_ON_BUILD=true`, then builds the site.
+5. After the first successful deploy, **delete `SEED_ON_BUILD`** so later deploys never bring
+   back content an editor deleted. (The seed only adds what's missing, so leaving it on is
+   harmless for a short demo.)
 
 **Changing a collection later**: run `npm run migrate:create <name>` locally and commit the new
 file in `src/migrations/`; the next deploy applies it. Locally, Payload keeps syncing the
