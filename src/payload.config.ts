@@ -101,8 +101,9 @@ export default buildConfig({
       token: blobToken,
       // Keeps the database schema identical with and without Blob, so one set of migrations fits both.
       alwaysInsertFields: true,
-      // Unguessable file URLs; downloads still go through Payload's access control.
-      addRandomSuffix: true,
+      // No random suffix: the adapter records the suffixed name for only one of an image's
+      // resized copies, which breaks the others. Files are still served through Payload.
+      addRandomSuffix: false,
       collections: { media: true, documents: true, "enquiry-files": true },
     }),
   ],

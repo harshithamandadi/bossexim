@@ -106,7 +106,9 @@ async function seed() {
   }
 
   const payload = await getPayload({ config });
-  if (process.argv.includes("--reset")) await reset(payload);
+  // On Vercel, SEED_RESET=true does the same as --reset for one deploy (remove it afterwards).
+  const resetRequested = process.argv.includes("--reset") || (process.env.VERCEL && process.env.SEED_RESET === "true");
+  if (resetRequested) await reset(payload);
 
   const marketIds = new Map<string, number>();
   for (const market of seedMarkets) {

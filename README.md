@@ -151,6 +151,11 @@ Vercel without them, so a half-configured deploy never replaces a working site.
    back content an editor deleted. (The seed only adds what's missing, so leaving it on is
    harmless for a short demo.)
 
+To start the content over on Vercel (e.g. after a failed seed), set `SEED_RESET=true` together
+with `SEED_ON_BUILD=true` and redeploy: the build deletes the content (users and enquiries are
+kept) and seeds it again. Remove `SEED_RESET` straight afterwards, or every deploy will wipe
+the editors' changes.
+
 **Changing a collection later**: run `npm run migrate:create <name>` locally and commit the new
 file in `src/migrations/`; the next deploy applies it. Locally, Payload keeps syncing the
 schema by itself — if the dev server stops on a schema prompt or an "index already exists"
