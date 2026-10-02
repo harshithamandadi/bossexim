@@ -2,6 +2,9 @@ import { LocalNav } from "@/components/layout/local-nav";
 import { PageHero } from "@/components/layout/page-hero";
 import { CompanyGrid } from "@/components/sections/group/company-grid";
 import { ContainerLineSpotlight } from "@/components/sections/group/container-line";
+import { ContainerLineNetwork } from "@/components/sections/group/container-line-network";
+import { GroupJourney } from "@/components/sections/group/group-journey";
+import { GroupRecognition } from "@/components/sections/group/group-recognition";
 import { CtaSection } from "@/components/sections/shared/cta-section";
 import { ProseSplit } from "@/components/sections/shared/prose";
 import { ButtonLink } from "@/components/ui/button";
@@ -41,9 +44,21 @@ export default function BossGroupPage() {
         <ContainerLineSpotlight />
       </Section>
 
+      <Section id={ids.network} className="pt-0 sm:pt-0">
+        <ContainerLineNetwork />
+      </Section>
+
       <Section id={ids.companies} tone="mist">
         <SectionHeader {...groupCompanies.heading} />
         <CompanyGrid className="mt-14" />
+      </Section>
+
+      <Section id={ids.journey}>
+        <GroupJourney />
+      </Section>
+
+      <Section id={ids.recognition} tone="mist">
+        <GroupRecognition />
       </Section>
 
       <CtaSection />

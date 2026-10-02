@@ -20,7 +20,7 @@ those empty, the admin asks you to create the first account — it becomes an ad
 | `npm run build` | Production build (also type-checks) |
 | `npm run lint` / `npm run typecheck` | ESLint / TypeScript |
 | `npm run seed` | Adds any missing starting content. Safe to re-run — never overwrites edits |
-| `npm run seed -- --reset` | Deletes all content (users are kept) and loads the starting content again |
+| `SEED_RESET=true npm run seed` | Deletes all content (users and enquiries are kept) and loads the starting content again (PowerShell: `$env:SEED_RESET="true"; npm run seed`) |
 | `npm run generate:types` | Regenerates `src/payload-types.ts` after changing a collection |
 | `npm run generate:importmap` | Registers new custom admin components |
 

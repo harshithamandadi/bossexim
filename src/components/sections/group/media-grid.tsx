@@ -4,6 +4,7 @@ import { Icon } from "@/components/ui/icon";
 import { mediaEvents, toAnchorId, uiLabels } from "@/config";
 import { cn } from "@/lib/cn";
 import { getGalleries } from "@/lib/content/queries";
+import { GalleryViewer } from "./gallery-viewer";
 import type { Gallery } from "@/types/content";
 
 /** Placeholder washes for galleries that don't have photos yet (cycled in order). */
@@ -20,7 +21,13 @@ export async function MediaGrid({ className }: { className?: string }) {
     <RevealGroup as="ul" className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}>
       {galleries.map((gallery, index) => (
         <RevealItem as="li" key={gallery.title} id={toAnchorId(gallery.title)} className="scroll-mt-32">
-          <GalleryTile gallery={gallery} wash={PLACEHOLDER_WASHES[index % PLACEHOLDER_WASHES.length]} />
+          {gallery.images.length > 0 ? (
+            <GalleryViewer gallery={gallery} closeLabel={mediaEvents.close}>
+              <GalleryTile gallery={gallery} />
+            </GalleryViewer>
+          ) : (
+            <GalleryTile gallery={gallery} wash={PLACEHOLDER_WASHES[index % PLACEHOLDER_WASHES.length]} />
+          )}
         </RevealItem>
       ))}
     </RevealGroup>

@@ -27,8 +27,8 @@ export const aboutGroup: ProseContent & { cta: LinkItem } = {
     title: "An established business ecosystem.",
   },
   paragraphs: [
-    "BOSS Group is a diversified business group with activities across Australia, Singapore, Malaysia and India. Over the years, the Group has developed experience in shipping line, retail, construction, hospitality, IT and BPO services. Each business operates with a focus on customer service, practical execution and long-term growth.",
-    "For BGEXIM, the strongest advantage of being part of the BOSS Group is access to an established business ecosystem and international logistics capability. BOSS Container Line supports shipping, freight forwarding, container trading, break bulk and related logistics services through offices and partner networks across important trade markets.",
+    "Founded in 2000, BOSS Group is a diversified business group with activities across Australia, Singapore, Malaysia and India. Over more than two decades, the Group has developed experience in shipping line, retail, construction, hospitality, real estate, IT and BPO services. Each business operates with a focus on customer service, practical execution and long-term growth.",
+    "For BGEXIM, the strongest advantage of being part of the BOSS Group is access to an established business ecosystem and international logistics capability. BOSS Container Line supports shipping, freight forwarding, container trading, break bulk and related logistics services through offices in Singapore, Malaysia and India and 31 agency agreements across important trade markets.",
   ],
   cta: { label: "Explore the BOSS Group", href: routes.group },
 };

@@ -76,48 +76,61 @@ export const seedGroupCompanies: Omit<GroupCompany, "logo">[] = [
   {
     name: "BOSS Container Line",
     description:
-      "The shipping and logistics vertical — NVOCC services, freight forwarding, container trading, break bulk cargo handling and related supply-chain support.",
+      "The shipping and logistics vertical — a registered NVOCC offering freight forwarding, container trading, break bulk, project cargo and 3PL, with 31 agency agreements across Asia, the Middle East and Africa.",
     icon: "ship",
   },
   {
     name: "BOSS Retail",
     description:
-      "The Group’s customer-facing retail activities in Australia, operating in the convenience and fuel-retail environment with a focus on accessibility, service and operational efficiency.",
+      "A network of 45+ fuel and convenience stores across Australia under the BP, AMPOL, Shell and Caltex banners — premium fuel, daily essentials and in-store cafés, backed by strong systems and customer-centric policies.",
     icon: "store",
   },
   {
     name: "BOSS Constructions",
     description:
-      "Commercial, retail and property-related construction across selected markets in India and Australia — building, developing and upgrading commercial facilities and retail infrastructure.",
+      "Commercial and residential construction in India and Australia, including Elite Construction & Projects — from site finding and due diligence to turnkey delivery, plus building and upgrading fuel stations and convenience stores.",
     icon: "building",
   },
   {
     name: "BOSS Hospitality",
     description:
-      "Hotels, motels and accommodation services across selected international locations, focused on practical, accessible and customer-oriented hospitality.",
+      "Hotels and motels in Australia, India and Italy — including Eminence on Bank in Adelaide and Highfields Motel in Toowoomba — blending comfort, accessibility and affordability near key transport points.",
     icon: "hotel",
   },
   {
     name: "BOSS IT",
     description:
-      "The Group’s technology capability — digital systems, business applications, recruitment-related technology and other IT-enabled solutions.",
+      "The Group’s technology capability — digital solutions, business systems and IT-enabled services, delivered with 100+ professionals across the Group’s IT and BPO teams.",
     icon: "cpu",
   },
   {
     name: "BOSS BPO",
     description:
-      "Business-process and operational support — helping businesses manage people, processes and support functions in an organised and efficient manner.",
+      "Business process outsourcing for HR and finance operations — recruitment, payroll and employee relations, accounts processing, reconciliation, invoicing, payments, analytics and budgeting.",
     icon: "headset",
   },
 ];
 
-export const seedGalleries: { title: string; icon: IconName }[] = [
+export const seedGalleries: { title: string; icon: IconName; photos?: { file: string; alt: string }[] }[] = [
   { title: "Leadership", icon: "user-round" },
   { title: "Business Meetings", icon: "briefcase" },
   { title: "Supplier Visits", icon: "factory" },
   { title: "Trade Events", icon: "presentation" },
   { title: "International Business", icon: "globe" },
-  { title: "Group Activities", icon: "party-popper" },
+  {
+    title: "Group Activities",
+    icon: "party-popper",
+    // From the BOSS Australia website: first EV site (April 2024) and the McGrath Foundation partnership.
+    photos: [
+      { file: "ev-site-launch-team.jpg", alt: "BOSS team at the opening of BP Brackenridge, the Group’s first EV site, April 2024" },
+      { file: "ev-site-launch-charger.jpg", alt: "Electric vehicle charging at BP Brackenridge on opening day" },
+      { file: "ev-site-launch-ceremony.jpg", alt: "Ribbon-cutting at the BP Brackenridge EV site opening" },
+      { file: "mcgrath-foundation-ribbon.jpg", alt: "Pink ribbon display for the McGrath Foundation partnership" },
+      { file: "mcgrath-foundation-store.jpg", alt: "Convenience store decorated in pink for the McGrath Foundation" },
+      { file: "mcgrath-foundation-counter.jpg", alt: "Store counter with McGrath Foundation pink balloons" },
+      { file: "mcgrath-foundation-window.jpg", alt: "McGrath Foundation lettering on a store window" },
+    ],
+  },
 ];
 
 export const seedResources: Omit<Resource, "href">[] = [
@@ -163,7 +176,7 @@ export const seedFaqs: FaqItem[] = [
     category: CATEGORY.company,
     question: "How is BOSS Global EXIM connected to the BOSS Group?",
     answer:
-      "BGEXIM is the international trading arm of the BOSS Group, a diversified business group with activities across Australia, Singapore, Malaysia and India in shipping, retail, construction, hospitality, IT and BPO. Its shipping arm, BOSS Container Line, supports our logistics.",
+      "BGEXIM is the international trading arm of the BOSS Group, founded in 2000 — a diversified business group with activities across Australia, Singapore, Malaysia and India in shipping, retail, construction, hospitality, real estate, IT and BPO. Its shipping arm, BOSS Container Line, supports our logistics.",
     keywords: ["group", "parent", "sister", "companies", "owner", "behind"],
     action: { label: "Explore the BOSS Group", href: routes.group },
   },
@@ -171,9 +184,17 @@ export const seedFaqs: FaqItem[] = [
     category: CATEGORY.company,
     question: `What is ${containerLine.heading.title}?`,
     answer:
-      "BOSS Container Line is the shipping and logistics vertical of the BOSS Group. It provides NVOCC services, freight forwarding, container trading, break bulk cargo handling and related supply-chain support.",
-    keywords: ["shipping", "logistics", "freight", "nvocc", "container", "forwarding", "break", "bulk"],
+      "BOSS Container Line is the BOSS Group’s shipping and logistics company — a registered NVOCC providing freight forwarding, container trading, break bulk and project cargo, and 3PL and warehousing, with offices in Singapore, Malaysia, Hyderabad, Navi Mumbai, Gandhidham and Chennai.",
+    keywords: ["shipping", "logistics", "freight", "nvocc", "container", "forwarding", "break", "bulk", "warehouse", "3pl"],
     action: { label: containerLine.heading.title, href: anchorHref(routes.group, sectionIds.group.containerLine) },
+  },
+  {
+    category: CATEGORY.company,
+    question: "How far does the BOSS logistics network reach?",
+    answer:
+      "Through BOSS Container Line, the Group has 31 agency agreements in place (with one more in progress) across the Indian Subcontinent, Southeast Asia, the Middle East and Upper Gulf, the Red Sea and Africa, CIS destinations, China, the Maldives and Turkey.",
+    keywords: ["network", "agents", "agency", "countries", "reach", "coverage", "offices", "where", "ports"],
+    action: { label: "Network & offices", href: anchorHref(routes.group, sectionIds.group.network) },
   },
   {
     category: CATEGORY.catalogue,

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { GradientGlow } from "@/components/ui/gradient-glow";
 import { IconTile } from "@/components/ui/icon";
@@ -9,7 +10,19 @@ export function ContainerLineSpotlight() {
     <div data-tone="dark" className="relative isolate overflow-hidden rounded-panel bg-canvas p-8 sm:p-14">
       <GradientGlow className="-z-10 opacity-80" />
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-        <SectionHeader {...containerLine.heading} />
+        <div>
+          <SectionHeader {...containerLine.heading} />
+          <Reveal delay={0.1} className="mt-8">
+            <Image
+              src={containerLine.image.src}
+              alt={containerLine.image.alt}
+              width={containerLine.image.width}
+              height={containerLine.image.height}
+              sizes="(min-width: 1024px) 40vw, 90vw"
+              className="h-auto w-full drop-shadow-[0_30px_40px_rgb(0_0_0/0.35)]"
+            />
+          </Reveal>
+        </div>
         <Reveal className="space-y-4 lg:pt-10">
           {containerLine.paragraphs.map((paragraph) => (
             <p key={paragraph} className="type-body text-pretty text-fg-mute">

@@ -256,3 +256,11 @@ Anything new is written down and approved before it's built (§10).
 - [x] **E5** Contact Us forms per the document: sectioned forms per enquiry type, attachments (private in the admin), BGX reference numbers in the success message and emails.
 - [x] **E6** Chatbot workflow: "Aira" with Products, Buying Enquiry (Q1–Q20, summary, edit, submit) and Company Information paths.
 - [ ] **E7** Confirm with the client: portfolio products not in the Website Structure (pomegranate, fresh onion, shrimp, dehydrated fruits, ginger/moringa/amla, mangoes) were **not** added; Project Cargo and Warehouse copy; payment-method and designation option lists; phone/WhatsApp, office hours and map; Media & Events photos; brochures.
+
+### F. Second resource pack (`requirements/2nd resources/`, October 2026) — ✅ done
+
+- [x] **F1** BOSS Container Line: brochure copy for the intro and all six services (3PL & Warehousing replaces the placeholder; **Project Cargo is our draft** — the client's document says "You only write"); port/ship artwork from the brochure.
+- [x] **F2** New "Network & Offices" section: 31 agency agreements (+1 in progress, from the footprint map), the brochure's six sector regions, six offices (Singapore, Klang, Hyderabad, Navi Mumbai, Gandhidham, Chennai) and three partner testimonials. Global Presence tiers updated to match.
+- [x] **F3** BOSS Group: intro (founded 2000, India land bank), company-card facts (45+ stores, Elite Construction & Projects, hotels in Australia/India/Italy, HR & finance BPO), "Our Journey" timeline, group leadership (Prasad Kalla, Kris Bodla), and a Recognition section with award photos and the Forbes Australia feature.
+- [x] **F4** Media & Events: "Group Activities" gallery with the BP Brackenridge EV-site launch and McGrath Foundation photos, viewable in a photo viewer.
+- [ ] **F5** Confirm with the client: founding year (brochure 2000 vs "in 2002" on the BOSS Australia site); store count (45+ in the brochure, 26 in the chairman's bio); hotel count (brochure 4 AU / 2 IN / 1 IT vs six Australian properties listed online); Shell award year (2021 photo, 2022 text); listing Iran in the network; Project Cargo copy; higher-resolution originals of the website photos (they are ~240–340 px wide). Personal phone numbers and emails from the brochure were deliberately not published.

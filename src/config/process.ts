@@ -119,8 +119,8 @@ export const globalPresence: ProseContent & {
     },
     {
       title: "BOSS Group logistics presence",
-      description: "Supported by BOSS Container Line’s presence and logistics capabilities.",
-      places: ["Singapore", "Malaysia"],
+      description: "BOSS Container Line offices in Singapore, Malaysia and four Indian port cities.",
+      places: ["Singapore", "Klang, Malaysia", "Hyderabad", "Navi Mumbai", "Gandhidham", "Chennai"],
     },
     {
       title: "Core trade markets",
@@ -129,13 +129,15 @@ export const globalPresence: ProseContent & {
     },
     {
       title: "Extended network",
-      description: "Through the BOSS Group, shipping relationships, logistics partners and agent networks.",
+      description:
+        "31 agency agreements in place through BOSS Container Line, with one more in progress — plus shipping relationships and logistics partners.",
       places: [
         "Indian Subcontinent",
         "Southeast Asia",
-        "Middle East & Gulf",
+        "Middle East & Upper Gulf",
         "Red Sea & Africa",
         "CIS markets",
+        "China, Maldives & Turkey",
       ],
     },
   ],

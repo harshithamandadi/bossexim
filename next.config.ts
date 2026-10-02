@@ -9,8 +9,8 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
-    // Files uploaded in the admin are served through Payload's API.
-    localPatterns: [{ pathname: "/api/media/file/**" }, { pathname: "/api/documents/file/**" }],
+    // Files uploaded in the admin are served through Payload's API; /images holds page artwork.
+    localPatterns: [{ pathname: "/api/media/file/**" }, { pathname: "/api/documents/file/**" }, { pathname: "/images/**" }],
     // YouTube's thumbnail for the corporate video when no cover image is uploaded.
     remotePatterns: [{ protocol: "https", hostname: "i.ytimg.com", pathname: "/vi/**" }],
   },

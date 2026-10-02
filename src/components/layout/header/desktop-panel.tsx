@@ -3,14 +3,26 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import type { Ref } from "react";
 import { uiLabels } from "@/config/ui";
 import { DURATION } from "@/lib/motion";
 import type { NavGroup } from "@/types/content";
 
+interface DesktopPanelProps {
+  group: NavGroup;
+  onNavigate: () => void;
+  /**
+   * Needed by AnimatePresence's "popLayout" mode, which lifts the outgoing panel out of the
+   * flow while it fades. Without it the old and new panels stack and the island grows tall.
+   */
+  ref?: Ref<HTMLDivElement>;
+}
+
 /** The expanded island on desktop: an overview tile plus the group's links. */
-export function DesktopPanel({ group, onNavigate }: { group: NavGroup; onNavigate: () => void }) {
+export function DesktopPanel({ group, onNavigate, ref }: DesktopPanelProps) {
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, filter: "blur(6px)" }}
       animate={{ opacity: 1, filter: "blur(0px)" }}
       exit={{ opacity: 0, filter: "blur(6px)" }}

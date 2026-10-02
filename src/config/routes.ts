@@ -43,7 +43,10 @@ export const sectionIds = {
   },
   group: {
     containerLine: "boss-container-line",
+    network: "container-line-network",
     companies: "group-companies",
+    journey: "our-journey",
+    recognition: "recognition",
   },
   resources: {
     downloads: "downloads",

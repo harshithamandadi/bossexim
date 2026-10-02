@@ -3,7 +3,7 @@
  *
  * Safe to run again — anything that already exists (matched by slug, code,
  * question, name or title) is left untouched, so editors' changes are kept.
- * Start over with:   npm run seed -- --reset   (deletes content, keeps users)
+ * Start over with:   SEED_RESET=true npm run seed   (deletes content, keeps users and enquiries)
  */
 import config from "@payload-config";
 import path from "node:path";
@@ -110,8 +110,8 @@ async function seed() {
   }
 
   const payload = await getPayload({ config });
-  // On Vercel, SEED_RESET=true does the same as --reset for one deploy (remove it afterwards).
-  const resetRequested = process.argv.includes("--reset") || (process.env.VERCEL && process.env.SEED_RESET === "true");
+  // SEED_RESET=true starts the content over (on Vercel: for one deploy, then remove the variable).
+  const resetRequested = process.argv.includes("--reset") || process.env.SEED_RESET === "true";
   if (resetRequested) await reset(payload);
 
   const marketIds = new Map<string, number>();
@@ -137,8 +137,10 @@ async function seed() {
   for (const company of seedGroupCompanies) {
     await ensure(payload, "group-companies", { name: { equals: company.name } }, company);
   }
-  for (const gallery of seedGalleries) {
-    await ensure(payload, "galleries", { title: { equals: gallery.title } }, gallery);
+  for (const { photos = [], ...gallery } of seedGalleries) {
+    const exists = await payload.count({ collection: "galleries", where: { title: { equals: gallery.title } } });
+    const images = exists.totalDocs > 0 ? [] : await uploadPhotos(payload, photos);
+    await ensure(payload, "galleries", { title: { equals: gallery.title } }, { ...gallery, images });
   }
   for (const resource of seedResources) {
     await ensure(payload, "resources", { title: { equals: resource.title } }, resource);

@@ -1,0 +1,78 @@
+import { ArrowUpRight, MapPin, Quote } from "lucide-react";
+import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
+import { Chip } from "@/components/ui/chip";
+import { SectionHeader } from "@/components/ui/section-header";
+import { containerLineNetwork } from "@/config";
+
+const content = containerLineNetwork;
+
+/** BOSS Container Line's agent network, offices and partner testimonials. */
+export function ContainerLineNetwork() {
+  const { agreements } = content;
+
+  return (
+    <>
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] lg:items-end">
+        <SectionHeader {...content.heading} />
+        <Reveal className="rounded-card bg-surface p-7">
+          <p className="type-h1 gradient-text leading-none">{agreements.done}</p>
+          <p className="mt-3 text-[15px] font-medium">{agreements.label}</p>
+          <p className="mt-1 text-sm text-fg-mute">{agreements.note}</p>
+        </Reveal>
+      </div>
+
+      <RevealGroup as="ul" className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {content.regions.map((region) => (
+          <RevealItem as="li" key={region.region} className="rounded-card bg-surface p-6">
+            <h3 className="type-h4">{region.region}</h3>
+            <p className="mt-4 flex flex-wrap gap-1.5">
+              {region.places.map((place) => (
+                <Chip key={place} variant="outline" className="bg-canvas">
+                  {place}
+                </Chip>
+              ))}
+            </p>
+          </RevealItem>
+        ))}
+      </RevealGroup>
+
+      <div className="mt-16 flex flex-wrap items-baseline justify-between gap-4">
+        <h3 className="type-h3">{content.officesTitle}</h3>
+        <a
+          href={content.website.href}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 text-[15px] font-semibold text-brand underline-offset-4 hover:underline"
+        >
+          {content.website.label}
+          <ArrowUpRight aria-hidden className="size-4" />
+        </a>
+      </div>
+      <RevealGroup as="ul" className="mt-6 grid gap-x-8 gap-y-6 border-t border-border pt-6 sm:grid-cols-2 lg:grid-cols-3">
+        {content.offices.map((office) => (
+          <RevealItem as="li" key={`${office.city}-${office.address}`} className="flex gap-3">
+            <MapPin aria-hidden className="mt-0.5 size-4 shrink-0 text-brand" />
+            <div>
+              <p className="font-semibold">{office.city}</p>
+              <p className="mt-0.5 text-xs text-fg-mute">{office.entity}</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-fg-mute">{office.address}</p>
+            </div>
+          </RevealItem>
+        ))}
+      </RevealGroup>
+
+      <h3 className="type-h3 mt-16">{content.testimonialsTitle}</h3>
+      <RevealGroup as="ul" className="mt-6 grid gap-4 lg:grid-cols-3">
+        {content.testimonials.map((testimonial) => (
+          <RevealItem as="li" key={testimonial.company}>
+            <figure className="flex h-full flex-col rounded-card bg-surface p-7">
+              <Quote aria-hidden className="size-6 text-brand/40" />
+              <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-pretty">{testimonial.quote}</blockquote>
+              <figcaption className="mt-6 text-sm font-semibold">{testimonial.company}</figcaption>
+            </figure>
+          </RevealItem>
+        ))}
+      </RevealGroup>
+    </>
+  );
+}

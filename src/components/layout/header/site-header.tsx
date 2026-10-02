@@ -52,7 +52,8 @@ export function SiteHeader() {
         style={{ borderRadius: ISLAND_RADIUS }}
         onMouseLeave={() => setOpenGroupLabel(null)}
         className={cn(
-          "pointer-events-auto w-full max-w-md overflow-hidden bg-canvas/75 text-fg ring-1 ring-white/10",
+          // relative: anchors the outgoing menu panel while it fades out (popLayout).
+          "pointer-events-auto relative w-full max-w-md overflow-hidden bg-canvas/75 text-fg ring-1 ring-white/10",
           "backdrop-blur-2xl backdrop-saturate-150 transition-[background-color,box-shadow] duration-500 xl:w-auto xl:max-w-none",
           (isScrolled || isExpanded) && "bg-canvas/90 shadow-[0_24px_60px_-24px_rgb(0_0_0/0.55)]",
         )}

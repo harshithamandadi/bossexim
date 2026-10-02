@@ -10,11 +10,11 @@ const { about, business, tradeProcess, group, resources } = sectionIds;
 
 /** Group companies with their own section on the BOSS Group page (see seed data). */
 const GROUP_COMPANY_LINKS = [
-  { name: "BOSS Retail", description: "Convenience and fuel retail in Australia." },
-  { name: "BOSS Constructions", description: "Commercial, retail and property construction." },
-  { name: "BOSS Hospitality", description: "Hotels, motels and accommodation." },
+  { name: "BOSS Retail", description: "45+ fuel and convenience stores in Australia." },
+  { name: "BOSS Constructions", description: "Commercial and residential construction." },
+  { name: "BOSS Hospitality", description: "Hotels and motels in Australia, India and Italy." },
   { name: "BOSS IT", description: "Digital systems and IT-enabled solutions." },
-  { name: "BOSS BPO", description: "Business-process and operational support." },
+  { name: "BOSS BPO", description: "HR and finance operations outsourcing." },
 ];
 
 /** Photo categories on the Media & Events page (see seed data). */
@@ -144,13 +144,23 @@ export const mainNavigation: NavGroup[] = [
       {
         label: "BOSS Container Line",
         href: anchorHref(routes.group, group.containerLine),
-        description: "NVOCC, freight forwarding, trading & break bulk.",
+        description: "NVOCC, freight forwarding, container trading & 3PL.",
+      },
+      {
+        label: "Network & Offices",
+        href: anchorHref(routes.group, group.network),
+        description: "31 agency agreements and offices in SG, MY & India.",
       },
       ...GROUP_COMPANY_LINKS.map(({ name, description }) => ({
         label: name,
         href: anchorHref(routes.group, toAnchorId(name)),
         description,
       })),
+      {
+        label: "Journey & Recognition",
+        href: anchorHref(routes.group, group.journey),
+        description: "Milestones since 2000, leadership and awards.",
+      },
     ],
   },
   {
