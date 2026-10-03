@@ -13,6 +13,8 @@ export const uiLabels = {
   footerNavigation: "Footer",
   mobileNavigation: "Menu",
   photos: "photos",
+  previous: "Previous",
+  next: "Next",
   notFound: {
     eyebrow: "404",
     title: "This Page Has Sailed",

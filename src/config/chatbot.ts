@@ -416,6 +416,7 @@ export const chatbotContent = {
     send: "Send",
   },
   restart: "Start over",
+  jumpToLatest: "Jump to the latest message",
   close: "Close",
   typing: "Aira is typing",
   disclaimer: "Automated answers — no AI service involved.",

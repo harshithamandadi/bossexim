@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { MessageCircleMore, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useRef, useState, type Ref } from "react";
@@ -92,7 +92,7 @@ export function ChatWidget({ faqs, products, formToken }: ChatWidgetProps) {
           <Teaser key="teaser" onChoose={(choice) => open(undefined, choice)} onDismiss={dismissTeaser} />
         )}
       </AnimatePresence>
-      <Launcher ref={launcherRef} isOpen={isOpen} onToggle={() => (isOpen ? close() : open())} />
+      <Launcher ref={launcherRef} isOpen={isOpen} invite={!hasOpened} onToggle={() => (isOpen ? close() : open())} />
       {hasOpened && <ChatPanel faqs={faqs} products={products} formToken={formToken} isOpen={isOpen} onClose={close} request={request} />}
     </>
   );
@@ -101,11 +101,15 @@ export function ChatWidget({ faqs, products, formToken }: ChatWidgetProps) {
 interface LauncherProps {
   ref: Ref<HTMLButtonElement>;
   isOpen: boolean;
+  /** Until the chat has been opened once: a soft pulse ring and an occasional wiggle. */
+  invite: boolean;
   onToggle: () => void;
 }
 
-function Launcher({ ref, isOpen, onToggle }: LauncherProps) {
+function Launcher({ ref, isOpen, invite, onToggle }: LauncherProps) {
   const { launcher, close } = chatbotContent;
+  const reduceMotion = useReducedMotion();
+  const beckon = invite && !isOpen && !reduceMotion;
 
   return (
     <motion.button
@@ -128,7 +132,17 @@ function Launcher({ ref, isOpen, onToggle }: LauncherProps) {
         isOpen && "max-sm:hidden",
       )}
     >
-      <span className="relative grid size-6 place-items-center">
+      {beckon && (
+        <>
+          <span aria-hidden className="pointer-events-none absolute inset-0 animate-[launcher-ring_2.8s_ease-out_infinite] rounded-full ring-2 ring-brand/60" />
+          <span aria-hidden className="pointer-events-none absolute inset-0 animate-[launcher-ring_2.8s_ease-out_1.4s_infinite] rounded-full ring-2 ring-tide/50" />
+        </>
+      )}
+      <motion.span
+        className="relative grid size-6 place-items-center"
+        animate={beckon ? { rotate: [0, -14, 12, -8, 6, 0] } : { rotate: 0 }}
+        transition={beckon ? { duration: 0.9, delay: 3, repeat: Infinity, repeatDelay: 5, ease: "easeInOut" } : { duration: 0.2 }}
+      >
         <AnimatePresence initial={false} mode="popLayout">
           <motion.span
             key={isOpen ? "close" : "open"}
@@ -141,7 +155,7 @@ function Launcher({ ref, isOpen, onToggle }: LauncherProps) {
             {isOpen ? <X aria-hidden className="size-5" /> : <MessageCircleMore aria-hidden className="size-6" />}
           </motion.span>
         </AnimatePresence>
-      </span>
+      </motion.span>
       <span className="hidden text-[15px] font-semibold sm:inline">{isOpen ? close : launcher.label}</span>
     </motion.button>
   );
@@ -172,8 +186,13 @@ function Teaser({ onChoose, onDismiss }: { onChoose: (choice: ChatChoice) => voi
       </button>
       <p className="pr-6 text-[15px] leading-snug font-medium">{teaser.text}</p>
       <ul className="mt-3 flex flex-wrap gap-1.5">
-        {TEASER_CHOICES.map((choice) => (
-          <li key={choice.id}>
+        {TEASER_CHOICES.map((choice, index) => (
+          <motion.li
+            key={choice.id}
+            initial={{ opacity: 0, y: 8, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.25 + index * 0.08, type: "spring", stiffness: 420, damping: 26 }}
+          >
             <button
               type="button"
               onClick={() => onChoose(choice)}
@@ -181,7 +200,7 @@ function Teaser({ onChoose, onDismiss }: { onChoose: (choice: ChatChoice) => voi
             >
               {choice.label}
             </button>
-          </li>
+          </motion.li>
         ))}
       </ul>
     </motion.div>

@@ -8,7 +8,7 @@ import { SectionHeader } from "@/components/ui/section-header";
 import { homeContent } from "@/config";
 import { getCatalogue } from "@/lib/content/queries";
 
-/** Every product in one row, with arrows to browse (it also advances by itself until the visitor takes over). */
+/** Every product in one endlessly gliding row, with arrows and swipe to browse. */
 export async function ProductShowcase() {
   const { products: content } = homeContent;
   const { products, markets } = await getCatalogue();
@@ -25,11 +25,14 @@ export async function ProductShowcase() {
       </Container>
       <Container>
         <Reveal className="mt-10">
-          <Carousel label={content.eyebrow ?? "Products"} previousLabel={content.previous} nextLabel={content.next}>
-            {products.map((product) => (
+          <Carousel
+            label={content.eyebrow ?? "Products"}
+            previousLabel={content.previous}
+            nextLabel={content.next}
+            items={products.map((product) => (
               <ProductCard key={product.slug} product={product} markets={markets} className="h-full" />
             ))}
-          </Carousel>
+          />
         </Reveal>
       </Container>
     </Section>

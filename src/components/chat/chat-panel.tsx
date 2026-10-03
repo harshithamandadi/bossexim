@@ -8,9 +8,9 @@ import {
   useReducedMotion,
   type DragControls,
 } from "framer-motion";
-import { ArrowRight, RotateCcw, X } from "lucide-react";
+import { ArrowDown, ArrowRight, RotateCcw, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useId, useMemo, useRef, useState, useTransition, type PointerEvent, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useTransition, type PointerEvent, type ReactNode } from "react";
 import { submitAssistantCallback, submitAssistantEnquiry } from "@/app/(site)/contact/actions";
 import { LogoMark } from "@/components/ui/logo";
 import { chatbotContent } from "@/config/chatbot";
@@ -36,6 +36,7 @@ import {
   type VisitorInput,
 } from "./assistant-flow";
 import { ChatBubble, TypingBubble } from "./chat-bubble";
+import { StreamingText, streamDuration } from "./streaming-text";
 import { ChatComposer } from "./chat-composer";
 
 /** A question sent from elsewhere on the site; `id` lets the same question be asked twice. */
@@ -50,6 +51,8 @@ export interface ChatRequest {
 /** A short pause before each answer, so replies read as a conversation rather than a jump. */
 const TYPING_DELAY_MS = 450;
 const SHEET_CLOSE_DISTANCE_PX = 120;
+/** Further than this from the bottom counts as "reading back", and shows the jump button. */
+const JUMP_THRESHOLD_PX = 120;
 const SHEET_CLOSE_VELOCITY = 500;
 const content = chatbotContent;
 
@@ -130,11 +133,43 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
 
   const isTyping = pendingReplies.length > 0 || isSubmitting;
 
+  // Follow the conversation while it grows (streamed words, chips popping in),
+  // unless the visitor has scrolled up to reread something.
+  const contentRef = useRef<HTMLDivElement>(null);
+  const followRef = useRef(true);
+  const [showJump, setShowJump] = useState(false);
+
+  const scrollToLatest = useCallback(
+    (smooth: boolean) => {
+      const log = logRef.current;
+      if (log) log.scrollTo({ top: log.scrollHeight, behavior: smooth && !reduceMotion ? "smooth" : "auto" });
+    },
+    [reduceMotion],
+  );
+
+  // A new message always brings the view down (the scroll handler then hides the jump button).
   useEffect(() => {
+    followRef.current = true;
+    scrollToLatest(true);
+  }, [messages.length, isTyping, scrollToLatest]);
+
+  useEffect(() => {
+    const content = contentRef.current;
+    if (!isOpen || !content) return;
+    const observer = new ResizeObserver(() => {
+      if (followRef.current) scrollToLatest(false);
+    });
+    observer.observe(content);
+    return () => observer.disconnect();
+  }, [isOpen, scrollToLatest]);
+
+  function handleLogScroll() {
     const log = logRef.current;
-    if (!isOpen || !log) return;
-    log.scrollTo({ top: log.scrollHeight, behavior: reduceMotion ? "auto" : "smooth" });
-  }, [messages, isTyping, isOpen, reduceMotion]);
+    if (!log) return;
+    const away = log.scrollHeight - log.scrollTop - log.clientHeight > JUMP_THRESHOLD_PX;
+    followRef.current = !away;
+    setShowJump(away);
+  }
 
   // The mobile sheet covers the page, so the page behind it shouldn't scroll.
   useEffect(() => {
@@ -191,13 +226,16 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
             onDragStart={(event) => dragControls.start(event)}
           />
 
+          <div className="relative flex min-h-0 flex-1 flex-col">
           <div
             ref={logRef}
             role="log"
             aria-live="polite"
             aria-label={content.dialogLabel}
-            className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-5 sm:px-5"
+            onScroll={handleLogScroll}
+            className="flex-1 overflow-y-auto overscroll-contain px-4 py-5 sm:px-5"
           >
+            <div ref={contentRef} className="space-y-3">
             {messages.map((message, index) => (
               <MessageView
                 key={index}
@@ -210,6 +248,28 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
               />
             ))}
             {isTyping && <TypingBubble label={isSubmitting ? content.buying.submitting : content.typing} />}
+            </div>
+          </div>
+          <AnimatePresence>
+            {showJump && (
+              <motion.button
+                type="button"
+                aria-label={content.jumpToLatest}
+                onClick={() => {
+                  followRef.current = true;
+                  setShowJump(false);
+                  scrollToLatest(true);
+                }}
+                initial={{ opacity: 0, y: 8, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.8 }}
+                transition={SPRING_PANEL}
+                className="absolute bottom-3 left-1/2 grid size-9 -translate-x-1/2 place-items-center rounded-full bg-elevated text-fg shadow-[0_10px_24px_-8px_rgb(8_33_79/0.4)] ring-1 ring-border hover:text-brand"
+              >
+                <ArrowDown aria-hidden className="size-4" />
+              </motion.button>
+            )}
+          </AnimatePresence>
           </div>
 
           <div className="border-t border-border px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-4">
@@ -322,7 +382,10 @@ function PanelHeader({ titleId, showHandle, canRestart, onRestart, onClose, onDr
           {content.title}
         </p>
         <p className="mt-0.5 flex items-center gap-1.5 text-xs text-fg-mute">
-          <span aria-hidden className="size-1.5 rounded-full bg-brand" />
+          <span aria-hidden className="relative flex size-2">
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-success/60 motion-reduce:animate-none" />
+            <span className="relative inline-flex size-2 rounded-full bg-success" />
+          </span>
           {content.subtitle}
         </p>
       </div>
@@ -370,6 +433,7 @@ interface MessageViewProps {
 }
 
 function MessageView({ message, joinsPrevious, isLatest, onAsk, onChoose, onNavigate }: MessageViewProps) {
+  const reduceMotion = useReducedMotion();
   if (message.from === "visitor") {
     return (
       <ChatBubble from="visitor" joinsPrevious={joinsPrevious}>
@@ -379,11 +443,21 @@ function MessageView({ message, joinsPrevious, isLatest, onAsk, onChoose, onNavi
   }
 
   const { action } = message;
+  const after = streamDuration(message.text, reduceMotion);
+  const reveal = (extra = 0) =>
+    reduceMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 6, filter: "blur(4px)" },
+          animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+          transition: { delay: after + extra, duration: 0.3, ease: EASE_SMOOTH },
+        };
 
   return (
     <div>
       <ChatBubble from="assistant" joinsPrevious={joinsPrevious}>
-        <p className="whitespace-pre-line">{message.text}</p>
+        <StreamingText text={message.text} />
+        <motion.div {...reveal()}>
         {message.tables?.map((table, index) => (
           <div key={table.title ?? index} className="mt-3">
             {table.title && <p className="mb-1 text-[13px] font-semibold">{table.title}</p>}
@@ -410,9 +484,11 @@ function MessageView({ message, joinsPrevious, isLatest, onAsk, onChoose, onNavi
             {message.reference.label}: <strong className="font-semibold tracking-wide">{message.reference.value}</strong>
           </p>
         )}
+        </motion.div>
       </ChatBubble>
-      {action &&
-        (action.href.startsWith("mailto:") ? (
+      {action && (
+        <motion.div {...reveal(0.05)}>
+        {action.href.startsWith("mailto:") ? (
           <a href={action.href} className={ACTION_STYLES}>
             {action.label}
           </a>
@@ -421,50 +497,71 @@ function MessageView({ message, joinsPrevious, isLatest, onAsk, onChoose, onNavi
             {action.label}
             <ArrowRight aria-hidden className="size-3.5 transition-transform duration-200 ease-smooth group-hover:translate-x-0.5" />
           </Link>
-        ))}
-      {isLatest && message.choices && <ChoiceList choices={message.choices} onChoose={onChoose} />}
-      {isLatest && message.suggestions && <SuggestionList suggestions={message.suggestions} onAsk={onAsk} />}
+        )}
+        </motion.div>
+      )}
+      {isLatest && message.choices && <ChoiceList choices={message.choices} onChoose={onChoose} delay={after} />}
+      {isLatest && message.suggestions && (
+        <SuggestionList suggestions={message.suggestions} onAsk={onAsk} delay={after + (message.choices?.length ?? 0) * CHIP_STAGGER_S} />
+      )}
     </div>
   );
 }
 
-function ChoiceList({ choices, onChoose }: { choices: ChatChoice[]; onChoose: (choice: ChatChoice) => void }) {
+/** Each chip springs up a beat after the one before it. */
+const CHIP_STAGGER_S = 0.06;
+
+function chipMotion(index: number, delay: number) {
+  return {
+    initial: { opacity: 0, y: 10, scale: 0.92 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    transition: { delay: delay + index * CHIP_STAGGER_S, type: "spring" as const, stiffness: 420, damping: 26 },
+  };
+}
+
+function ChoiceList({ choices, onChoose, delay }: { choices: ChatChoice[]; onChoose: (choice: ChatChoice) => void; delay: number }) {
   return (
-    <motion.ul
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.12, duration: 0.24, ease: EASE_SMOOTH }}
-      className="mt-3 flex flex-wrap gap-1.5"
-    >
-      {choices.map((choice) => (
-        <li key={choice.id}>
-          <button type="button" onClick={() => onChoose(choice)} className={CHIP_STYLES}>
+    <ul className="mt-3 flex flex-wrap gap-1.5">
+      {choices.map((choice, index) => (
+        <motion.li key={choice.id} {...chipMotion(index, delay)}>
+          <motion.button
+            type="button"
+            onClick={() => onChoose(choice)}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            className={CHIP_STYLES}
+          >
             {choice.label}
-          </button>
-        </li>
+          </motion.button>
+        </motion.li>
       ))}
-    </motion.ul>
+    </ul>
   );
 }
 
-function SuggestionList({ suggestions, onAsk }: { suggestions: Suggestions; onAsk: MessageViewProps["onAsk"] }) {
+function SuggestionList({ suggestions, onAsk, delay }: { suggestions: Suggestions; onAsk: MessageViewProps["onAsk"]; delay: number }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.12, duration: 0.24, ease: EASE_SMOOTH }}
-      className="mt-3"
-    >
-      {suggestions.label && <p className="type-eyebrow text-[10px] text-fg-mute">{suggestions.label}</p>}
+    <div className="mt-3">
+      {suggestions.label && (
+        <motion.p {...chipMotion(0, delay)} className="type-eyebrow text-[10px] text-fg-mute">
+          {suggestions.label}
+        </motion.p>
+      )}
       <ul className="mt-2 flex flex-wrap gap-1.5">
-        {suggestions.items.map((item) => (
-          <li key={item.question}>
-            <button type="button" onClick={() => onAsk(item.question, item)} className={CHIP_STYLES}>
+        {suggestions.items.map((item, index) => (
+          <motion.li key={item.question} {...chipMotion(index + 1, delay)}>
+            <motion.button
+              type="button"
+              onClick={() => onAsk(item.question, item)}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className={CHIP_STYLES}
+            >
               {item.question}
-            </button>
-          </li>
+            </motion.button>
+          </motion.li>
         ))}
       </ul>
-    </motion.div>
+    </div>
   );
 }

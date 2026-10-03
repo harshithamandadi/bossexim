@@ -1,12 +1,13 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { RevealGroup, RevealItem } from "@/components/motion/reveal";
+import { Carousel } from "@/components/ui/carousel";
 import { Chip } from "@/components/ui/chip";
 import { Flag } from "@/components/ui/flag";
 import { Icon } from "@/components/ui/icon";
 import { WorldDotsMap } from "@/components/ui/world-dots-map";
 import { globalPresence } from "@/config/process";
+import { uiLabels } from "@/config/ui";
 import { contactHref, productHref } from "@/config/routes";
 import type { Catalogue } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
@@ -42,20 +43,52 @@ export function MarketTile({ market, children, className }: { market: Market; ch
 }
 
 const CORE_MARKET_NOTE = "Core trade market — products sourced on request.";
+const MARKETS_LABEL = "Markets";
 const WORLDWIDE = {
   title: "Worldwide",
   text: "Buying for another country? We supply destinations beyond our core markets on request.",
 };
 
-/** Every market we trade with, and the export lines that ship there. */
+/** Closes a row of markets with the "not limited to these countries" message. */
+export function WorldwideTile() {
+  return (
+    <Link
+      href={contactHref({ type: "buyer" })}
+      data-tone="dark"
+      className="group deep-gradient relative isolate flex h-full min-h-56 flex-col justify-between overflow-hidden rounded-card p-7"
+    >
+      <WorldDotsMap className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 opacity-60" />
+      <div className="flex items-start justify-between gap-4">
+        <span className="grid h-[2.6rem] w-14 place-items-center rounded-xl bg-white/10 ring-2 ring-white/30">
+          <Icon name="globe" className="size-6 text-white" />
+        </span>
+        <ArrowUpRight
+          aria-hidden
+          className="size-5 text-fg-mute transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-fg"
+        />
+      </div>
+      <div>
+        <h3 className="type-h4">{WORLDWIDE.title}</h3>
+        <p className="mt-1.5 text-sm text-fg-mute">{WORLDWIDE.text}</p>
+      </div>
+    </Link>
+  );
+}
+
+/** Every market we trade with and the export lines that ship there, as a gliding row. */
 export function MarketGrid({ catalogue, className }: { catalogue: Catalogue; className?: string }) {
   return (
-    <RevealGroup as="ul" className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}>
-      {catalogue.markets.map((market) => {
-        const products = catalogue.getProductsForMarket(market.code);
-        return (
-          <RevealItem as="li" key={market.code}>
-            <MarketTile market={market}>
+    <Carousel
+      className={className}
+      label={MARKETS_LABEL}
+      previousLabel={uiLabels.previous}
+      nextLabel={uiLabels.next}
+      slideWidth="22rem"
+      items={[
+        ...catalogue.markets.map((market) => {
+          const products = catalogue.getProductsForMarket(market.code);
+          return (
+            <MarketTile key={market.code} market={market}>
               {products.length === 0 ? (
                 <p className="mt-5 text-sm text-fg-mute">{CORE_MARKET_NOTE}</p>
               ) : (
@@ -73,32 +106,10 @@ export function MarketGrid({ catalogue, className }: { catalogue: Catalogue; cla
                 </ul>
               )}
             </MarketTile>
-          </RevealItem>
-        );
-      })}
-      {/* Closes the grid with the "not limited to these countries" message. */}
-      <RevealItem as="li">
-        <Link
-          href={contactHref({ type: "buyer" })}
-          data-tone="dark"
-          className="group deep-gradient relative isolate flex h-full min-h-56 flex-col justify-between overflow-hidden rounded-card p-7"
-        >
-          <WorldDotsMap className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 opacity-60" />
-          <div className="flex items-start justify-between gap-4">
-            <span className="grid size-[2.6rem] w-14 place-items-center rounded-xl bg-white/10 ring-2 ring-white/30">
-              <Icon name="globe" className="size-6 text-white" />
-            </span>
-            <ArrowUpRight
-              aria-hidden
-              className="size-5 text-fg-mute transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-fg"
-            />
-          </div>
-          <div>
-            <h3 className="type-h4">{WORLDWIDE.title}</h3>
-            <p className="mt-1.5 text-sm text-fg-mute">{WORLDWIDE.text}</p>
-          </div>
-        </Link>
-      </RevealItem>
-    </RevealGroup>
+          );
+        }),
+        <WorldwideTile key="worldwide" />,
+      ]}
+    />
   );
 }

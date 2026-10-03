@@ -4,7 +4,8 @@ import type { ReactNode } from "react";
 import { PageHero } from "@/components/layout/page-hero";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { toParagraphs } from "@/components/sections/shared/prose";
-import { MarketTile } from "@/components/sections/trade/market-grid";
+import { MarketTile, WorldwideTile } from "@/components/sections/trade/market-grid";
+import { Carousel } from "@/components/ui/carousel";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { ButtonLink } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
@@ -21,6 +22,7 @@ import {
   routes,
   sectionIds,
   tradeDirections,
+  uiLabels,
 } from "@/config";
 import type { Catalogue } from "@/lib/catalogue";
 import type { ExportProduct, Product, SpecificationTable } from "@/types/content";
@@ -237,31 +239,37 @@ export function ProductMarkets({ product, catalogue }: { product: ExportProduct;
     <Section tone="mist" spacing="compact">
       <h2 className="type-h3">{productLabels.marketsTitle}</h2>
       <p className="mt-2 text-[15px] text-fg-mute">{productLabels.marketsNote}</p>
-      <RevealGroup as="ul" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {catalogue.getMarketsForProduct(product).map((market) => (
-          <RevealItem as="li" key={market.code}>
-            <MarketTile market={market} />
-          </RevealItem>
-        ))}
-      </RevealGroup>
+      <Carousel
+        className="mt-6"
+        label={productLabels.marketsTitle}
+        previousLabel={uiLabels.previous}
+        nextLabel={uiLabels.next}
+        slideWidth="17rem"
+        items={[
+          ...catalogue.getMarketsForProduct(product).map((market) => <MarketTile key={market.code} market={market} />),
+          <WorldwideTile key="worldwide" />,
+        ]}
+      />
     </Section>
   );
 }
 
 export function RelatedProducts({ product, catalogue }: { product: Product; catalogue: Catalogue }) {
-  const related = catalogue.getRelatedProducts(product);
+  const related = catalogue.getRelatedProducts(product, Number.POSITIVE_INFINITY);
   if (related.length === 0) return null;
 
   return (
     <Section spacing="compact">
       <h2 className="type-h3">{productLabels.relatedTitle}</h2>
-      <RevealGroup as="ul" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {related.map((relatedProduct) => (
-          <RevealItem as="li" key={relatedProduct.slug}>
-            <ProductCard product={relatedProduct} markets={catalogue.markets} />
-          </RevealItem>
+      <Carousel
+        className="mt-6"
+        label={productLabels.relatedTitle}
+        previousLabel={uiLabels.previous}
+        nextLabel={uiLabels.next}
+        items={related.map((relatedProduct) => (
+          <ProductCard key={relatedProduct.slug} product={relatedProduct} markets={catalogue.markets} className="h-full" />
         ))}
-      </RevealGroup>
+      />
     </Section>
   );
 }

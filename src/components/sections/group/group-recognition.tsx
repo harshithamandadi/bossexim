@@ -2,7 +2,8 @@ import { ArrowUpRight, Award } from "lucide-react";
 import Image from "next/image";
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { SectionHeader } from "@/components/ui/section-header";
-import { groupRecognition } from "@/config";
+import { Carousel } from "@/components/ui/carousel";
+import { groupRecognition, uiLabels } from "@/config";
 
 const content = groupRecognition;
 
@@ -25,10 +26,15 @@ export function GroupRecognition() {
         </a>
       </SectionHeader>
 
-      <RevealGroup as="ul" className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        {pictured.map((item) => (
-          <RevealItem as="li" key={item.title}>
-            <figure className="flex h-full flex-col rounded-card bg-canvas p-3 ring-1 ring-inset ring-border">
+      <Carousel
+        className="mt-8"
+        label={content.heading.eyebrow ?? "Recognition"}
+        previousLabel={uiLabels.previous}
+        nextLabel={uiLabels.next}
+        slideWidth="13rem"
+        speed={0.8}
+        items={pictured.map((item) => (
+            <figure key={item.title} className="flex h-full flex-col rounded-card bg-canvas p-3 ring-1 ring-inset ring-border">
               {item.image && (
                 <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface">
                   <Image src={item.image.src} alt={item.image.alt} fill sizes="(min-width: 1024px) 200px, 45vw" className="object-cover" />
@@ -39,9 +45,8 @@ export function GroupRecognition() {
                 <span className="mt-1 block text-xs text-fg-mute">{item.year}</span>
               </figcaption>
             </figure>
-          </RevealItem>
         ))}
-      </RevealGroup>
+      />
 
       <RevealGroup as="ul" className="mt-8 grid gap-3 sm:grid-cols-2">
         {listed.map((item) => (

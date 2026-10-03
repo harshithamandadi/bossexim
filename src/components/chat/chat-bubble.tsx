@@ -24,9 +24,10 @@ export function ChatBubble({ from, joinsPrevious = false, children }: ChatBubble
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8, scale: 0.97 }}
+      initial={isVisitor ? { opacity: 0, y: 14, scale: 0.8 } : { opacity: 0, y: 8, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.24, ease: EASE_SMOOTH }}
+      // The visitor's own message springs out of the composer; Aira's bubbles glide in.
+      transition={isVisitor ? { type: "spring", stiffness: 520, damping: 30 } : { duration: 0.24, ease: EASE_SMOOTH }}
       style={{ transformOrigin: isVisitor ? "bottom right" : "bottom left" }}
       className={cn(
         "w-fit max-w-[85%] rounded-[18px] px-3.5 py-2.5 text-[15px] leading-snug text-pretty break-words",

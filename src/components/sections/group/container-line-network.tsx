@@ -2,7 +2,8 @@ import { ArrowUpRight, MapPin, Quote } from "lucide-react";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Chip } from "@/components/ui/chip";
 import { SectionHeader } from "@/components/ui/section-header";
-import { containerLineNetwork } from "@/config";
+import { Carousel } from "@/components/ui/carousel";
+import { containerLineNetwork, uiLabels } from "@/config";
 
 const content = containerLineNetwork;
 
@@ -62,17 +63,21 @@ export function ContainerLineNetwork() {
       </RevealGroup>
 
       <h3 className="type-h3 mt-16">{content.testimonialsTitle}</h3>
-      <RevealGroup as="ul" className="mt-6 grid gap-4 lg:grid-cols-3">
-        {content.testimonials.map((testimonial) => (
-          <RevealItem as="li" key={testimonial.company}>
-            <figure className="flex h-full flex-col card-gradient rounded-card bg-surface p-7">
-              <Quote aria-hidden className="size-6 text-brand/40" />
-              <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-pretty">{testimonial.quote}</blockquote>
-              <figcaption className="mt-6 text-sm font-semibold">{testimonial.company}</figcaption>
-            </figure>
-          </RevealItem>
+      <Carousel
+        className="mt-4"
+        label={content.testimonialsTitle}
+        previousLabel={uiLabels.previous}
+        nextLabel={uiLabels.next}
+        slideWidth="min(26rem, 82vw)"
+        speed={0.8}
+        items={content.testimonials.map((testimonial) => (
+          <figure key={testimonial.company} className="flex h-full flex-col card-gradient rounded-card bg-surface p-7">
+            <Quote aria-hidden className="size-6 text-brand/40" />
+            <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-pretty">{testimonial.quote}</blockquote>
+            <figcaption className="mt-6 text-sm font-semibold">{testimonial.company}</figcaption>
+          </figure>
         ))}
-      </RevealGroup>
+      />
     </>
   );
 }

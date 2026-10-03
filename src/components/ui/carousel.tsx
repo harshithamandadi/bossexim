@@ -1,137 +1,183 @@
 "use client";
 
-import { useReducedMotion } from "framer-motion";
+import { animate, motion, useAnimationFrame, useInView, useMotionValue, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Children, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
-/** Seconds between automatic steps. */
-const AUTOPLAY_SECONDS = 4;
-/** After a click, swipe or scroll, sliding waits this long before carrying on. */
-const RESUME_AFTER_SECONDS = 8;
+/** Gliding speed in pixels per second. */
+const SPEED_PX_PER_S = 38;
+/** Further than this counts as a drag, not a click on a card. */
+const DRAG_CLICK_THRESHOLD_PX = 6;
+const GAP_PX = 16;
 
 interface CarouselProps {
-  children: ReactNode;
+  /** The cards; each becomes one slide. */
+  items: ReactNode[];
   /** Accessible name, e.g. "Products". */
   label: string;
   previousLabel: string;
   nextLabel: string;
   /** Width of each slide, e.g. "18rem". */
   slideWidth?: string;
+  /** Glide speed multiplier, e.g. 0.7 for slower rows. */
+  speed?: number;
   className?: string;
 }
 
 /**
- * A swipeable row of cards with previous/next arrows that keeps sliding on its
- * own. It pauses while hovered or keyboard-focused, and for a few seconds after
- * the visitor clicks an arrow, swipes or scrolls. No autoplay for reduced-motion visitors.
+ * An endless, smoothly gliding row of cards with previous/next arrows and
+ * drag/swipe. It glides continuously (pausing on hover, when off-screen and for
+ * reduced-motion visitors); the arrows glide one card at a time and it carries
+ * on afterwards. When the cards already fit, it's a plain static row.
  */
-export function Carousel({ children, label, previousLabel, nextLabel, slideWidth = "18rem", className }: CarouselProps) {
+export function Carousel({ items, label, previousLabel, nextLabel, slideWidth = "18rem", speed = 1, className }: CarouselProps) {
+  const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const setRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
-  const [canPrevious, setCanPrevious] = useState(false);
-  const [canNext, setCanNext] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isHolding, setIsHolding] = useState(false);
-  const [interaction, setInteraction] = useState(0);
+  const isOnScreen = useInView(viewportRef);
+  const x = useMotionValue(0);
+  const [setWidth, setSetWidth] = useState(0);
+  const [loops, setLoops] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const isBusy = useRef(false);
+  const dragDistance = useRef(0);
 
-  /** Holds the sliding briefly after the visitor interacts. */
-  const hold = useCallback(() => {
-    setIsHolding(true);
-    setInteraction((count) => count + 1);
-  }, []);
+  // Measure one set of cards: it only loops when the set is wider than the row.
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    const set = setRef.current;
+    if (!viewport || !set) return;
+    const measure = () => {
+      const width = set.scrollWidth + GAP_PX;
+      setSetWidth(width);
+      setLoops(width > viewport.clientWidth + GAP_PX);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(viewport);
+    observer.observe(set);
+    return () => observer.disconnect();
+  }, [items.length]);
+
+  // The copies on either side are for looks only: keep them out of the tab order.
+  useEffect(() => {
+    trackRef.current
+      ?.querySelectorAll("[data-copy] a, [data-copy] button")
+      .forEach((element) => element.setAttribute("tabindex", "-1"));
+  }, [loops, items.length]);
+
+  // Three copies, kept within the middle one, so there are always cards on both sides.
+  const wrap = useCallback(
+    (value: number) => {
+      if (!setWidth) return value;
+      let next = value;
+      while (next > -setWidth) next -= setWidth;
+      while (next <= -2 * setWidth) next += setWidth;
+      return next;
+    },
+    [setWidth],
+  );
 
   useEffect(() => {
-    if (interaction === 0) return;
-    const timer = window.setTimeout(() => setIsHolding(false), RESUME_AFTER_SECONDS * 1000);
-    return () => window.clearTimeout(timer);
-  }, [interaction]);
+    x.set(loops ? -setWidth : 0);
+  }, [loops, setWidth, x]);
 
-  const updateEdges = useCallback(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    setCanPrevious(track.scrollLeft > 4);
-    setCanNext(track.scrollLeft + track.clientWidth < track.scrollWidth - 4);
-  }, []);
+  useAnimationFrame((_, deltaMs) => {
+    if (!loops || reduceMotion || isHovered || !isOnScreen || isBusy.current) return;
+    x.set(wrap(x.get() - (SPEED_PX_PER_S * speed * Math.min(deltaMs, 64)) / 1000));
+  });
 
-  /** Scrolls by one card (the first slide's width plus the gap). */
-  const step = useCallback((direction: 1 | -1) => {
-    const track = trackRef.current;
-    const slide = track?.firstElementChild as HTMLElement | null;
-    if (!track || !slide) return;
-    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-    const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
-    // Autoplay wraps around to the start; the arrows simply stop at the ends.
-    if (direction === 1 && atEnd) track.scrollTo({ left: 0, behavior: "smooth" });
-    else track.scrollBy({ left: direction * (slide.offsetWidth + gap), behavior: "smooth" });
-  }, []);
-
-  useEffect(() => {
-    updateEdges();
-    window.addEventListener("resize", updateEdges);
-    return () => window.removeEventListener("resize", updateEdges);
-  }, [updateEdges]);
-
-  useEffect(() => {
-    if (reduceMotion || isPaused || isHolding) return;
-    const timer = window.setInterval(() => step(1), AUTOPLAY_SECONDS * 1000);
-    return () => window.clearInterval(timer);
-  }, [reduceMotion, isPaused, isHolding, step]);
-
-  const manual = (direction: 1 | -1) => {
-    hold();
-    step(direction);
+  /** Glides exactly one card along, then normalises back into the middle copy. */
+  const step = (direction: 1 | -1) => {
+    const slide = setRef.current?.firstElementChild as HTMLElement | null;
+    if (!slide) return;
+    isBusy.current = true;
+    animate(x, x.get() - direction * (slide.offsetWidth + GAP_PX), {
+      type: "spring",
+      stiffness: 140,
+      damping: 24,
+      onComplete: () => {
+        x.set(wrap(x.get()));
+        isBusy.current = false;
+      },
+    });
   };
 
   const arrowStyles = cn(
-    "grid size-11 place-items-center rounded-full bg-elevated text-fg shadow-[0_10px_30px_-12px_rgb(8_33_79/0.35)] ring-1 ring-border",
-    "transition-[opacity,background-color,color,transform] duration-200 ease-smooth hover:bg-brand hover:text-white active:scale-95",
-    "disabled:pointer-events-none disabled:opacity-0",
+    "absolute top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-elevated text-fg shadow-[0_10px_30px_-12px_rgb(8_33_79/0.35)] ring-1 ring-border",
+    "transition-[background-color,color,transform] duration-200 ease-smooth hover:bg-brand hover:text-white active:scale-95",
   );
+
+  const slides = (copy: number) =>
+    items.map((item, index) => (
+      <div key={`${copy}-${index}`} className="shrink-0" style={{ width: slideWidth }}>
+        {item}
+      </div>
+    ));
 
   return (
     <section
       aria-roledescription="carousel"
       aria-label={label}
       className={cn("relative", className)}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      // Keyboard focus pauses; a mouse click on an arrow only holds briefly.
-      onFocusCapture={(event) => event.target.matches(":focus-visible") && setIsPaused(true)}
-      onBlurCapture={() => setIsPaused(false)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div
-        ref={trackRef}
-        onScroll={updateEdges}
-        onPointerDown={hold}
-        onWheel={(event) => Math.abs(event.deltaX) > Math.abs(event.deltaY) && hold()}
-        className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth py-3"
-      >
-        {Children.map(children, (child) => (
-          <div className="shrink-0 snap-start" style={{ width: slideWidth }}>
-            {child}
+      <div ref={viewportRef} className={cn("overflow-hidden py-3", loops && "edge-fade-x")}>
+        <motion.div
+          ref={trackRef}
+          className={cn("flex w-max items-stretch", loops && "cursor-grab active:cursor-grabbing")}
+          style={{ x, gap: GAP_PX }}
+          drag={loops ? "x" : false}
+          dragMomentum
+          onDragStart={() => {
+            isBusy.current = true;
+            dragDistance.current = 0;
+          }}
+          onDrag={(_, info) => {
+            dragDistance.current = Math.max(dragDistance.current, Math.abs(info.offset.x));
+          }}
+          onDragTransitionEnd={() => {
+            x.set(wrap(x.get()));
+            isBusy.current = false;
+          }}
+          // A drag shouldn't also open the card under the pointer.
+          onClickCapture={(event: MouseEvent) => {
+            if (dragDistance.current > DRAG_CLICK_THRESHOLD_PX) {
+              event.preventDefault();
+              event.stopPropagation();
+              dragDistance.current = 0;
+            }
+          }}
+        >
+          {loops && (
+            <div aria-hidden data-copy className="flex shrink-0 items-stretch" style={{ gap: GAP_PX }}>
+              {slides(0)}
+            </div>
+          )}
+          <div ref={setRef} className="flex shrink-0 items-stretch" style={{ gap: GAP_PX }}>
+            {slides(1)}
           </div>
-        ))}
+          {loops && (
+            <div aria-hidden data-copy className="flex shrink-0 items-stretch" style={{ gap: GAP_PX }}>
+              {slides(2)}
+            </div>
+          )}
+        </motion.div>
       </div>
-      {/* Arrows sit on the row's edges (clear of the chat button in the corner). */}
-      <button
-        type="button"
-        onClick={() => manual(-1)}
-        disabled={!canPrevious}
-        aria-label={previousLabel}
-        className={cn(arrowStyles, "absolute top-1/2 left-1 -translate-y-1/2 sm:-left-5")}
-      >
-        <ArrowLeft aria-hidden className="size-5" />
-      </button>
-      <button
-        type="button"
-        onClick={() => manual(1)}
-        disabled={!canNext}
-        aria-label={nextLabel}
-        className={cn(arrowStyles, "absolute top-1/2 right-1 -translate-y-1/2 sm:-right-5")}
-      >
-        <ArrowRight aria-hidden className="size-5" />
-      </button>
+
+      {loops && (
+        <>
+          <button type="button" onClick={() => step(-1)} aria-label={previousLabel} className={cn(arrowStyles, "left-1 sm:-left-5")}>
+            <ArrowLeft aria-hidden className="size-5" />
+          </button>
+          <button type="button" onClick={() => step(1)} aria-label={nextLabel} className={cn(arrowStyles, "right-1 sm:-right-5")}>
+            <ArrowRight aria-hidden className="size-5" />
+          </button>
+        </>
+      )}
     </section>
   );
 }
