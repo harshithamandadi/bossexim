@@ -6,9 +6,9 @@ import Link from "next/link";
 import type { ComponentType } from "react";
 import { Chip } from "@/components/ui/chip";
 import { Icon } from "@/components/ui/icon";
-import { containerLine, productHref, tradeOrigin } from "@/config";
+import { WorldDotsMap } from "@/components/ui/world-dots-map";
+import { containerLine, networkPoints, productHref, tradeOrigin } from "@/config";
 import { groupByCategory, type Catalogue } from "@/lib/catalogue";
-import { cn } from "@/lib/cn";
 import type { ServiceVisual } from "@/types/content";
 
 interface VisualProps {
@@ -77,30 +77,12 @@ function LogisticsVisual() {
   );
 }
 
+/** A dotted world with lanes from India: sourcing is not limited to a handful of countries. */
 function SourcingVisual({ catalogue }: VisualProps) {
-  const nodes = [
-    { code: tradeOrigin.code, label: tradeOrigin.name, isOrigin: true },
-    ...catalogue.activeMarkets.map((market) => ({ code: market.code, label: market.shortName, isOrigin: false })),
-  ];
-
-  return (
-    <div className="relative flex items-start justify-between gap-1 sm:gap-2">
-      <span aria-hidden className="absolute inset-x-5 top-[1.125rem] border-t border-dashed border-fg/20 sm:inset-x-6 sm:top-6" />
-      {nodes.map((node) => (
-        <span key={node.code} className="relative flex flex-col items-center gap-2">
-          <span
-            className={cn(
-              "grid size-9 place-items-center rounded-full text-[10px] font-semibold ring-1 ring-inset ring-border sm:size-12 sm:text-xs",
-              node.isOrigin ? "bg-fg text-canvas" : "bg-canvas",
-            )}
-          >
-            {node.code}
-          </span>
-          <span className="hidden text-xs text-fg-mute sm:block">{node.label}</span>
-        </span>
-      ))}
-    </div>
+  const points = [...catalogue.markets.map((market) => market.coordinates), ...networkPoints.map((place) => place.coordinates)].filter(
+    (point) => point.lat !== tradeOrigin.coordinates.lat || point.lon !== tradeOrigin.coordinates.lon,
   );
+  return <WorldDotsMap origin={tradeOrigin.coordinates} points={points} />;
 }
 
 export const serviceVisuals: Record<ServiceVisual, ComponentType<VisualProps>> = {

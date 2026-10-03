@@ -1,8 +1,6 @@
 import { LocalNav } from "@/components/layout/local-nav";
 import { PageHero } from "@/components/layout/page-hero";
 import { CompanyGrid } from "@/components/sections/group/company-grid";
-import { ContainerLineSpotlight } from "@/components/sections/group/container-line";
-import { ContainerLineNetwork } from "@/components/sections/group/container-line-network";
 import { GroupJourney } from "@/components/sections/group/group-journey";
 import { GroupRecognition } from "@/components/sections/group/group-recognition";
 import { CtaSection } from "@/components/sections/shared/cta-section";
@@ -12,7 +10,6 @@ import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
 import { groupCompanies, groupIntro, pageContent, routes, sectionIds } from "@/config";
 import { createPageMetadata } from "@/lib/metadata";
-import { getLocalNavItems } from "@/lib/navigation";
 
 const content = pageContent.group;
 const ids = sectionIds.group;
@@ -23,13 +20,20 @@ export const metadata = createPageMetadata({
   path: routes.group,
 });
 
+/** BOSS Group overview — only about the Group (client feedback); each vertical has its own page. */
 export default function BossGroupPage() {
   return (
     <>
       <PageHero content={content} />
-      <LocalNav items={getLocalNavItems(routes.group)} />
+      <LocalNav
+        items={[
+          { id: ids.companies, label: groupCompanies.heading.eyebrow ?? "Group Companies" },
+          { id: ids.journey, label: "Our Journey" },
+          { id: ids.recognition, label: "Recognition" },
+        ]}
+      />
 
-      <Section>
+      <Section spacing="compact">
         <ProseSplit
           content={groupIntro}
           aside={
@@ -40,24 +44,16 @@ export default function BossGroupPage() {
         />
       </Section>
 
-      <Section id={ids.containerLine} className="scroll-mt-16 pt-0 sm:pt-0">
-        <ContainerLineSpotlight />
-      </Section>
-
-      <Section id={ids.network} className="pt-0 sm:pt-0">
-        <ContainerLineNetwork />
-      </Section>
-
-      <Section id={ids.companies} tone="mist">
+      <Section id={ids.companies} tone="mist" spacing="compact">
         <SectionHeader {...groupCompanies.heading} />
-        <CompanyGrid className="mt-14" />
+        <CompanyGrid className="mt-10" />
       </Section>
 
-      <Section id={ids.journey}>
+      <Section id={ids.journey} spacing="compact">
         <GroupJourney />
       </Section>
 
-      <Section id={ids.recognition} tone="mist">
+      <Section id={ids.recognition} tone="mist" spacing="compact">
         <GroupRecognition />
       </Section>
 

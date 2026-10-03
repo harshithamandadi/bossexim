@@ -5,8 +5,8 @@ import { Container, type ContainerSize } from "./container";
 export type SectionTone = "light" | "mist" | "dark";
 
 const spacingStyles = {
-  default: "py-24 sm:py-32",
-  compact: "py-16 sm:py-20",
+  default: "py-20 sm:py-24",
+  compact: "py-14 sm:py-16",
   none: "",
 } as const;
 
@@ -31,7 +31,7 @@ export function Section({
   return (
     <section
       data-tone={tone}
-      className={cn("relative scroll-mt-32 bg-canvas text-fg", spacingStyles[spacing], className)}
+      className={cn("relative scroll-mt-32 bg-canvas text-fg", tone === "dark" && "deep-gradient", spacingStyles[spacing], className)}
       {...props}
     >
       {bleed ? children : <Container size={containerSize}>{children}</Container>}

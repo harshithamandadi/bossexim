@@ -12,12 +12,15 @@ import { serviceVisuals } from "./service-visuals";
 
 type BentoSlot = { span: string; tone?: "dark"; layout: "stacked" | "split"; ambient?: boolean };
 
-/** Bento slots, applied to services in order (and repeated if more are added). */
+/**
+ * Bento slots, applied to services in order (and repeated if more are added).
+ * Two equal cards per row, so no card is left with a large empty middle.
+ */
 const BENTO_SLOTS: [BentoSlot, ...BentoSlot[]] = [
-  { span: "lg:col-span-7 lg:row-span-2", tone: "dark", layout: "stacked", ambient: true },
-  { span: "lg:col-span-5", layout: "stacked" },
-  { span: "lg:col-span-5", layout: "stacked" },
-  { span: "lg:col-span-12", layout: "split" },
+  { span: "lg:col-span-6", tone: "dark", layout: "stacked", ambient: true },
+  { span: "lg:col-span-6", layout: "stacked" },
+  { span: "lg:col-span-6", layout: "stacked" },
+  { span: "lg:col-span-6", tone: "dark", layout: "stacked", ambient: true },
 ];
 
 export async function ServicesBento({ services = siteConfig.services, className }: { services?: Service[]; className?: string }) {
@@ -45,11 +48,15 @@ function ServiceCard({ service, slot, catalogue }: { service: Service; slot: Ben
     <article
       data-tone={slot.tone}
       className={cardStyles({
-        className: cn("isolate flex h-full flex-col gap-10", isSplit && "lg:grid lg:grid-cols-2 lg:items-center lg:gap-16"),
+        className: cn(
+          "isolate flex h-full flex-col gap-8",
+          slot.tone === "dark" && "deep-gradient",
+          isSplit && "lg:grid lg:grid-cols-2 lg:items-center lg:gap-16",
+        ),
       })}
     >
       {slot.ambient && <CardAmbience />}
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6">
         <div className="flex items-start justify-between gap-4">
           <IconTile icon={service.icon} variant={slot.tone === "dark" ? "brand" : "solid"} />
           <Link

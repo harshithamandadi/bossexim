@@ -26,7 +26,7 @@ export function TradeRoutesStage({ products, markets, className }: TradeRoutesSt
     <div
       data-tone="dark"
       className={cn(
-        "grid gap-8 bg-canvas p-5 text-fg sm:p-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-10 lg:p-10",
+        "deep-gradient grid gap-8 p-5 text-fg sm:p-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-10 lg:p-10",
         className,
       )}
     >

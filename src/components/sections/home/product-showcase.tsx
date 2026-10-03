@@ -7,38 +7,33 @@ import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
 import { homeContent } from "@/config";
 import { getCatalogue } from "@/lib/content/queries";
-import type { Market, Product } from "@/types/content";
 
-const MARQUEE_SECONDS = 55;
+const MARQUEE_SECONDS = 70;
 
+/** One gently scrolling row of every product, kept within the page's wide margins. */
 export async function ProductShowcase() {
   const { products: content } = homeContent;
-  const { exportProducts, importProducts, markets } = await getCatalogue();
+  const { products, markets } = await getCatalogue();
 
   return (
-    <Section bleed>
-      <Container className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+    <Section bleed spacing="compact">
+      <Container className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <SectionHeader eyebrow={content.eyebrow} title={content.title} description={content.description} />
-        <Reveal>
+        <Reveal className="shrink-0">
           <ButtonLink href={content.cta.href} variant="secondary" withArrow>
             {content.cta.label}
           </ButtonLink>
         </Reveal>
       </Container>
-      <Reveal className="mt-16 space-y-2">
-        <ShowcaseRow products={exportProducts} markets={markets} />
-        <ShowcaseRow products={importProducts} markets={markets} reverse />
-      </Reveal>
+      <Container size="wide">
+        <Reveal className="mt-10">
+          <Marquee durationSeconds={MARQUEE_SECONDS} className="py-2">
+            {products.map((product) => (
+              <ProductCard key={product.slug} product={product} markets={markets} className="w-[18rem] shrink-0" />
+            ))}
+          </Marquee>
+        </Reveal>
+      </Container>
     </Section>
-  );
-}
-
-function ShowcaseRow({ products, markets, reverse = false }: { products: Product[]; markets: Market[]; reverse?: boolean }) {
-  return (
-    <Marquee reverse={reverse} durationSeconds={MARQUEE_SECONDS} className="py-2">
-      {products.map((product) => (
-        <ProductCard key={product.slug} product={product} markets={markets} className="w-[19rem] shrink-0" />
-      ))}
-    </Marquee>
   );
 }

@@ -157,7 +157,7 @@ const companySection = (extra: EnquiryFormSection["fields"] = []): EnquiryFormSe
 });
 
 const contactSection = (phoneRequired: boolean): EnquiryFormSection => ({
-  title: "Contact person",
+  title: "Contact Person",
   fields: [
     { name: "name", required: true },
     { name: "designation" },
@@ -174,7 +174,7 @@ const contactSection = (phoneRequired: boolean): EnquiryFormSection => ({
 export const enquiryForms: Record<EnquiryTypeId, EnquiryFormSection[]> = {
   general: [
     {
-      title: "Your details",
+      title: "Your Details",
       fields: [
         { name: "name", required: true },
         { name: "email", required: true, label: "Email" },
@@ -184,7 +184,7 @@ export const enquiryForms: Record<EnquiryTypeId, EnquiryFormSection[]> = {
       ],
     },
     {
-      title: "Your message",
+      title: "Your Message",
       fields: [{ name: "message", required: true, label: "How can we help?", placeholder: "Your question or message…" }],
     },
   ],
@@ -192,7 +192,7 @@ export const enquiryForms: Record<EnquiryTypeId, EnquiryFormSection[]> = {
     companySection([{ name: "registration" }]),
     contactSection(true),
     {
-      title: "Your requirement",
+      title: "Your Requirement",
       fields: [
         { name: "product", required: true, label: "Product required" },
         { name: "grade" },
@@ -211,7 +211,7 @@ export const enquiryForms: Record<EnquiryTypeId, EnquiryFormSection[]> = {
       ],
     },
     {
-      title: "Documents (optional)",
+      title: "Documents (Optional)",
       fields: [
         {
           name: "attachments",
@@ -224,7 +224,7 @@ export const enquiryForms: Record<EnquiryTypeId, EnquiryFormSection[]> = {
     companySection([{ name: "registration" }]),
     contactSection(true),
     {
-      title: "What you supply",
+      title: "What You Supply",
       fields: [
         { name: "product", required: true, label: "Product you supply" },
         { name: "grade" },
@@ -239,7 +239,7 @@ export const enquiryForms: Record<EnquiryTypeId, EnquiryFormSection[]> = {
       ],
     },
     {
-      title: "Documents (optional)",
+      title: "Documents (Optional)",
       fields: [{ name: "attachments", label: "Company profile, specifications, certificates, CoA or product photos" }],
     },
   ],
@@ -261,7 +261,7 @@ export const enquiryForms: Record<EnquiryTypeId, EnquiryFormSection[]> = {
       ],
     },
     {
-      title: "Documents (optional)",
+      title: "Documents (Optional)",
       fields: [{ name: "attachments", label: "Company profile, licences or certifications" }],
     },
   ],
@@ -270,28 +270,31 @@ export const enquiryForms: Record<EnquiryTypeId, EnquiryFormSection[]> = {
 export const contactContent = {
   heading: {
     eyebrow: "Enquiry routes",
-    title: "Four ways to reach us.",
+    title: "Four Ways to Reach Us",
     description:
       "Each form collects the company and transaction information our team needs to carry out basic background work before responding.",
   } satisfies SectionContent,
   details: {
-    title: "Reach us directly",
+    title: "Reach Us Directly",
     labels: { website: "Web", email: "Email", phone: "Phone", address: "Office" },
     pendingNote: "Phone, WhatsApp, office hours and map details will be added once finalised.",
   },
-  social: { title: "Follow us" },
+  social: { title: "Follow Us" },
   form: {
-    title: "Send an enquiry",
+    title: "Send an Enquiry",
     typeLabel: "Enquiry type",
     optional: "Optional",
     otherProduct: "Other / not listed",
+    otherGroup: "Something else",
+    searchProduct: "Search products…",
+    noProductMatch: "No match — choose “Other / not listed”.",
     submit: "Send enquiry",
     submitting: "Sending…",
     privacyNote:
       "We use your details only for internal business evaluation and to reply to your enquiry. Submitting a form does not create a commercial commitment.",
     files: { choose: "Choose files", remove: "Remove", selected: "selected" },
     success: {
-      title: "Thank you — enquiry received.",
+      title: "Thank You — Enquiry Received",
       description: "Our trade desk will review your requirement and contact you if a suitable opportunity is identified.",
       reference: "Your reference",
       again: "Send another enquiry",

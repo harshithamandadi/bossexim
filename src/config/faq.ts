@@ -16,7 +16,7 @@ export const faqCategories: FaqCategory[] = Object.values(FAQ_CATEGORY);
 
 export const faqHeading: SectionContent = {
   eyebrow: "FAQ",
-  title: "Questions, answered.",
+  title: "Questions, Answered",
   description: "Can't find what you're looking for? Send us an enquiry and our trade desk will help.",
 };
 

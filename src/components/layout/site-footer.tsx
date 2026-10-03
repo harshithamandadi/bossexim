@@ -2,11 +2,16 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
 import { WaveDivider } from "@/components/ui/wave-divider";
-import { contactNavGroup, mainNavigation, routes, siteConfig, uiLabels } from "@/config";
+import { contactLink, mainNavigation, routes, siteConfig, uiLabels } from "@/config";
 import { getCompanyDetails } from "@/lib/content/queries";
 import { SocialLinks } from "./social-links";
 
-const footerGroups = [...mainNavigation, contactNavGroup];
+const footerLinks = [
+  { label: "Home", href: routes.home },
+  ...mainNavigation.map(({ label, href }) => ({ label, href })),
+  { label: "FAQs", href: routes.faq },
+  contactLink,
+];
 
 export async function SiteFooter() {
   const { company, website, url } = siteConfig;
@@ -14,10 +19,10 @@ export async function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer data-tone="dark" className="relative overflow-hidden bg-canvas text-fg">
+    <footer data-tone="dark" className="deep-gradient relative overflow-hidden text-fg">
       <WaveDivider flip />
-      <Container className="relative pt-24 pb-10">
-        <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.2fr)]">
+      <Container className="relative pt-20 pb-10">
+        <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_auto]">
           <div className="max-w-sm">
             <Link href={routes.home} aria-label={`${company.name} — home`} className="inline-block rounded-lg">
               <Logo showDescriptor />
@@ -26,29 +31,23 @@ export async function SiteFooter() {
             <SocialLinks links={social} className="mt-8" />
           </div>
 
-          <nav aria-label={uiLabels.footerNavigation} className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
-            {footerGroups.map((group) => (
-              <div key={group.label}>
-                <Link href={group.href} className="text-sm font-semibold transition-colors hover:text-fg-mute">
-                  {group.label}
-                </Link>
-                <ul className="mt-4 space-y-2.5">
-                  {group.items.map((item) => (
-                    <li key={item.label}>
-                      <Link href={item.href} className="text-sm text-fg-mute transition-colors hover:text-fg">
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+          {/* Main pages only (client feedback): one link per section, no sub-links. */}
+          <nav aria-label={uiLabels.footerNavigation} className="lg:justify-self-end">
+            <ul className="grid grid-cols-2 gap-x-10 gap-y-4 sm:grid-cols-3">
+              {footerLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-[15px] font-medium text-fg-mute transition-colors hover:text-fg">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </nav>
         </div>
 
         <p
           aria-hidden
-          className="mt-24 bg-linear-to-b from-fg/25 to-transparent bg-clip-text text-center font-display text-[clamp(2.5rem,11vw,10rem)] leading-none font-semibold tracking-[-0.06em] whitespace-nowrap text-transparent select-none"
+          className="mt-16 bg-linear-to-b from-fg/25 to-transparent bg-clip-text text-center font-display text-[clamp(2.5rem,11vw,10rem)] leading-none font-semibold tracking-[-0.06em] whitespace-nowrap text-transparent select-none"
         >
           {company.wordmark.primary} {company.wordmark.secondary}
         </p>

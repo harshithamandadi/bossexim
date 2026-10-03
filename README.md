@@ -110,6 +110,8 @@ or paid API is involved:
   edit, then it is submitted as a buyer enquiry (source "Website assistant") and the visitor
   gets a BGX reference.
 - **Company Information** — five short answers, then an offer to start an enquiry.
+- **Request a Call Back** — name, email, optional phone and topic; saved as a general enquiry.
+  Offered whenever Aira can't answer. On larger screens a greeting teaser appears once per visit.
 - Anything typed outside a flow is answered from the FAQs.
 
 Email goes through the company's mailbox over SMTP (`SMTP_*` in `.env`). With
@@ -184,6 +186,7 @@ src/
 ├── config/                   Content that stays in code (page copy, menus, labels)
 ├── lib/content/              CMS queries and mappers (server-only)
 ├── lib/enquiry/              Form rules, spam checks, delivery and email templates
+├── lib/world-dots.ts          Land dots for the world map and globe (generated: node scripts/generate-world-dots.mjs)
 ├── lib/                      Pure logic: catalogue, stats, geo, motion, FAQ search, metadata
 ├── types/content.ts          Content model shared by code config and CMS content
 └── components/               ui/, motion/, layout/, chat/, sections/ (grouped by page)

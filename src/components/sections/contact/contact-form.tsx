@@ -6,6 +6,7 @@ import { useActionState, useState } from "react";
 import { submitEnquiry } from "@/app/(site)/contact/actions";
 import { Button } from "@/components/ui/button";
 import { FileField, SelectField, TextAreaField, TextField } from "@/components/ui/field";
+import { ProductCombobox } from "@/components/ui/product-combobox";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { ATTACHMENT_LIMITS, contactContent, enquiryFieldDefinitions, enquiryForms, enquiryTypes } from "@/config/contact";
 import { tradeDirections } from "@/config/products";
@@ -244,21 +245,24 @@ function EnquiryFieldControl({ field, error, defaultValue, products }: EnquiryFi
       );
     case "product":
       return (
-        <SelectField {...common} {...initial}>
-          <option value="">{placeholder}</option>
-          {PRODUCT_GROUPS.map((direction) => (
-            <optgroup key={direction} label={tradeDirections[direction].label}>
-              {products
+        <ProductCombobox
+          name={field.name}
+          label={common.label}
+          error={error}
+          required={field.required}
+          optionalLabel={common.optionalLabel}
+          placeholder={form.searchProduct}
+          noResults={form.noProductMatch}
+          defaultValue={defaultValue}
+          options={[
+            ...PRODUCT_GROUPS.flatMap((direction) =>
+              products
                 .filter((product) => product.direction === direction)
-                .map((product) => (
-                  <option key={product.slug} value={product.slug}>
-                    {product.name}
-                  </option>
-                ))}
-            </optgroup>
-          ))}
-          <option value={OTHER_PRODUCT_VALUE}>{form.otherProduct}</option>
-        </SelectField>
+                .map((product) => ({ value: product.slug, label: product.name, group: tradeDirections[direction].label })),
+            ),
+            { value: OTHER_PRODUCT_VALUE, label: form.otherProduct, group: form.otherGroup },
+          ]}
+        />
       );
     default:
       return (

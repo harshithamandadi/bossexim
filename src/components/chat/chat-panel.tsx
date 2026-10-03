@@ -11,17 +11,18 @@ import {
 import { ArrowRight, RotateCcw, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useId, useMemo, useRef, useState, useTransition, type PointerEvent, type ReactNode } from "react";
-import { submitAssistantEnquiry } from "@/app/(site)/contact/actions";
+import { submitAssistantCallback, submitAssistantEnquiry } from "@/app/(site)/contact/actions";
 import { LogoMark } from "@/components/ui/logo";
 import { chatbotContent } from "@/config/chatbot";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/cn";
-import type { BuyingAnswers } from "@/lib/enquiry/assistant";
+import type { BuyingAnswers, CallbackAnswers } from "@/lib/enquiry/assistant";
 import { createFaqSearch } from "@/lib/faq-search";
 import { EASE_SMOOTH, SPRING_PANEL } from "@/lib/motion";
 import type { FaqItem } from "@/types/content";
 import {
   INITIAL_FLOW,
+  callbackReply,
   composerHints,
   greetingMessage,
   respond,
@@ -40,7 +41,10 @@ import { ChatComposer } from "./chat-composer";
 /** A question sent from elsewhere on the site; `id` lets the same question be asked twice. */
 export interface ChatRequest {
   id: number;
-  question: string;
+  /** Asked as if typed… */
+  question?: string;
+  /** …or a menu option to start with, e.g. from the greeting teaser. */
+  choice?: ChatChoice;
 }
 
 /** A short pause before each answer, so replies read as a conversation rather than a jump. */
@@ -82,6 +86,14 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
     });
   }
 
+  function requestCallback(answers: CallbackAnswers) {
+    startSubmitting(async () => {
+      const result = await submitAssistantCallback(answers, formToken).catch(() => ({ ok: false as const }));
+      setMessages((current) => [...current, callbackReply(result)]);
+      setFlow(INITIAL_FLOW);
+    });
+  }
+
   /** Echoes the visitor's message and queues Aira's replies (delivering any still "typing" first). */
   function send(input: VisitorInput, echo: string) {
     if (isSubmitting) return;
@@ -90,6 +102,7 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
     setPendingReplies(response.replies);
     setFlow(response.flow);
     if (response.submit) submit(response.submit);
+    if (response.callback) requestCallback(response.callback);
   }
 
   const ask = (question: string, item?: FaqItem) =>
@@ -99,7 +112,8 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
   // A question sent from another page (e.g. the FAQ search) — handled once per request.
   if (request && request.id !== handledRequestId) {
     setHandledRequestId(request.id);
-    ask(request.question);
+    if (request.choice) choose(request.choice);
+    else if (request.question) ask(request.question);
   }
 
   useEffect(() => {

@@ -5,9 +5,8 @@
  */
 import { enquiryTypes } from "@/config/contact";
 import { FAQ_CATEGORY } from "@/config/faq";
-import { containerLine } from "@/config/group";
 import { howWeWork } from "@/config/process";
-import { anchorHref, contactHref, partnerFormHref, productsViewHref, routes, sectionIds } from "@/config/routes";
+import { anchorHref, contactHref, groupVerticalHref, partnerFormHref, productsViewHref, routes, sectionIds } from "@/config/routes";
 import { formatList } from "@/lib/format";
 import type { IconName } from "@/lib/icons";
 import type { FaqItem, GroupCompany, Market, Resource, TeamMember } from "@/types/content";
@@ -82,7 +81,7 @@ export const seedGroupCompanies: Omit<GroupCompany, "logo">[] = [
   {
     name: "BOSS Retail",
     description:
-      "A network of 45+ fuel and convenience stores across Australia under the BP, AMPOL, Shell and Caltex banners — premium fuel, daily essentials and in-store cafés, backed by strong systems and customer-centric policies.",
+      "Fuel stations and convenience stores across Australia, working with BP, AMPOL, Shell and Caltex — premium fuel, daily essentials and in-store cafés, backed by strong systems and customer-centric policies.",
     icon: "store",
   },
   {
@@ -94,7 +93,7 @@ export const seedGroupCompanies: Omit<GroupCompany, "logo">[] = [
   {
     name: "BOSS Hospitality",
     description:
-      "Hotels and motels in Australia, India and Italy — including Eminence on Bank in Adelaide and Highfields Motel in Toowoomba — blending comfort, accessibility and affordability near key transport points.",
+      "Hotels and motels in Australia, India and Italy — blending comfort, accessibility and affordability in locations near key transport points.",
     icon: "hotel",
   },
   {
@@ -182,11 +181,11 @@ export const seedFaqs: FaqItem[] = [
   },
   {
     category: CATEGORY.company,
-    question: `What is ${containerLine.heading.title}?`,
+    question: "What is BOSS Container Line?",
     answer:
       "BOSS Container Line is the BOSS Group’s shipping and logistics company — a registered NVOCC providing freight forwarding, container trading, break bulk and project cargo, and 3PL and warehousing, with offices in Singapore, Malaysia, Hyderabad, Navi Mumbai, Gandhidham and Chennai.",
     keywords: ["shipping", "logistics", "freight", "nvocc", "container", "forwarding", "break", "bulk", "warehouse", "3pl"],
-    action: { label: containerLine.heading.title, href: anchorHref(routes.group, sectionIds.group.containerLine) },
+    action: { label: "Container Line", href: groupVerticalHref("container-line") },
   },
   {
     category: CATEGORY.company,
@@ -194,7 +193,7 @@ export const seedFaqs: FaqItem[] = [
     answer:
       "Through BOSS Container Line, the Group has 31 agency agreements in place (with one more in progress) across the Indian Subcontinent, Southeast Asia, the Middle East and Upper Gulf, the Red Sea and Africa, CIS destinations, China, the Maldives and Turkey.",
     keywords: ["network", "agents", "agency", "countries", "reach", "coverage", "offices", "where", "ports"],
-    action: { label: "Network & offices", href: anchorHref(routes.group, sectionIds.group.network) },
+    action: { label: "Network & offices", href: anchorHref(groupVerticalHref("container-line"), sectionIds.group.network) },
   },
   {
     category: CATEGORY.catalogue,

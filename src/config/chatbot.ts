@@ -26,6 +26,18 @@ export interface BuyingStep {
   askWhen?: { step: BuyingStepId; equals: string };
 }
 
+/** One question in the call-back flow. */
+export interface ContactStep {
+  id: ContactStepId;
+  label: string;
+  question: string;
+  input: "text" | "email" | "tel";
+  placeholder?: string;
+  optional?: boolean;
+}
+
+export type ContactStepId = "name" | "email" | "phone" | "message";
+
 export type BuyingStepId =
   | "product"
   | "productOther"
@@ -243,6 +255,42 @@ export const chatbotContent = {
     products: "🌾 Products",
     buying: "📦 Buying Enquiry",
     company: "🏢 Company Information",
+    callback: "📞 Request a Call Back",
+  },
+
+  /** A short contact-details flow, offered from the menu and whenever Aira can't answer. */
+  callback: {
+    intro: "Happy to arrange that — our team will get back to you personally. Just a few quick details.",
+    steps: [
+      { id: "name", label: "Name", question: "What is your name?", input: "text", placeholder: "Full name" },
+      { id: "email", label: "Email", question: "What is your email address?", input: "email", placeholder: "you@company.com" },
+      {
+        id: "phone",
+        label: "Phone / WhatsApp",
+        question: "Your phone or WhatsApp number, with the country code? (Optional)",
+        input: "tel",
+        placeholder: "+971 …",
+        optional: true,
+      },
+      {
+        id: "message",
+        label: "Topic",
+        question: "What would you like to discuss? (Optional)",
+        input: "text",
+        placeholder: "e.g. rice prices for Dubai",
+        optional: true,
+      },
+    ] satisfies ContactStep[],
+    success: "✅ Thank you! Our team has your details and will contact you shortly.",
+    reference: "Reference",
+    failure: "Sorry — we couldn't save your details just now. Please try again, or email us at",
+  },
+
+  /** A small greeting bubble beside the launcher on larger screens (never on phones). */
+  teaser: {
+    text: "👋 Hi, I'm Aira. Looking for Indian products or a quote?",
+    dismiss: "Dismiss",
+    delaySeconds: 6,
   },
   backToMenu: "Main menu",
   smallTalk: {

@@ -4,18 +4,19 @@
  */
 import type { LinkItem, NavGroup } from "@/types/content";
 import { enquiryTypes } from "./contact";
-import { anchorHref, contactHref, partnerFormHref, productsViewHref, routes, sectionIds, toAnchorId } from "./routes";
+import { groupVerticals } from "./group";
+import {
+  anchorHref,
+  contactHref,
+  groupVerticalHref,
+  partnerFormHref,
+  productsViewHref,
+  routes,
+  sectionIds,
+  toAnchorId,
+} from "./routes";
 
-const { about, business, tradeProcess, group, resources } = sectionIds;
-
-/** Group companies with their own section on the BOSS Group page (see seed data). */
-const GROUP_COMPANY_LINKS = [
-  { name: "BOSS Retail", description: "45+ fuel and convenience stores in Australia." },
-  { name: "BOSS Constructions", description: "Commercial and residential construction." },
-  { name: "BOSS Hospitality", description: "Hotels and motels in Australia, India and Italy." },
-  { name: "BOSS IT", description: "Digital systems and IT-enabled solutions." },
-  { name: "BOSS BPO", description: "HR and finance operations outsourcing." },
-];
+const { about, business, tradeProcess, resources } = sectionIds;
 
 /** Photo categories on the Media & Events page (see seed data). */
 const MEDIA_CATEGORIES = [
@@ -36,11 +37,6 @@ export const mainNavigation: NavGroup[] = [
         label: "About BOSS EXIM",
         href: anchorHref(routes.about, about.overview),
         description: "Our role in international trade.",
-      },
-      {
-        label: "About BOSS Group",
-        href: anchorHref(routes.about, about.group),
-        description: "The diversified group behind us.",
       },
       {
         label: "Vision, Mission & Values",
@@ -141,26 +137,12 @@ export const mainNavigation: NavGroup[] = [
     label: "BOSS Group",
     href: routes.group,
     items: [
-      {
-        label: "BOSS Container Line",
-        href: anchorHref(routes.group, group.containerLine),
-        description: "NVOCC, freight forwarding, container trading & 3PL.",
-      },
-      {
-        label: "Network & Offices",
-        href: anchorHref(routes.group, group.network),
-        description: "31 agency agreements and offices in SG, MY & India.",
-      },
-      ...GROUP_COMPANY_LINKS.map(({ name, description }) => ({
-        label: name,
-        href: anchorHref(routes.group, toAnchorId(name)),
-        description,
+      // Each vertical has its own page (client feedback, Oct 2026).
+      ...groupVerticals.map((vertical) => ({
+        label: vertical.name,
+        href: groupVerticalHref(vertical.slug),
+        description: vertical.menuDescription,
       })),
-      {
-        label: "Journey & Recognition",
-        href: anchorHref(routes.group, group.journey),
-        description: "Milestones since 2000, leadership and awards.",
-      },
     ],
   },
   {
@@ -183,7 +165,7 @@ export const mainNavigation: NavGroup[] = [
       {
         label: "BOSS Group Brochure",
         href: anchorHref(routes.resources, resources.downloads),
-        description: "An overview of the wider BOSS ecosystem.",
+        description: "An overview of the BOSS Group.",
       },
       {
         label: "Product Specifications",

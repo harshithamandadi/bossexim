@@ -10,6 +10,7 @@ import { cn } from "@/lib/cn";
 import { formatList, pluralize } from "@/lib/format";
 import { arcPath, project, toPercent, type MapBounds, type MapSize, type Point } from "@/lib/geo";
 import { DURATION, EASE_SMOOTH } from "@/lib/motion";
+import { WORLD_DOTS } from "@/lib/world-dots";
 import type { LabelAnchor, Market, MarketCode } from "@/types/content";
 import { laneInteractionProps, type ActiveLaneChange } from "./lane-interaction";
 
@@ -43,6 +44,16 @@ const graticule = {
   x: multiplesBetween(MAP_BOUNDS.west, MAP_BOUNDS.east, GRATICULE_STEP_DEGREES).map((lon) => toMap({ lat: 0, lon }).x),
   y: multiplesBetween(MAP_BOUNDS.south, MAP_BOUNDS.north, GRATICULE_STEP_DEGREES).map((lat) => toMap({ lat, lon: 0 }).y),
 };
+/** Land inside the map's frame, as dots (one path of zero-length segments). */
+const landPath = WORLD_DOTS.filter(
+  ([lon, lat]) => lon >= MAP_BOUNDS.west && lon <= MAP_BOUNDS.east && lat <= MAP_BOUNDS.north && lat >= MAP_BOUNDS.south,
+)
+  .map(([lon, lat]) => {
+    const point = toMap({ lat, lon });
+    return `M${point.x} ${point.y}h0`;
+  })
+  .join("");
+
 /** One arc per market an export line ships to. */
 function buildExportLanes(markets: Market[]) {
   return markets.map((market) => {
@@ -71,10 +82,6 @@ export function TradeRouteMap({ catalogue, activeCode, onActiveChange, className
 
   return (
     <div className={cn("relative w-full", className)} style={{ aspectRatio: `${MAP_SIZE.width} / ${MAP_SIZE.height}` }}>
-      <div
-        aria-hidden
-        className="dot-grid absolute inset-0 [mask-image:radial-gradient(ellipse_at_45%_45%,#000_25%,transparent_75%)]"
-      />
       <svg
         ref={svgRef}
         viewBox={`0 0 ${MAP_SIZE.width} ${MAP_SIZE.height}`}
@@ -111,6 +118,8 @@ export function TradeRouteMap({ catalogue, activeCode, onActiveChange, className
             <line key={`lat-${y}`} x1={0} x2={MAP_SIZE.width} y1={y} y2={y} />
           ))}
         </g>
+
+        <path d={landPath} stroke="currentColor" strokeOpacity={0.22} strokeWidth={5.5} strokeLinecap="round" />
 
         {importLanes.map((path) => (
           <path

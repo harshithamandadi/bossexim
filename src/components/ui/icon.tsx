@@ -8,9 +8,9 @@ export function Icon({ name, strokeWidth = 1.75, ...props }: LucideProps & { nam
 }
 
 const tileVariants = {
-  solid: "bg-fg text-canvas",
+  solid: "brand-gradient text-white shadow-md shadow-brand/20",
   soft: "bg-canvas text-fg ring-1 ring-inset ring-border",
-  brand: "bg-brand text-white",
+  brand: "brand-gradient text-white shadow-md shadow-brand/25",
 } as const;
 
 const tileSizes = {

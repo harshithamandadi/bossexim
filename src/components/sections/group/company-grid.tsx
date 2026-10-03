@@ -1,9 +1,11 @@
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { cardStyles } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
 import { IconTile } from "@/components/ui/icon";
-import { groupCompanies, sectionIds, toAnchorId } from "@/config";
+import { getVerticalForCompany, groupCompanies, groupVerticalHref, routes } from "@/config";
 import { cn } from "@/lib/cn";
 import { getGroupCompanies } from "@/lib/content/queries";
 import type { GroupCompany } from "@/types/content";
@@ -27,58 +29,48 @@ function CurrentBadge({ company }: { company: GroupCompany }) {
   return company.isCurrent ? <Chip variant="brand">{groupCompanies.currentLabel}</Chip> : null;
 }
 
-/** Card grid — BOSS Group page. */
+/** Card grid — BOSS Group page. Each vertical's card opens its own page. */
 export async function CompanyGrid({ className }: { className?: string }) {
   const companies = await getGroupCompanies();
 
   return (
-    <RevealGroup as="ul" className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}>
+    // Four columns with the BGEXIM card spanning two: seven cards fill two rows with no gap.
+    <RevealGroup as="ul" className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-4", className)}>
       {companies.map((company) => {
-        const Wrapper = company.href ? "a" : "article";
-        const anchor = toAnchorId(company.name);
+        const vertical = getVerticalForCompany(company.name);
+        const href = vertical ? groupVerticalHref(vertical.slug) : company.isCurrent ? routes.about : company.href;
+        const isExternal = !vertical && !company.isCurrent && Boolean(company.href);
+        const Wrapper = href ? Link : "article";
         return (
-          <RevealItem
-            as="li"
-            key={company.name}
-            // Container Line has its own section with this anchor.
-            id={anchor === sectionIds.group.containerLine ? undefined : anchor}
-            className="scroll-mt-32"
-          >
+          <RevealItem as="li" key={company.name} className={cn(company.isCurrent && "sm:col-span-2")}>
             <Wrapper
-              href={company.href}
+              href={href ?? ""}
+              {...(isExternal ? { target: "_blank", rel: "noreferrer" } : {})}
               data-tone={company.isCurrent ? "dark" : undefined}
-              className={cardStyles({ interactive: Boolean(company.href), className: "flex h-full flex-col" })}
+              className={cardStyles({
+                interactive: Boolean(href),
+                className: cn("group flex h-full flex-col", company.isCurrent && "deep-gradient"),
+              })}
             >
               <div className="flex items-start justify-between gap-4">
                 <CompanyMark company={company} size="md" iconVariant={company.isCurrent ? "brand" : "solid"} />
-                <CurrentBadge company={company} />
+                {company.isCurrent ? (
+                  <CurrentBadge company={company} />
+                ) : (
+                  href && (
+                    <ArrowUpRight
+                      aria-hidden
+                      className="size-5 text-fg-mute transition-[color,transform] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand"
+                    />
+                  )
+                )}
               </div>
-              <h3 className="type-h4 mt-10">{company.name}</h3>
+              <h3 className="type-h4 mt-8">{vertical ? vertical.name : company.name}</h3>
               <p className="mt-2 text-[15px] text-fg-mute">{company.description}</p>
             </Wrapper>
           </RevealItem>
         );
       })}
-    </RevealGroup>
-  );
-}
-
-/** Compact list — About page. */
-export async function CompanyList({ className }: { className?: string }) {
-  const companies = await getGroupCompanies();
-
-  return (
-    <RevealGroup as="ul" interval={0.05} className={cn("divide-y divide-border border-y border-border", className)}>
-      {companies.map((company) => (
-        <RevealItem as="li" key={company.name} className="flex items-center gap-4 py-4">
-          <CompanyMark company={company} size="sm" iconVariant={company.isCurrent ? "brand" : "soft"} />
-          <div className="min-w-0 flex-1">
-            <p className="font-medium">{company.name}</p>
-            <p className="text-sm text-fg-mute">{company.description}</p>
-          </div>
-          <CurrentBadge company={company} />
-        </RevealItem>
-      ))}
     </RevealGroup>
   );
 }

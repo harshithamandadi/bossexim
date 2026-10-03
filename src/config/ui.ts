@@ -15,7 +15,7 @@ export const uiLabels = {
   photos: "photos",
   notFound: {
     eyebrow: "404",
-    title: "This page has sailed.",
+    title: "This Page Has Sailed",
     description: "The page you're looking for doesn't exist or has moved.",
     cta: "Back to home",
   },

@@ -264,3 +264,18 @@ Anything new is written down and approved before it's built (§10).
 - [x] **F3** BOSS Group: intro (founded 2000, India land bank), company-card facts (45+ stores, Elite Construction & Projects, hotels in Australia/India/Italy, HR & finance BPO), "Our Journey" timeline, group leadership (Prasad Kalla, Kris Bodla), and a Recognition section with award photos and the Forbes Australia feature.
 - [x] **F4** Media & Events: "Group Activities" gallery with the BP Brackenridge EV-site launch and McGrath Foundation photos, viewable in a photo viewer.
 - [ ] **F5** Confirm with the client: founding year (brochure 2000 vs "in 2002" on the BOSS Australia site); store count (45+ in the brochure, 26 in the chairman's bio); hotel count (brochure 4 AU / 2 IN / 1 IT vs six Australian properties listed online); Shell award year (2021 photo, 2022 text); listing Iran in the network; Project Cargo copy; higher-resolution originals of the website photos (they are ~240–340 px wide). Personal phone numbers and emails from the brochure were deliberately not published.
+
+### R3. Client feedback round 3 (`requirements/3rd changes/`, 3 Oct 2026) — ✅ done
+
+- [x] **Home** cut from ~13,600 px to ~7,000 px tall: short sections, each with an "Explore" button. Removed from Home: the intro prose, Why Us, partner tracks and FAQs (all still on their own pages). How We Work is a compact 6-step strip linking to Trade Process — no arrow heading anywhere.
+- [x] **Worldwide**: dotted world map with trade lanes (core markets, the Container Line network and dashed "worldwide, on request" lanes to Europe, the Americas, West Africa and East Asia); the hero wheel's centre is now a rotating dotted globe; wording says worldwide; product markets read "… and worldwide on request" with a "+ Worldwide" tag. Land data: Natural Earth via `scripts/generate-world-dots.mjs` → `src/lib/world-dots.ts`.
+- [x] **Type and spacing**: heading sizes and section spacing reduced site-wide; every heading in Title Case without trailing full stops.
+- [x] **Products**: uniform cards (photo or gradient picture area), sticky Exports/Imports bar, spec tables with a shaded label column, equal-height spec cards.
+- [x] **Business**: services grid rebalanced to four equal cards; Global Sourcing shows a world map instead of seven country bubbles.
+- [x] **Buyer / supplier forms**: searchable product picker (type to filter, arrows + Enter).
+- [x] **BOSS Group**: overview page is about the Group only; each vertical has its own page (`/boss-group/container-line`, `/retail`, `/constructions`, `/hospitality`, `/it`, `/bpo`); "BOSS" dropped from vertical headings; store counts and hotel names removed, as the original BOSS Retail/Hospitality documents ask.
+- [x] **About**: only about BGEXIM — the BOSS Group section and group references removed; the "BOSS Group businesses" figure replaced by "Countries in our trade network".
+- [x] **Footer**: main links only.
+- [x] **Colours**: brand gradient on primary buttons, icon tiles and product placeholders; deep navy gradient on dark sections, panels and footer. Theme unchanged.
+- [x] **Aira**: greeting teaser with quick-start buttons (desktop, once per visit, never on phones); compact launcher on phones; new "📞 Request a Call Back" path collects name, email, phone and topic and saves a general enquiry with a BGX reference; offered whenever Aira can't answer.
+- [ ] **Confirm with the client**: the dashed "worldwide, on request" lanes (illustrative, not current trade); the "Countries in our trade network" figure (core markets + the Container Line network); the vertical-page copy (from their documents and the BOSS Australia site); whether the BGEXIM card should stay on the BOSS Group page.

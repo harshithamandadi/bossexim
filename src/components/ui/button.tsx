@@ -6,7 +6,8 @@ import { cn } from "@/lib/cn";
 const variantStyles = {
   /** Solid, inverts automatically on dark sections. */
   primary: "bg-fg text-canvas hover:bg-fg/85",
-  brand: "bg-brand text-white shadow-lg shadow-brand/25 hover:bg-brand-deep",
+  brand:
+    "brand-gradient bg-[length:150%_150%] bg-left text-white shadow-lg shadow-brand/30 transition-[background-position,box-shadow,transform] hover:bg-right hover:shadow-brand/45",
   secondary: "bg-elevated text-fg ring-1 ring-inset ring-border hover:ring-fg/25",
   ghost: "text-fg hover:bg-fg/5",
 } as const;

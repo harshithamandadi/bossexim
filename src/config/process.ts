@@ -5,7 +5,7 @@ export const howWeWork: ProcessContent & { note: string } = {
   stepLabel: "Step",
   heading: {
     eyebrow: "How We Work",
-    title: "Understand → Source → Verify → Structure → Execute → Complete.",
+    title: "Six Steps from Enquiry to Completion",
     description:
       "Every BGEXIM transaction begins with a clear understanding of the customer’s requirements. This process helps us maintain clarity, accountability and commercial discipline throughout the transaction.",
   },
@@ -51,39 +51,39 @@ export const howWeWork: ProcessContent & { note: string } = {
 export const qualityVerification: FeatureSection & { motto: string } = {
   heading: {
     eyebrow: "Quality & Verification",
-    title: "Verify, then execute.",
+    title: "Verify, Then Execute",
     description:
       "Product quality and business verification are essential parts of international trade. Depending on the product and transaction, we review buyer and supplier information, product specifications, available certificates, quality reports and commercial documentation before execution.",
   },
   items: [
     {
-      title: "Manufactured products",
+      title: "Manufactured Products",
       description: "For polymers and similar products, we may review the manufacturer CoA, TDS and technical data.",
       icon: "layers",
     },
     {
-      title: "Agricultural products",
+      title: "Agricultural Products",
       description: "Laboratory testing, phytosanitary documents, residue reports or other certificates may be required.",
       icon: "leaf",
     },
     {
-      title: "Scrap & metals",
+      title: "Scrap & Metals",
       description:
         "Grade verification, weight checks, PSIC, radiation or contamination declarations and third-party inspection may be relevant.",
       icon: "recycle",
     },
     {
-      title: "Independent inspection",
+      title: "Independent Inspection",
       description: "Where necessary, independent surveyors, laboratories or inspection agencies can be involved.",
       icon: "microscope",
     },
     {
-      title: "Transaction documents",
+      title: "Transaction Documents",
       description: "We also review the shipping, insurance, customs and transaction documentation required for the trade.",
       icon: "clipboard-check",
     },
     {
-      title: "Verified parties",
+      title: "Verified Parties",
       description: "Buyer and supplier information is reviewed before any trade is executed.",
       icon: "users",
     },
@@ -105,7 +105,7 @@ export const globalPresence: ProseContent & {
   ports: { market: "Ports", origin: "Loading ports in India" },
   heading: {
     eyebrow: "Our Global Presence",
-    title: "From our base in India to an international network.",
+    title: "From Our Base in India to an International Network",
   },
   paragraphs: [
     "BGEXIM’s current core trade markets include India, Singapore, Malaysia, Australia, UAE, Thailand, Saudi Arabia and Indonesia. India is our corporate base and a key sourcing and destination market.",
@@ -113,22 +113,22 @@ export const globalPresence: ProseContent & {
   ],
   tiers: [
     {
-      title: "Corporate base",
+      title: "Corporate Base",
       description: "Our office, and a key sourcing and destination market.",
       places: ["Hyderabad, India"],
     },
     {
-      title: "BOSS Group logistics presence",
+      title: "BOSS Group Logistics Presence",
       description: "BOSS Container Line offices in Singapore, Malaysia and four Indian port cities.",
       places: ["Singapore", "Klang, Malaysia", "Hyderabad", "Navi Mumbai", "Gandhidham", "Chennai"],
     },
     {
-      title: "Core trade markets",
+      title: "Core Trade Markets",
       description: "Where our trade is focused today.",
       places: ["India", "Singapore", "Malaysia", "Australia", "UAE", "Thailand", "Saudi Arabia", "Indonesia"],
     },
     {
-      title: "Extended network",
+      title: "Extended Network",
       description:
         "31 agency agreements in place through BOSS Container Line, with one more in progress — plus shipping relationships and logistics partners.",
       places: [

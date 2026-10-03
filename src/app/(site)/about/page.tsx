@@ -2,7 +2,6 @@ import { LocalNav } from "@/components/layout/local-nav";
 import { PageHero } from "@/components/layout/page-hero";
 import { AboutOverview } from "@/components/sections/about/about-overview";
 import { ComplianceTable } from "@/components/sections/about/compliance-table";
-import { GroupSnapshot } from "@/components/sections/about/group-snapshot";
 import { TeamGrid } from "@/components/sections/about/team-grid";
 import { VisionMission } from "@/components/sections/about/vision-mission";
 import { CtaSection } from "@/components/sections/shared/cta-section";
@@ -37,20 +36,16 @@ export default async function AboutPage() {
         {video && <VideoSlot video={video} playLabel={corporateVideo.playLabel} className="mx-auto mt-16 max-w-5xl" />}
       </Section>
 
-      <Section id={ids.group} tone="mist">
-        <GroupSnapshot />
-      </Section>
-
-      <Section id={ids.vision}>
+      <Section id={ids.vision} tone="mist">
         <VisionMission />
       </Section>
 
-      <Section id={ids.leadership} tone="mist">
+      <Section id={ids.leadership}>
         <SectionHeader {...leadership.heading} />
         <TeamGrid className="mt-14" />
       </Section>
 
-      <Section id={ids.compliance}>
+      <Section id={ids.compliance} tone="mist">
         <SplitLayout aside={<SectionHeader {...compliance.heading} />} stickyAside>
           <ComplianceTable />
           <p className="mt-8 max-w-2xl text-[15px] leading-relaxed text-fg-mute">{compliance.note}</p>

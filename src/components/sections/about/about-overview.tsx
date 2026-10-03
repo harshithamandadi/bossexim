@@ -24,7 +24,7 @@ export async function AboutOverview() {
       </div>
 
       <Reveal delay={0.15}>
-        <div data-tone="dark" className="rounded-panel bg-canvas p-8 sm:p-10">
+        <div data-tone="dark" className="deep-gradient rounded-panel p-8 sm:p-10">
           <Eyebrow>{company.descriptor}</Eyebrow>
           <StatList stats={stats} layout="grid" className="mt-8" />
           <ul className="mt-10 flex flex-wrap gap-2 border-t border-border pt-8">

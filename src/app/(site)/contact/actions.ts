@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { contactContent } from "@/config/contact";
 import { getCatalogue, getCompanyDetails } from "@/lib/content/queries";
-import { toAssistantEnquiry } from "@/lib/enquiry/assistant";
+import { toAssistantEnquiry, toCallbackEnquiry } from "@/lib/enquiry/assistant";
 import { deliverEnquiry } from "@/lib/enquiry/deliver";
 import { checkFormToken } from "@/lib/enquiry/form-token";
 import { isRateLimited } from "@/lib/enquiry/rate-limit";
@@ -68,6 +68,17 @@ export async function submitAssistantEnquiry(answers: unknown, formToken: unknow
   );
   if (!enquiry || isRateLimited(await clientAddress())) return { ok: false, fallbackEmail };
 
+  const { delivered, reference } = await deliverEnquiry(enquiry, { source: "assistant" });
+  return delivered ? { ok: true, reference } : { ok: false, fallbackEmail };
+}
+
+/** A call-back request from Aira: name, email and optionally phone and topic. */
+export async function submitAssistantCallback(answers: unknown, formToken: unknown): Promise<AssistantSubmission> {
+  const { contact } = await getCompanyDetails();
+  const fallbackEmail = contact.email;
+  if (checkFormToken(formToken) !== "valid") return { ok: false, fallbackEmail };
+  const enquiry = toCallbackEnquiry(answers);
+  if (!enquiry || isRateLimited(await clientAddress())) return { ok: false, fallbackEmail };
   const { delivered, reference } = await deliverEnquiry(enquiry, { source: "assistant" });
   return delivered ? { ok: true, reference } : { ok: false, fallbackEmail };
 }

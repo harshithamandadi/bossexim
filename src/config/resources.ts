@@ -12,7 +12,7 @@ export const resourcesContent: {
 } = {
   heading: {
     eyebrow: "Downloads",
-    title: "Brochures.",
+    title: "Brochures",
     description:
       "Our corporate brochure introduces BOSS Global EXIM — our business model, products, markets, trade process and capabilities — for buyers, suppliers, banks and partners. The BOSS Group brochure gives a short overview of the wider business ecosystem.",
   },
@@ -20,7 +20,7 @@ export const resourcesContent: {
   emptyState: "Our brochures are being finalised and will be available to download here soon.",
   specifications: {
     eyebrow: "Product Specifications",
-    title: "The latest specification, on request.",
+    title: "The Latest Specification, on Request",
     description:
       "Specifications vary by grade, supplier and transaction — particularly for polymers and scrap — so we share them based on your requirement and the latest supplier information, rather than publishing sheets that may be out of date.",
     cta: "Request a specification",

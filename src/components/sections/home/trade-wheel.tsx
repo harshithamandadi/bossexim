@@ -13,6 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState, type PointerEvent } from "react";
+import { DottedGlobe } from "@/components/ui/dotted-globe";
 import { Icon } from "@/components/ui/icon";
 import { productLabels, productsViewHref, tradeDirections } from "@/config";
 import { useDomId } from "@/hooks/use-dom-id";
@@ -204,7 +205,7 @@ export function TradeWheel({ products, className }: { products: Product[]; class
         })}
       </motion.div>
 
-      <Globe gradientId={`${id}-globe`} />
+      <Globe gradientId={`${id}-globe`} paused={!isOnScreen} />
       <GlobeCaption segment={activeSegment} />
     </motion.div>
   );
@@ -246,27 +247,26 @@ function SegmentPod({ segment, isActive, ...props }: SegmentPodProps) {
   );
 }
 
-/** Stays still at the centre while the segments orbit it. */
-function Globe({ gradientId }: { gradientId: string }) {
+/** A blue sphere with land dots spinning on it, at the still centre of the orbiting wheel. */
+function Globe({ gradientId, paused }: { gradientId: string; paused: boolean }) {
+  const inset = percent(CENTER - GLOBE_RADIUS);
   return (
-    <svg viewBox={`0 0 ${SIZE} ${SIZE}`} aria-hidden className="pointer-events-none absolute inset-0 size-full">
-      <defs>
-        <radialGradient id={gradientId} cx="35%" cy="30%" r="80%">
-          <stop offset="0%" stopColor="#8fd0f7" />
-          <stop offset="55%" stopColor="#1f76c9" />
-          <stop offset="100%" stopColor="#0c3f80" />
-        </radialGradient>
-      </defs>
-      <circle cx={CENTER} cy={CENTER} r={GLOBE_RADIUS} fill={`url(#${gradientId})`} />
-      <g fill="none" stroke="#ffffff" strokeOpacity="0.5" strokeWidth="1.5">
-        <circle cx={CENTER} cy={CENTER} r={GLOBE_RADIUS} />
-        <ellipse cx={CENTER} cy={CENTER} rx={GLOBE_RADIUS * 0.4} ry={GLOBE_RADIUS} />
-        <ellipse cx={CENTER} cy={CENTER} rx={GLOBE_RADIUS * 0.78} ry={GLOBE_RADIUS} />
-        <path d={`M ${CENTER - GLOBE_RADIUS} ${CENTER} h ${GLOBE_RADIUS * 2}`} />
-        <path d={`M ${CENTER - GLOBE_RADIUS * 0.84} ${CENTER - GLOBE_RADIUS * 0.5} h ${GLOBE_RADIUS * 1.68}`} />
-        <path d={`M ${CENTER - GLOBE_RADIUS * 0.84} ${CENTER + GLOBE_RADIUS * 0.5} h ${GLOBE_RADIUS * 1.68}`} />
-      </g>
-    </svg>
+    <>
+      <svg viewBox={`0 0 ${SIZE} ${SIZE}`} aria-hidden className="pointer-events-none absolute inset-0 size-full">
+        <defs>
+          <radialGradient id={gradientId} cx="35%" cy="30%" r="80%">
+            <stop offset="0%" stopColor="#4fa8e8" />
+            <stop offset="55%" stopColor="#1560bd" />
+            <stop offset="100%" stopColor="#0a3270" />
+          </radialGradient>
+        </defs>
+        <circle cx={CENTER} cy={CENTER} r={GLOBE_RADIUS} fill={`url(#${gradientId})`} />
+        <circle cx={CENTER} cy={CENTER} r={GLOBE_RADIUS} fill="none" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="1.5" />
+      </svg>
+      <div aria-hidden className="pointer-events-none absolute" style={{ inset }}>
+        <DottedGlobe paused={paused} className="size-full" />
+      </div>
+    </>
   );
 }
 

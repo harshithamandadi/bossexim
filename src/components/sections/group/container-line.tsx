@@ -7,7 +7,7 @@ import { containerLine } from "@/config";
 
 export function ContainerLineSpotlight() {
   return (
-    <div data-tone="dark" className="relative isolate overflow-hidden rounded-panel bg-canvas p-8 sm:p-14">
+    <div data-tone="dark" className="deep-gradient relative isolate overflow-hidden rounded-panel p-8 sm:p-14">
       <GradientGlow className="-z-10 opacity-80" />
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
         <div>

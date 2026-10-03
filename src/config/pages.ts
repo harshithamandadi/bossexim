@@ -1,16 +1,16 @@
 /** Page headers, SEO text and the home page's copy — from the client's page documents. */
-import type { CallToAction, LinkItem, PageContent, ProseContent, SectionContent } from "@/types/content";
-import { contactHref, routes } from "./routes";
+import type { CallToAction, LinkItem, PageContent, SectionContent } from "@/types/content";
+import { anchorHref, contactHref, routes, sectionIds } from "./routes";
 import { siteConfig } from "./site";
 
 const { company } = siteConfig;
 
 export const homeContent: {
   hero: SectionContent & { highlight: string; primaryCta: LinkItem; secondaryCta: LinkItem };
-  intro: ProseContent & { cta: LinkItem };
-  markets: SectionContent & { names: string[] };
-  services: SectionContent;
+  services: SectionContent & { cta: LinkItem };
   products: SectionContent & { cta: LinkItem };
+  world: SectionContent & { cta: LinkItem; legend: { core: string; network: string; worldwide: string } };
+  process: SectionContent & { cta: LinkItem };
 } = {
   hero: {
     eyebrow: company.focus,
@@ -21,41 +21,38 @@ export const homeContent: {
     primaryCta: { label: "Explore products", href: routes.products },
     secondaryCta: { label: "Buy, sell or partner", href: routes.partner },
   },
-  intro: {
-    heading: {
-      eyebrow: "How we trade",
-      title: company.motto,
-    },
-    paragraphs: [
-      "We work with a simple approach: understanding the requirement, identifying suitable sources, verifying commercial and quality details, structuring the transaction, coordinating documentation and logistics, and completing the trade in a transparent manner.",
-      "BGEXIM is part of the wider BOSS Group and benefits from the Group’s experience in shipping, freight forwarding, logistics, retail, construction, hospitality, IT and BPO. This wider ecosystem gives us access to practical business experience and international logistics support.",
-    ],
-    cta: { label: "About BOSS Global EXIM", href: routes.about },
-  },
-  markets: {
-    eyebrow: "Core markets",
-    title: "Where we trade today.",
-    description:
-      "Our current core markets include India, Singapore, Malaysia, Australia, UAE, Thailand, Saudi Arabia and Indonesia, while our wider network can support additional international opportunities.",
-    names: ["India", "Singapore", "Malaysia", "Australia", "UAE", "Thailand", "Saudi Arabia", "Indonesia"],
-  },
   services: {
-    eyebrow: "What we do",
-    title: "Sourcing, trading and supply-chain coordination.",
+    eyebrow: "What We Do",
+    title: "Sourcing, Trading and Supply-Chain Coordination",
     description:
       "Merchant exporter, merchant importer and supply-chain solutions partner — with global sourcing behind every trade.",
+    cta: { label: "Explore our business", href: routes.business },
   },
   products: {
     eyebrow: "Products",
-    title: "From India to the world. From the world to Indian industry.",
+    title: "From India to the World. From the World to Indian Industry",
     description:
       "Selected agricultural products for international buyers, and polymers and recyclable metals for Indian manufacturers and recyclers.",
     cta: { label: "View all products", href: routes.products },
   },
+  world: {
+    eyebrow: "Worldwide Trade",
+    title: "Trading Without Borders",
+    description:
+      "From our base in India we serve buyers and suppliers worldwide — with core markets across the Middle East, Southeast Asia and Australia, and a logistics network reaching the Gulf, Africa, CIS countries, China and beyond.",
+    cta: { label: "Explore our global presence", href: anchorHref(routes.tradeProcess, sectionIds.tradeProcess.presence) },
+    legend: { core: "Core markets", network: "Logistics network", worldwide: "Worldwide, on request" },
+  },
+  process: {
+    eyebrow: "How We Work",
+    title: "Six Clear Steps, from Enquiry to Completion",
+    description: "A disciplined process keeps every trade transparent and accountable.",
+    cta: { label: "See how we work", href: anchorHref(routes.tradeProcess, sectionIds.tradeProcess.howWeWork) },
+  },
 };
 
 export const closingCta: CallToAction = {
-  title: "Ready to trade beyond boundaries?",
+  title: "Ready to Trade Beyond Boundaries?",
   description:
     "If you have a genuine business opportunity and would like to explore international trade with BGEXIM, we invite you to buy, sell or partner with us.",
   primary: { label: "Send an enquiry", href: contactHref() },
@@ -81,16 +78,16 @@ export type PageKey =
 export const pageContent: Record<PageKey, PageContent> = {
   about: {
     eyebrow: "About Us",
-    title: "Trusted international trade.",
+    title: "Trusted International Trade",
     description:
-      "BOSS Global EXIM Pvt. Ltd. is an international trading arm within the wider BOSS business ecosystem — connecting products, markets and people.",
+      "BOSS Global EXIM Pvt. Ltd. is an international trading company — connecting products, markets and people through trusted, structured trade.",
     metaTitle: "About Us",
     metaDescription:
-      "About BOSS Global EXIM Pvt. Ltd. (BGEXIM), the international trading arm of the BOSS Group — vision, mission, values, leadership and registrations.",
+      "About BOSS Global EXIM Pvt. Ltd. (BGEXIM), an international trading company — vision, mission, values, leadership and registrations.",
   },
   business: {
     eyebrow: "Business",
-    title: "Focused today. Flexible for tomorrow.",
+    title: "Focused Today. Flexible for Tomorrow",
     description: "A flexible B2B trading model designed to connect reliable supply with genuine demand.",
     metaTitle: "Business",
     metaDescription:
@@ -98,7 +95,7 @@ export const pageContent: Record<PageKey, PageContent> = {
   },
   products: {
     eyebrow: "Products",
-    title: "Our product portfolio.",
+    title: "Our Product Portfolio",
     description:
       "Agricultural products sourced from India for international buyers, and polymers and recyclable metals sourced internationally for Indian industry.",
     metaTitle: "Products",
@@ -107,7 +104,7 @@ export const pageContent: Record<PageKey, PageContent> = {
   },
   tradeProcess: {
     eyebrow: "Trade Process",
-    title: "Clear from enquiry to completion.",
+    title: "Clear from Enquiry to Completion",
     description:
       "A structured trade process designed to reduce uncertainty and keep every transaction clear — with quality verification and a growing international network behind it.",
     metaTitle: "Trade Process",
@@ -116,7 +113,7 @@ export const pageContent: Record<PageKey, PageContent> = {
   },
   partner: {
     eyebrow: "Partner With Us",
-    title: "Buy, sell or partner with us.",
+    title: "Buy, Sell or Partner with Us",
     description:
       "BGEXIM welcomes long-term relationships with genuine buyers, reliable suppliers and experienced strategic business partners.",
     metaTitle: "Partner With Us",
@@ -125,16 +122,16 @@ export const pageContent: Record<PageKey, PageContent> = {
   },
   group: {
     eyebrow: "BOSS Group",
-    title: "Backed by a diversified group.",
+    title: "BOSS Group",
     description:
-      "BGEXIM is part of the wider BOSS Group — a diversified business ecosystem with interests in logistics, retail, construction, hospitality, IT, BPO and business services.",
+      "A diversified business group founded in 2000, with operations across India and Australia in logistics, retail, construction, hospitality, IT and BPO.",
     metaTitle: "BOSS Group",
     metaDescription:
       "The BOSS Group: BOSS Container Line (NVOCC, freight forwarding, trading, break bulk), BOSS Retail, BOSS Constructions, BOSS Hospitality, BOSS IT and BOSS BPO.",
   },
   media: {
     eyebrow: "Media & Events",
-    title: "Our business journey, in pictures.",
+    title: "Our Business Journey, in Pictures",
     description:
       "Real photographs of the people, places, products and partnerships behind BGEXIM — a growing record of our market development and international trade.",
     metaTitle: "Media & Events",
@@ -143,14 +140,14 @@ export const pageContent: Record<PageKey, PageContent> = {
   },
   resources: {
     eyebrow: "Resources",
-    title: "Corporate & product information.",
+    title: "Corporate & Product Information",
     description: "Useful corporate and product information for buyers, suppliers and business partners.",
     metaTitle: "Resources",
     metaDescription: "BGEXIM corporate brochure, BOSS Group brochure and product specifications on request.",
   },
   faq: {
     eyebrow: "FAQ",
-    title: "Answers for buyers, suppliers and partners.",
+    title: "Answers for Buyers, Suppliers and Partners",
     description: "Search our most common questions — or ask Aira, our assistant, who answers from the same list.",
     metaTitle: "Frequently Asked Questions",
     metaDescription:
@@ -158,7 +155,7 @@ export const pageContent: Record<PageKey, PageContent> = {
   },
   contact: {
     eyebrow: "Contact Us",
-    title: "Let's talk trade.",
+    title: "Let's Talk Trade",
     description:
       "BGEXIM welcomes enquiries from buyers, suppliers and strategic business partners interested in genuine international trade opportunities.",
     metaTitle: "Contact Us",

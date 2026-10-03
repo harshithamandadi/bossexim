@@ -90,6 +90,5 @@ export async function getEnquiryRecipients(type: EnquiryTypeId): Promise<string[
 
 /** Headline figures shown on the home and About pages. */
 export const getSiteStats = cache(async () => {
-  const [catalogue, groupCompanies] = await Promise.all([getCatalogue(), getGroupCompanies()]);
-  return getHighlightStats(catalogue, groupCompanies);
+  return getHighlightStats(await getCatalogue());
 });

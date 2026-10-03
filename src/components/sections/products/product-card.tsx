@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { cardStyles } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
-import { IconTile } from "@/components/ui/icon";
+import { Icon } from "@/components/ui/icon";
+import { productLabels } from "@/config/products";
 import { productHref } from "@/config/routes";
 import { cn } from "@/lib/cn";
 import type { Market, Product } from "@/types/content";
@@ -20,7 +21,7 @@ export function ProductCard({ product, markets, className }: ProductCardProps) {
   const arrow = (
     <ArrowUpRight
       aria-hidden
-      className="size-5 text-fg-mute transition-[color,transform] duration-300 ease-smooth group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-fg"
+      className="size-4 text-navy transition-[color,transform] duration-300 ease-smooth group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand"
     />
   );
 
@@ -29,8 +30,9 @@ export function ProductCard({ product, markets, className }: ProductCardProps) {
       href={productHref(product.slug)}
       className={cardStyles({ interactive: true, className: cn("group flex h-full flex-col", className) })}
     >
-      {photo ? (
-        <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-surface">
+      {/* Every card has the same picture area, so cards line up whether or not a photo exists. */}
+      <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-surface">
+        {photo ? (
           <Image
             src={photo.src}
             alt={photo.alt}
@@ -38,14 +40,15 @@ export function ProductCard({ product, markets, className }: ProductCardProps) {
             sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
             className="object-cover transition-transform duration-500 ease-smooth group-hover:scale-[1.04]"
           />
-        </div>
-      ) : (
-        <div className="flex items-start justify-between">
-          <IconTile icon={product.icon} />
-          {arrow}
-        </div>
-      )}
-      <p className={cn("type-eyebrow text-fg-mute", photo ? "mt-6" : "mt-10")}>{product.category}</p>
+        ) : (
+          <div aria-hidden className="brand-gradient absolute inset-0 grid place-items-center">
+            <div className="dot-grid absolute inset-0 opacity-30 [mask-image:radial-gradient(circle_at_center,#000,transparent_75%)]" />
+            <Icon name={product.icon} className="relative size-12 text-white/90 transition-transform duration-500 ease-smooth group-hover:scale-110" />
+          </div>
+        )}
+        <span className="absolute top-3 right-3 grid size-9 place-items-center rounded-full bg-white/90 shadow-sm">{arrow}</span>
+      </div>
+      <p className="type-eyebrow mt-5 text-fg-mute">{product.category}</p>
       <h3 className="type-h4 mt-2">{product.name}</h3>
       <p className="mt-2 text-[15px] leading-relaxed text-fg-mute">{product.summary}</p>
       <ProductTags product={product} markets={markets} className="mt-auto pt-6" />
@@ -57,7 +60,11 @@ export function ProductCard({ product, markets, className }: ProductCardProps) {
 export function ProductTags({ product, markets, className }: ProductCardProps) {
   const tags =
     product.direction === "export"
-      ? product.markets.map((code) => ({ label: code, title: markets.find((market) => market.code === code)?.name ?? code }))
+      ? [
+          ...product.markets.map((code) => ({ label: code, title: markets.find((market) => market.code === code)?.name ?? code })),
+          // Markets are a current focus, not a limit.
+          { label: `+ ${productLabels.worldwide}`, title: productLabels.worldwideTitle },
+        ]
       : (product.variants ?? []).map((variant) => ({ label: variant, title: variant }));
 
   if (tags.length === 0) return null;

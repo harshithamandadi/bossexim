@@ -3,7 +3,7 @@
  * shared by the chat panel (to re-ask a bad answer) and the server action (to
  * validate again before anything is saved).
  */
-import { buyingSteps, OTHER_PRODUCT_ANSWER, type BuyingStep, type BuyingStepId } from "@/config/chatbot";
+import { buyingSteps, chatbotContent, OTHER_PRODUCT_ANSWER, type BuyingStep, type BuyingStepId, type ContactStepId } from "@/config/chatbot";
 import { OTHER_PRODUCT_VALUE, PATTERNS, type Enquiry, type EnquiryDetail } from "./schema";
 
 export type BuyingAnswers = Partial<Record<BuyingStepId, string>>;
@@ -19,7 +19,7 @@ export function isStepAsked(step: BuyingStep, answers: BuyingAnswers): boolean {
 }
 
 /** Why an answer can't be accepted, or undefined when it's fine. */
-export function checkAnswer(step: BuyingStep, value: string): AnswerProblem | undefined {
+export function checkAnswer(step: Pick<BuyingStep, "input" | "optional">, value: string): AnswerProblem | undefined {
   if (!value) return step.optional ? undefined : "required";
   if (step.input === "email" && !PATTERNS.email.test(value)) return "email";
   if (step.input === "tel" && !PATTERNS.tel.test(value)) return "tel";
@@ -64,4 +64,23 @@ export function toAssistantEnquiry(input: unknown, productSlugs: readonly string
   const { name, email, ...optional } = core;
   if (!name || !email || !product) return undefined;
   return { type: "buyer", name, email, product, ...optional, details };
+}
+
+export type CallbackAnswers = Partial<Record<ContactStepId, string>>;
+
+const CALLBACK_DETAIL = { label: "Requested", value: "Call back from the website assistant" };
+
+/** Validates a call-back request and turns it into a general enquiry; undefined when invalid. */
+export function toCallbackEnquiry(input: unknown): Enquiry | undefined {
+  if (typeof input !== "object" || input === null) return undefined;
+  const raw = input as Record<string, unknown>;
+  const answers: CallbackAnswers = {};
+  for (const step of chatbotContent.callback.steps) {
+    const value = typeof raw[step.id] === "string" ? (raw[step.id] as string).trim().slice(0, MAX_ANSWER_LENGTH) : "";
+    if (checkAnswer(step, value)) return undefined;
+    if (value) answers[step.id] = value;
+  }
+  const { name, email, phone, message } = answers;
+  if (!name || !email) return undefined;
+  return { type: "general", name, email, phone, message, details: [CALLBACK_DETAIL] };
 }

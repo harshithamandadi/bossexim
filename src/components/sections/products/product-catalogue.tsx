@@ -38,7 +38,9 @@ export function ProductCatalogue({ initialView, products, markets }: ProductCata
 
   return (
     <div>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      {/* Sticky toolbar: Exports / Imports and the market filter stay in reach while browsing. */}
+      <div className="glass sticky top-[4.5rem] z-30 -mx-3 rounded-[1.75rem] px-3 py-3 ring-1 ring-border sm:-mx-4 sm:px-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <SegmentedControl
           label={productLabels.directionControl}
           value={direction}
@@ -68,6 +70,7 @@ export function ProductCatalogue({ initialView, products, markets }: ProductCata
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
 
       <motion.ul layout className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <AnimatePresence mode="popLayout" initial={false}>
@@ -105,7 +108,7 @@ function MarketFilterBar({ markets, value, onChange }: MarketFilterBarProps) {
     <div
       role="group"
       aria-label={productLabels.marketFilter}
-      className="no-scrollbar -mx-5 flex items-center gap-2 overflow-x-auto px-5 pt-6 sm:mx-0 sm:flex-wrap sm:px-0"
+      className="no-scrollbar -mx-3 flex items-center gap-2 overflow-x-auto px-3 pt-3 sm:mx-0 sm:flex-wrap sm:px-0"
     >
       <span aria-hidden className="mr-2 hidden shrink-0 text-sm text-fg-mute sm:inline">
         {productLabels.marketFilter}

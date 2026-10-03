@@ -16,7 +16,7 @@ export async function FocusPanel({ className }: { className?: string }) {
     <Reveal className={className}>
       <div
         data-tone="dark"
-        className="grid gap-10 rounded-panel bg-canvas p-8 sm:p-12 lg:grid-cols-3 lg:gap-0 lg:divide-x lg:divide-border"
+        className="deep-gradient grid gap-10 rounded-panel p-8 sm:p-12 lg:grid-cols-3 lg:gap-0 lg:divide-x lg:divide-border"
       >
         <FocusColumn label={labels.exports}>
           <ProductRows products={exportProducts} />

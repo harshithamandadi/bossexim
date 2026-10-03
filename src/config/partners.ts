@@ -9,13 +9,13 @@ export const partnerContent: {
 } = {
   heading: {
     eyebrow: "Partner With Us",
-    title: "Buy, sell or partner with us.",
+    title: "Buy, Sell or Partner with Us",
     description:
       "Our objective is to build a trusted international network that can support sourcing, trading, inspection, logistics, warehousing, finance and market development.",
   },
   form: {
     eyebrow: "Register",
-    title: "Tell us about your business.",
+    title: "Tell Us About Your Business",
     description:
       "Choose buyer, supplier or partnership. The details you share help our team carry out basic background work before responding.",
     notes: [

@@ -13,7 +13,7 @@
  * ════════════════════════════════════════════════════════════════════════════
  */
 import type { SiteConfig } from "@/types/content";
-import { routes, sectionIds, anchorHref } from "./routes";
+import { anchorHref, groupVerticalHref, routes, sectionIds } from "./routes";
 
 export const siteConfig: SiteConfig = {
   company: {
@@ -64,7 +64,7 @@ export const siteConfig: SiteConfig = {
         "Selected agricultural products sourced from India for international buyers — planned around the product, variety, quantity, packaging, destination and documentation you need.",
       points: [
         "Rice, spices, pulses, dehydrated foods & more",
-        "The Middle East, South-East Asia & selected markets",
+        "Buyers worldwide — the Middle East, South-East Asia & beyond",
         "Quality reports, certificates & inspection coordinated",
       ],
       visual: "exports",
@@ -89,10 +89,10 @@ export const siteConfig: SiteConfig = {
       title: "Supply Chain Solutions",
       icon: "route",
       summary:
-        "Documentation, inspection, banking and logistics coordinated through the wider BOSS ecosystem and trusted external partners.",
-      points: ["Backed by BOSS Container Line", "NVOCC, freight forwarding & break bulk", "Customs & shipment coordination"],
+        "Documentation, inspection, banking and logistics coordinated through our logistics partners and trusted external specialists.",
+      points: ["Backed by an established logistics network", "NVOCC, freight forwarding & break bulk", "Customs & shipment coordination"],
       visual: "logistics",
-      href: anchorHref(routes.group, sectionIds.group.containerLine),
+      href: groupVerticalHref("container-line"),
     },
     {
       id: "global-sourcing",

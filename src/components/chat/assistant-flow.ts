@@ -12,7 +12,7 @@ import {
   type BuyingStepId,
 } from "@/config/chatbot";
 import { productHref } from "@/config/routes";
-import { checkAnswer, isStepAsked, type BuyingAnswers } from "@/lib/enquiry/assistant";
+import { checkAnswer, isStepAsked, type AnswerProblem, type BuyingAnswers, type CallbackAnswers } from "@/lib/enquiry/assistant";
 import { CONFIDENT_MATCH, relatedQuestions } from "@/lib/faq-search";
 import type { FaqItem, LinkItem, SpecificationTable } from "@/types/content";
 
@@ -69,7 +69,9 @@ export type Flow =
   | { kind: "product-other" }
   | { kind: "buying"; step: BuyingStepId; answers: BuyingAnswers }
   | { kind: "confirm"; answers: BuyingAnswers }
-  | { kind: "submitting"; answers: BuyingAnswers };
+  | { kind: "submitting"; answers: BuyingAnswers }
+  | { kind: "callback"; step: number; answers: CallbackAnswers }
+  | { kind: "callback-submitting"; answers: CallbackAnswers };
 
 export type VisitorInput =
   | { kind: "text"; text: string }
@@ -87,6 +89,8 @@ export interface Response {
   replies: AssistantMessage[];
   /** Set when the visitor confirmed their buying enquiry. */
   submit?: BuyingAnswers;
+  /** Set when the visitor finished a call-back request. */
+  callback?: CallbackAnswers;
 }
 
 const MENU_CHOICE: ChatChoice = { id: "menu", label: content.backToMenu };
@@ -95,7 +99,10 @@ export const menuChoices: ChatChoice[] = [
   { id: "menu:products", label: content.menu.products },
   { id: "menu:buying", label: content.menu.buying },
   { id: "menu:company", label: content.menu.company },
+  { id: "callback", label: content.menu.callback },
 ];
+
+const CALLBACK_CHOICE: ChatChoice = { id: "callback", label: content.menu.callback };
 
 export const greetingMessage: AssistantMessage = { from: "assistant", text: content.greeting, choices: menuChoices };
 
@@ -290,7 +297,31 @@ function replyToQuestion(question: string, context: AssistantContext): Assistant
       choices: [MENU_CHOICE],
     });
   }
-  return say(content.fallback, { action: content.fallbackAction, choices: [MENU_CHOICE] });
+  return say(content.fallback, { action: content.fallbackAction, choices: [CALLBACK_CHOICE, MENU_CHOICE] });
+}
+
+/* ---------- Call-back request ---------- */
+
+const callbackSteps = content.callback.steps;
+
+function askCallbackStep(index: number, problem?: AnswerProblem): AssistantMessage {
+  const step = callbackSteps[index];
+  if (!step) return say(content.callback.intro);
+  const choices: ChatChoice[] = step.optional ? [{ id: "skip", label: content.buying.skip }] : [];
+  return say(problem ? content.buying.invalid[problem] : step.question, { choices });
+}
+
+function answerCallback(flow: Extract<Flow, { kind: "callback" }>, rawValue: string): Response {
+  const step = callbackSteps[flow.step];
+  if (!step) return { flow: INITIAL_FLOW, replies: [] };
+  const value = rawValue.trim();
+  const problem = checkAnswer(step, value);
+  if (problem) return { flow, replies: [askCallbackStep(flow.step, problem)] };
+
+  const answers = { ...flow.answers, ...(value ? { [step.id]: value } : {}) };
+  const next = flow.step + 1;
+  if (next < callbackSteps.length) return { flow: { kind: "callback", step: next, answers }, replies: [askCallbackStep(next)] };
+  return { flow: { kind: "callback-submitting", answers }, replies: [], callback: answers };
 }
 
 /** While confirming, an FAQ answer keeps a way back to the summary. */
@@ -306,6 +337,7 @@ function handleChoice(flow: Flow, choice: ChatChoice, context: AssistantContext)
   const [kind = "", ...rest] = choice.id.split(":");
   const arg = rest.join(":");
 
+  if (flow.kind === "callback" && kind === "skip") return answerCallback(flow, "");
   if (flow.kind === "buying" && kind === "answer") return answerStep(flow, arg, products);
   if (flow.kind === "buying" && kind === "skip") return answerStep(flow, "", products);
 
@@ -339,6 +371,11 @@ function handleChoice(flow: Flow, choice: ChatChoice, context: AssistantContext)
       if (!entry) break;
       return { flow: INITIAL_FLOW, replies: [say(entry.answer, { choices: [...companyChoices(index), MENU_CHOICE] })] };
     }
+    case "callback":
+      return {
+        flow: { kind: "callback", step: 0, answers: {} },
+        replies: [say(content.callback.intro), askCallbackStep(0)],
+      };
     case "buy": {
       const draft = arg ? { product: arg } : flow.kind === "browse" ? (flow.draft ?? {}) : {};
       return startBuying(draft, products);
@@ -369,6 +406,8 @@ export function respond(flow: Flow, input: VisitorInput, context: AssistantConte
   switch (flow.kind) {
     case "buying":
       return answerStep(flow, input.text, context.products);
+    case "callback":
+      return answerCallback(flow, input.text);
     case "product-other": {
       const draft: BuyingAnswers = { product: OTHER_PRODUCT_ANSWER, productOther: input.text };
       return {
@@ -384,6 +423,10 @@ export function respond(flow: Flow, input: VisitorInput, context: AssistantConte
 /** Placeholder and keyboard for the composer while a buying question is open. */
 export function composerHints(flow: Flow): { placeholder?: string; inputMode?: "email" | "tel" | "url" | "text" } {
   if (flow.kind === "product-other") return { placeholder: content.products.otherQuestion };
+  if (flow.kind === "callback") {
+    const step = callbackSteps[flow.step];
+    return { placeholder: step?.placeholder, inputMode: step?.input ?? "text" };
+  }
   if (flow.kind !== "buying") return {};
   const step = stepById(flow.step);
   const inputMode = step.input === "email" || step.input === "tel" || step.input === "url" ? step.input : "text";
@@ -403,5 +446,20 @@ export function submissionReply(result: { ok: true; reference?: string } | { ok:
   return say(buying.failure, {
     action: result.fallbackEmail ? { label: result.fallbackEmail, href: `mailto:${result.fallbackEmail}` } : content.fallbackAction,
     choices: [{ id: "summary:submit", label: buying.retry }, MENU_CHOICE],
+  });
+}
+
+/** Aira's reply once a call-back request has been saved (or couldn't be). */
+export function callbackReply(result: { ok: true; reference?: string } | { ok: false; fallbackEmail?: string }): AssistantMessage {
+  const { callback } = content;
+  if (result.ok) {
+    return say(callback.success, {
+      reference: result.reference ? { label: callback.reference, value: result.reference } : undefined,
+      choices: [MENU_CHOICE],
+    });
+  }
+  return say(callback.failure, {
+    action: result.fallbackEmail ? { label: result.fallbackEmail, href: `mailto:${result.fallbackEmail}` } : content.fallbackAction,
+    choices: [CALLBACK_CHOICE, MENU_CHOICE],
   });
 }

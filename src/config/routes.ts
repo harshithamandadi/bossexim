@@ -42,8 +42,8 @@ export const sectionIds = {
     form: "register",
   },
   group: {
-    containerLine: "boss-container-line",
-    network: "container-line-network",
+    containerLine: "services",
+    network: "network",
     companies: "group-companies",
     journey: "our-journey",
     recognition: "recognition",
@@ -72,6 +72,11 @@ export function toAnchorId(name: string): string {
 
 export function productHref(slug: string): string {
   return `${routes.products}/${slug}`;
+}
+
+/** A BOSS Group vertical's page, e.g. /boss-group/container-line. */
+export function groupVerticalHref(slug: string): string {
+  return `${routes.group}/${slug}`;
 }
 
 export function productsViewHref(direction: TradeDirection): string {

@@ -1,6 +1,5 @@
 /** About Us page content — from the client's About documents. */
-import type { ComplianceItem, Feature, LinkItem, ProseContent, SectionContent, Statement } from "@/types/content";
-import { routes } from "./routes";
+import type { ComplianceItem, Feature, ProseContent, SectionContent, Statement } from "@/types/content";
 
 /** The corporate video on the About page; hidden until a link is added in the admin. */
 export const corporateVideo = {
@@ -10,27 +9,15 @@ export const corporateVideo = {
 export const aboutOverview: ProseContent = {
   heading: {
     eyebrow: "About BOSS Global EXIM",
-    title: "Connecting products, markets and people.",
+    title: "Connecting Products, Markets and People",
   },
   paragraphs: [
-    "BOSS Global EXIM Pvt. Ltd. is an international trading arm within the wider BOSS business ecosystem. BGEXIM was created to connect Indian products with global buyers and to source selected industrial products and recyclable materials from international markets for Indian customers.",
+    "BOSS Global EXIM Pvt. Ltd. (BGEXIM) is an international trading company. It was created to connect Indian products with global buyers and to source selected industrial products and recyclable materials from international markets for Indian customers.",
     "Our role is to identify genuine opportunities, study buyer requirements, find reliable suppliers, evaluate products, structure commercial terms and coordinate the trade process from enquiry to delivery. We aim to make international trading simple, organised and dependable for our business partners.",
     "Our current business focus includes agricultural products, polymers, industrial raw materials and ferrous and non-ferrous metals. However, BGEXIM is not limited to these products or to a fixed list of countries. We remain open to new opportunities where there is genuine demand, reliable supply, acceptable commercial value, logistics feasibility and regulatory compliance.",
-    "Supported by the wider BOSS Group and its logistics capabilities, BGEXIM follows a disciplined approach built on transparency, quality verification, structured documentation, secured payment methods and long-term relationships.",
+    "Supported by established logistics capabilities, BGEXIM follows a disciplined approach built on transparency, quality verification, structured documentation, secured payment methods and long-term relationships.",
     "Our goal is simple: to connect products, markets and people through trusted international trade.",
   ],
-};
-
-export const aboutGroup: ProseContent & { cta: LinkItem } = {
-  heading: {
-    eyebrow: "About BOSS Group",
-    title: "An established business ecosystem.",
-  },
-  paragraphs: [
-    "Founded in 2000, BOSS Group is a diversified business group with activities across Australia, Singapore, Malaysia and India. Over more than two decades, the Group has developed experience in shipping line, retail, construction, hospitality, real estate, IT and BPO services. Each business operates with a focus on customer service, practical execution and long-term growth.",
-    "For BGEXIM, the strongest advantage of being part of the BOSS Group is access to an established business ecosystem and international logistics capability. BOSS Container Line supports shipping, freight forwarding, container trading, break bulk and related logistics services through offices in Singapore, Malaysia and India and 31 agency agreements across important trade markets.",
-  ],
-  cta: { label: "Explore the BOSS Group", href: routes.group },
 };
 
 export const visionMissionValues: {
@@ -40,7 +27,7 @@ export const visionMissionValues: {
 } = {
   heading: {
     eyebrow: "Vision, Mission & Values",
-    title: "The values that guide every transaction.",
+    title: "The Values That Guide Every Transaction",
   },
   statements: [
     {
@@ -78,7 +65,7 @@ export const visionMissionValues: {
 export const leadership: { heading: SectionContent; emptyState: string } = {
   heading: {
     eyebrow: "Our Team / Leadership",
-    title: "The people who lead BOSS.",
+    title: "The People Who Lead BGEXIM",
     description: "Leadership experience across shipping, logistics, construction, hospitality, retail and technology.",
   },
   emptyState: "Leadership profiles will be published here soon.",
@@ -88,7 +75,7 @@ export const leadership: { heading: SectionContent; emptyState: string } = {
 export const compliance: { heading: SectionContent; note: string; items: ComplianceItem[] } = {
   heading: {
     eyebrow: "Registrations, Certifications & Compliance",
-    title: "Trade built on proper registration.",
+    title: "Trade Built on Proper Registration",
     description:
       "BGEXIM believes that international trade should be supported by proper registration, documentation and regulatory compliance. The company maintains all applicable corporate, tax, customs and trade registrations required for its operations, as and when applicable and obtained.",
   },

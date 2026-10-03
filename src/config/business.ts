@@ -4,7 +4,7 @@ import type { Highlight, ProseContent } from "@/types/content";
 export const businessModel: ProseContent & { models: Highlight[] } = {
   heading: {
     eyebrow: "Our Business Model",
-    title: "A flexible B2B trading model.",
+    title: "A Flexible B2B Trading Model",
   },
   paragraphs: [
     "BGEXIM operates through a flexible B2B trading model designed to connect reliable supply with genuine demand.",
@@ -22,7 +22,7 @@ export const businessModel: ProseContent & { models: Highlight[] } = {
 export const whyUs: ProseContent & { strengths: Highlight[] } = {
   heading: {
     eyebrow: "Why BOSS Global EXIM",
-    title: "One dependable point of contact.",
+    title: "One Dependable Point of Contact",
   },
   paragraphs: [
     "BGEXIM combines international sourcing, market flexibility, structured transactions and access to established logistics capabilities. We work to understand both the buyer’s and the supplier’s requirements, and focus on long-term relationships with genuine buyers, reliable suppliers and strategic partners.",
@@ -30,19 +30,19 @@ export const whyUs: ProseContent & { strengths: Highlight[] } = {
     "For customers, this means one dependable point of contact for sourcing, trading, verification, documentation and supply-chain coordination.",
   ],
   strengths: [
-    { title: "Access to Indian and international markets", icon: "globe" },
-    { title: "A flexible product strategy", icon: "shapes" },
-    { title: "Product and supplier verification", icon: "search-check" },
-    { title: "Structured documentation", icon: "file-text" },
-    { title: "Secured payment methods", icon: "shield-check" },
-    { title: "Logistics support through the BOSS network", icon: "ship" },
+    { title: "Access to Indian and International Markets", icon: "globe" },
+    { title: "A Flexible Product Strategy", icon: "shapes" },
+    { title: "Product and Supplier Verification", icon: "search-check" },
+    { title: "Structured Documentation", icon: "file-text" },
+    { title: "Secured Payment Methods", icon: "shield-check" },
+    { title: "Logistics Support Through the BOSS Network", icon: "ship" },
   ],
 };
 
 export const currentFocus: ProseContent & { labels: { exports: string; markets: string; imports: string } } = {
   heading: {
     eyebrow: "Our Current Focus",
-    title: "Two clear trade directions.",
+    title: "Two Clear Trade Directions",
   },
   paragraphs: [
     "From India, we source and export selected agricultural products such as rice, spices, dehydrated onion and garlic, pulses, dried chillies, groundnuts and jaggery. For imports into India, our focus includes polymers, polyester chips and selected ferrous and non-ferrous recyclable metals.",
@@ -54,7 +54,7 @@ export const currentFocus: ProseContent & { labels: { exports: string; markets: 
 export const beyondFocus: ProseContent & { criteria: string[]; motto: string } = {
   heading: {
     eyebrow: "Beyond Our Current Focus",
-    title: "Open to genuine opportunities.",
+    title: "Open to Genuine Opportunities",
   },
   paragraphs: [
     "BGEXIM is designed to remain flexible. While our current portfolio includes agricultural products, polymers and recyclable metals, we are not limited to these categories or to a fixed list of countries.",
