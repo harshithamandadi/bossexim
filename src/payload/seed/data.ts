@@ -17,7 +17,7 @@ export { seedProducts };
 /** Destination markets. Saudi Arabia and Indonesia are core markets without a product lane yet. */
 export const seedMarkets: Market[] = [
   { code: "AE", name: "United Arab Emirates", shortName: "UAE", region: "Middle East", coordinates: { lat: 25.2, lon: 55.3 }, labelAnchor: "top" },
-  { code: "SA", name: "Saudi Arabia", shortName: "Saudi Arabia", region: "Middle East", coordinates: { lat: 21.49, lon: 39.19 }, labelAnchor: "left" },
+  { code: "SA", name: "Saudi Arabia", shortName: "Saudi Arabia", region: "Middle East", coordinates: { lat: 21.49, lon: 39.19 }, labelAnchor: "bottom" },
   { code: "SG", name: "Singapore", shortName: "Singapore", region: "South-East Asia", coordinates: { lat: 1.35, lon: 103.82 }, labelAnchor: "right" },
   { code: "MY", name: "Malaysia", shortName: "Malaysia", region: "South-East Asia", coordinates: { lat: 3.14, lon: 101.69 }, labelAnchor: "left" },
   { code: "TH", name: "Thailand", shortName: "Thailand", region: "South-East Asia", coordinates: { lat: 13.76, lon: 100.5 }, labelAnchor: "top" },

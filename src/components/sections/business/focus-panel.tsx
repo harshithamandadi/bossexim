@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/motion/reveal";
+import { Flag } from "@/components/ui/flag";
 import { Icon } from "@/components/ui/icon";
 import { currentFocus, productHref } from "@/config";
 import { cn } from "@/lib/cn";
@@ -23,8 +24,13 @@ export async function FocusPanel({ className }: { className?: string }) {
         </FocusColumn>
         <FocusColumn label={labels.markets}>
           {markets.map((market) => (
-            <FocusRow key={market.code} leading={<span className="text-xs font-semibold">{market.code}</span>}>
+            <FocusRow
+              key={market.code}
+              bare
+              leading={<Flag code={market.code} className="w-8 rounded-md shadow-sm ring-1 ring-white/25" />}
+            >
               {market.name}
+              <span className="ml-2 text-xs font-semibold tracking-wide text-fg-mute">{market.code}</span>
             </FocusRow>
           ))}
         </FocusColumn>
@@ -53,10 +59,18 @@ function ProductRows({ products }: { products: Product[] }) {
   ));
 }
 
-function FocusRow({ leading, href, children }: { leading: ReactNode; href?: string; children: ReactNode }) {
+interface FocusRowProps {
+  leading: ReactNode;
+  href?: string;
+  /** Shows `leading` as is (e.g. a flag) instead of inside the icon tile. */
+  bare?: boolean;
+  children: ReactNode;
+}
+
+function FocusRow({ leading, href, bare = false, children }: FocusRowProps) {
   const content = (
     <>
-      <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-surface">{leading}</span>
+      <span className={cn("grid size-8 shrink-0 place-items-center", !bare && "rounded-lg bg-surface")}>{leading}</span>
       <span className="text-[15px]">{children}</span>
     </>
   );

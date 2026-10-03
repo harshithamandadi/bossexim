@@ -6,6 +6,7 @@ import { tradeOrigin } from "@/config/markets";
 import { productLabels } from "@/config/products";
 import { useDomId } from "@/hooks/use-dom-id";
 import type { Catalogue } from "@/lib/catalogue";
+import { Flag } from "@/components/ui/flag";
 import { cn } from "@/lib/cn";
 import { formatList, pluralize } from "@/lib/format";
 import { arcPath, project, toPercent, type MapBounds, type MapSize, type Point } from "@/lib/geo";
@@ -263,6 +264,7 @@ function MarketLabel({ market, point, lineCount, isActive, isDimmed, onActiveCha
         isActive && "ring-brand",
       )}
     >
+      <Flag code={market.code} className="w-3.5 rounded-[2px] sm:w-4" />
       <span className="font-semibold">{market.code}</span>
       <span className="hidden text-fg-mute md:inline">{market.shortName}</span>
     </button>

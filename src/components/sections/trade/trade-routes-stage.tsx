@@ -6,6 +6,7 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { Icon } from "@/components/ui/icon";
 import { tradeLanes } from "@/config/process";
 import { createCatalogue, groupByCategory, type Catalogue } from "@/lib/catalogue";
+import { Flag } from "@/components/ui/flag";
 import { cn } from "@/lib/cn";
 import type { Market, MarketCode, Product } from "@/types/content";
 import { laneInteractionProps, type ActiveLaneChange } from "./lane-interaction";
@@ -79,7 +80,9 @@ function LaneList({ catalogue, activeCode, onActiveChange }: LaneListProps) {
                   activeCode !== null && !isActive && "opacity-40",
                 )}
               >
-                <span className="w-7 text-xs font-semibold text-fg-mute">{market.code}</span>
+                <span className="w-7">
+                  <Flag code={market.code} className="w-6 rounded-[3px] shadow-sm ring-1 ring-white/20" />
+                </span>
                 <span className="flex-1 text-sm font-medium">{market.shortName}</span>
                 <ProductIcons products={catalogue.getProductsForMarket(market.code)} />
               </button>
