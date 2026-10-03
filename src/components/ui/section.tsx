@@ -31,7 +31,12 @@ export function Section({
   return (
     <section
       data-tone={tone}
-      className={cn("relative scroll-mt-32 bg-canvas text-fg", tone === "dark" && "deep-gradient", spacingStyles[spacing], className)}
+      className={cn(
+        "relative scroll-mt-32 bg-canvas text-fg",
+        tone === "dark" ? "deep-gradient" : "tone-wash",
+        spacingStyles[spacing],
+        className,
+      )}
       {...props}
     >
       {bleed ? children : <Container size={containerSize}>{children}</Container>}

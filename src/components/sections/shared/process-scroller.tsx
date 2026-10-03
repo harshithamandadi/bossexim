@@ -63,7 +63,7 @@ export function ProcessScroller({ content }: { content: ProcessContent }) {
             key={step.title}
             id={stepIds[index]}
             className={cn(
-              "rounded-card bg-surface p-7 transition-opacity duration-500 ease-smooth sm:p-10 lg:flex lg:min-h-[19rem] lg:flex-col",
+              "card-gradient rounded-card bg-surface p-7 transition-opacity duration-500 ease-smooth sm:p-10 lg:flex lg:min-h-[19rem] lg:flex-col",
               index !== activeIndex && "lg:opacity-35",
             )}
           >

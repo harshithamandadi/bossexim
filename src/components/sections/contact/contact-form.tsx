@@ -70,7 +70,7 @@ export function ContactFormCard(props: ContactFormCardProps) {
   const [submissionCount, setSubmissionCount] = useState(0);
 
   return (
-    <div className="rounded-panel bg-surface p-6 ring-1 ring-inset ring-border sm:p-10">
+    <div className="card-gradient rounded-panel bg-surface p-6 ring-1 ring-inset ring-border sm:p-10">
       <ContactForm key={submissionCount} {...props} onReset={() => setSubmissionCount((count) => count + 1)} />
     </div>
   );

@@ -84,7 +84,7 @@ function ContainerLineBody() {
 function VerticalBody({ vertical }: { vertical: GroupVertical }) {
   return (
     <Section spacing="compact">
-      <ProseSplit content={vertical.intro} />
+      <ProseSplit content={vertical.intro} accent="mark" />
       {vertical.capabilities.map((group) => (
         <div key={group.title ?? vertical.slug} className="mt-14">
           <h2 className="type-h3">{group.title ?? groupVerticalLabels.services}</h2>

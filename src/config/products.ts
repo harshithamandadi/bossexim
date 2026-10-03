@@ -48,3 +48,20 @@ export const productLabels = {
   documentationTitle: "Typical Documentation",
   documentationNote: "As applicable — documents depend on the product, destination and transaction.",
 };
+
+/**
+ * Credits for product photos whose licence requires one (Wikimedia Commons,
+ * CC BY-SA 4.0), shown under the photo on the product page. The other stock
+ * product photos are public domain (CC0) and need no credit. Remove an entry
+ * once the client supplies their own photo for that product.
+ */
+export const photoCredits: Record<string, { text: string; href: string }> = {
+  jaggery: {
+    text: "Photo: Mangosapiens, CC BY-SA 4.0, via Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:Jaggery_cubes.jpg",
+  },
+  polyethylene: {
+    text: "Photo: ISIPLAST S.A. de C.V., CC BY-SA 4.0, via Wikimedia Commons",
+    href: "https://commons.wikimedia.org/wiki/File:Pellet_azul.jpg",
+  },
+};

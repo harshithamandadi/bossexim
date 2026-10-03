@@ -30,7 +30,7 @@ export function FeatureGrid({ items, columns = 3, variant = "card", className }:
         <RevealItem
           as="li"
           key={item.title}
-          className={isCard ? "rounded-card bg-surface p-7 sm:p-8" : "border-t border-border pt-6"}
+          className={isCard ? "card-gradient rounded-card bg-surface p-7 sm:p-8" : "border-t border-border pt-6"}
         >
           <IconTile icon={item.icon} variant={isCard ? "solid" : "soft"} />
           <h3 className="type-h4 mt-6">{item.title}</h3>

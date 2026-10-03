@@ -42,6 +42,7 @@
     "d3-geo": "^3.1.1",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
+    "flag-icons": "^7.5.0",
     "tailwindcss": "^4.3.3",
     "topojson-client": "^3.1.0",
     "typescript": "^5.9.3",

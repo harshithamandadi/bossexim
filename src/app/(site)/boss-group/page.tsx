@@ -35,6 +35,7 @@ export default function BossGroupPage() {
 
       <Section spacing="compact">
         <ProseSplit
+          accent="mark"
           content={groupIntro}
           aside={
             <ButtonLink href={routes.media} variant="secondary" withArrow>

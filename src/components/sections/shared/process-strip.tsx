@@ -11,7 +11,7 @@ export function ProcessStrip({ steps, className }: { steps: Feature[]; className
         <RevealItem
           as="li"
           key={step.title}
-          className="relative overflow-hidden rounded-card bg-surface p-5 ring-1 ring-inset ring-border"
+          className="relative overflow-hidden card-gradient rounded-card bg-surface p-5 ring-1 ring-inset ring-border"
         >
           <span aria-hidden className="absolute -top-3 -right-1 font-display text-6xl font-extrabold text-fg/5">
             {index + 1}

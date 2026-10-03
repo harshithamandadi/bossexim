@@ -17,7 +17,7 @@ export function GroupJourney() {
         <h3 className="type-eyebrow mt-12 text-fg-mute">{content.leadersTitle}</h3>
         <RevealGroup as="ul" className="mt-4 space-y-3">
           {content.leaders.map((leader) => (
-            <RevealItem as="li" key={leader.name} className="rounded-card bg-surface p-6">
+            <RevealItem as="li" key={leader.name} className="card-gradient rounded-card bg-surface p-6">
               <p className="type-h4">{leader.name}</p>
               <p className="mt-0.5 text-sm font-medium text-brand">{leader.role}</p>
               <p className="mt-3 text-sm leading-relaxed text-fg-mute">{leader.bio}</p>

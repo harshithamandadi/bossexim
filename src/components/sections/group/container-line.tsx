@@ -37,7 +37,7 @@ export function ContainerLineSpotlight() {
           <RevealItem
             as="li"
             key={service.title}
-            className="rounded-card bg-surface/80 p-6 ring-1 ring-inset ring-border backdrop-blur"
+            className="card-gradient rounded-card bg-surface/80 p-6 ring-1 ring-inset ring-border backdrop-blur"
           >
             <IconTile icon={service.icon} size="sm" variant="soft" />
             <h3 className="type-h4 mt-5">{service.title}</h3>

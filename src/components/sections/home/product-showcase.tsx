@@ -2,15 +2,13 @@ import { Reveal } from "@/components/motion/reveal";
 import { ProductCard } from "@/components/sections/products/product-card";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { Marquee } from "@/components/ui/marquee";
+import { Carousel } from "@/components/ui/carousel";
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
 import { homeContent } from "@/config";
 import { getCatalogue } from "@/lib/content/queries";
 
-const MARQUEE_SECONDS = 70;
-
-/** One gently scrolling row of every product, kept within the page's wide margins. */
+/** Every product in one row, with arrows to browse (it also advances by itself until the visitor takes over). */
 export async function ProductShowcase() {
   const { products: content } = homeContent;
   const { products, markets } = await getCatalogue();
@@ -25,13 +23,13 @@ export async function ProductShowcase() {
           </ButtonLink>
         </Reveal>
       </Container>
-      <Container size="wide">
+      <Container>
         <Reveal className="mt-10">
-          <Marquee durationSeconds={MARQUEE_SECONDS} className="py-2">
+          <Carousel label={content.eyebrow ?? "Products"} previousLabel={content.previous} nextLabel={content.next}>
             {products.map((product) => (
-              <ProductCard key={product.slug} product={product} markets={markets} className="w-[18rem] shrink-0" />
+              <ProductCard key={product.slug} product={product} markets={markets} className="h-full" />
             ))}
-          </Marquee>
+          </Carousel>
         </Reveal>
       </Container>
     </Section>

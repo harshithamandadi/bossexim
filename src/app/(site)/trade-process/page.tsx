@@ -40,17 +40,17 @@ export default async function TradeProcessPage() {
         </Reveal>
       </Section>
 
-      <Section id={ids.quality} tone="mist">
+      <Section id={ids.quality} tone="dark">
         <SectionHeader {...qualityVerification.heading} />
         <FeatureGrid items={qualityVerification.items} className="mt-14" />
         <Motto className="mt-12">{qualityVerification.motto}</Motto>
       </Section>
 
       <Section id={ids.presence}>
-        <ProseSplit content={globalPresence}>
+        <ProseSplit content={globalPresence} accent="globe">
           <RevealGroup as="ul" className="mt-10 grid max-w-2xl gap-3 sm:grid-cols-2">
             {globalPresence.tiers.map((tier) => (
-              <RevealItem as="li" key={tier.title} className="rounded-card bg-surface p-6">
+              <RevealItem as="li" key={tier.title} className="card-gradient rounded-card bg-surface p-6">
                 <h3 className="type-h4">{tier.title}</h3>
                 <p className="mt-1 text-sm text-fg-mute">{tier.description}</p>
                 <p className="mt-4 flex flex-wrap gap-1.5">

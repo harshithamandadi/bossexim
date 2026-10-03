@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
+import { DottedGlobe } from "@/components/ui/dotted-globe";
 import { IconTile } from "@/components/ui/icon";
+import { LogoMark } from "@/components/ui/logo";
+import { WorldDotsMap } from "@/components/ui/world-dots-map";
+import { networkPoints, siteConfig, tradeOrigin } from "@/config";
 import { SectionHeader } from "@/components/ui/section-header";
 import { SplitLayout } from "@/components/ui/split-layout";
 import { cn } from "@/lib/cn";
@@ -26,18 +30,58 @@ export function Prose({ paragraphs, className }: { paragraphs: string[]; classNa
   );
 }
 
+export type AccentVariant = "map" | "globe" | "mark";
+
+/**
+ * A branded gradient panel under a split heading, so the tall left column isn't
+ * left as empty white space (large screens only; phones stack the layout anyway).
+ */
+export function AccentPanel({ variant = "map", caption = siteConfig.company.motto }: { variant?: AccentVariant; caption?: string }) {
+  return (
+    <Reveal delay={0.15} className="mt-10 hidden lg:block">
+      <div data-tone="dark" className="deep-gradient relative isolate overflow-hidden rounded-panel p-6 shadow-[0_30px_60px_-35px_rgb(8_33_79/0.6)]">
+        <div aria-hidden className="dot-grid absolute inset-0 -z-10 opacity-25 [mask-image:radial-gradient(ellipse_at_top_right,#000,transparent_70%)]" />
+        {variant === "map" && (
+          <WorldDotsMap origin={tradeOrigin.coordinates} points={networkPoints.map((place) => place.coordinates)} className="opacity-90" />
+        )}
+        {variant === "globe" && (
+          <div className="relative mx-auto aspect-square w-3/4 rounded-full bg-[radial-gradient(circle_at_35%_30%,#4fa8e8,#1560bd_55%,#0a3270)] shadow-[0_0_80px_-10px_rgb(79_168_232/0.6)]">
+            <DottedGlobe className="absolute inset-0 size-full" />
+          </div>
+        )}
+        {variant === "mark" && (
+          <div className="grid aspect-[16/9] place-items-center">
+            <LogoMark className="h-24 w-auto text-white/90 drop-shadow-[0_10px_30px_rgb(79_168_232/0.5)]" />
+          </div>
+        )}
+        <p className="mt-5 font-display text-[15px] font-semibold text-fg">{caption}</p>
+      </div>
+    </Reveal>
+  );
+}
+
 interface ProseSplitProps {
   content: ProseContent;
   /** Shown under the heading, e.g. a button. */
   aside?: ReactNode;
   /** Shown under the paragraphs. */
   children?: ReactNode;
+  /** The gradient panel under the heading; `false` hides it. */
+  accent?: AccentVariant | false;
 }
 
 /** Heading on the left, the client's paragraphs (and any extras) on the right. */
-export function ProseSplit({ content, aside, children }: ProseSplitProps) {
+export function ProseSplit({ content, aside, children, accent = "map" }: ProseSplitProps) {
   return (
-    <SplitLayout aside={<SectionHeader {...content.heading}>{aside}</SectionHeader>} stickyAside>
+    <SplitLayout
+      aside={
+        <>
+          <SectionHeader {...content.heading}>{aside}</SectionHeader>
+          {accent && <AccentPanel variant={accent} />}
+        </>
+      }
+      stickyAside
+    >
       <Prose paragraphs={content.paragraphs} />
       {children}
     </SplitLayout>
@@ -49,7 +93,7 @@ export function HighlightGrid({ items, className }: { items: Highlight[]; classN
   return (
     <RevealGroup as="ul" className={cn("grid gap-3 sm:grid-cols-2", className)}>
       {items.map((item) => (
-        <RevealItem as="li" key={item.title} className="flex items-center gap-4 rounded-card bg-surface p-5">
+        <RevealItem as="li" key={item.title} className="flex items-center gap-4 card-gradient rounded-card bg-surface p-5">
           <IconTile icon={item.icon} size="sm" variant="soft" />
           <span className="font-display text-[17px] leading-snug font-semibold">{item.title}</span>
         </RevealItem>

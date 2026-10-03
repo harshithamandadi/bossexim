@@ -17,7 +17,7 @@ export function VerticalLinks({ current, title, className }: { current?: GroupVe
             <Link
               href={groupVerticalHref(vertical.slug)}
               className={cn(
-                "group flex h-full flex-col justify-between gap-6 rounded-card bg-surface p-5 ring-1 ring-inset ring-border",
+                "group flex h-full flex-col justify-between gap-6 card-gradient rounded-card bg-surface p-5 ring-1 ring-inset ring-border",
                 "transition-[transform,box-shadow] duration-500 ease-smooth hover:-translate-y-1 hover:shadow-[0_24px_50px_-28px_rgb(8_33_79/0.35)]",
               )}
             >

@@ -3,6 +3,7 @@ import { FeatureGrid } from "@/components/sections/shared/feature-grid";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { SectionHeader } from "@/components/ui/section-header";
 import { visionMissionValues } from "@/config";
+import { cn } from "@/lib/cn";
 
 export function VisionMission() {
   const { heading, statements, values } = visionMissionValues;
@@ -13,7 +14,7 @@ export function VisionMission() {
       <RevealGroup className="mt-14 grid gap-4 lg:grid-cols-2">
         {statements.map((statement, index) => (
           <RevealItem key={statement.label}>
-            <div data-tone={index === 0 ? "dark" : undefined} className="h-full rounded-panel bg-surface p-8 sm:p-12">
+            <div data-tone={index === 0 ? "dark" : undefined} className={cn("h-full rounded-panel bg-surface p-8 sm:p-12", index === 0 ? "deep-gradient" : "card-gradient")}>
               <Eyebrow>{statement.label}</Eyebrow>
               <p className="type-h3 mt-10 text-balance">{statement.text}</p>
             </div>

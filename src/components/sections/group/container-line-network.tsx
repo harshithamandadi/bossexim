@@ -14,7 +14,7 @@ export function ContainerLineNetwork() {
     <>
       <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] lg:items-end">
         <SectionHeader {...content.heading} />
-        <Reveal className="rounded-card bg-surface p-7">
+        <Reveal className="card-gradient rounded-card bg-surface p-7">
           <p className="type-h1 gradient-text leading-none">{agreements.done}</p>
           <p className="mt-3 text-[15px] font-medium">{agreements.label}</p>
           <p className="mt-1 text-sm text-fg-mute">{agreements.note}</p>
@@ -23,7 +23,7 @@ export function ContainerLineNetwork() {
 
       <RevealGroup as="ul" className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {content.regions.map((region) => (
-          <RevealItem as="li" key={region.region} className="rounded-card bg-surface p-6">
+          <RevealItem as="li" key={region.region} className="card-gradient rounded-card bg-surface p-6">
             <h3 className="type-h4">{region.region}</h3>
             <p className="mt-4 flex flex-wrap gap-1.5">
               {region.places.map((place) => (
@@ -65,7 +65,7 @@ export function ContainerLineNetwork() {
       <RevealGroup as="ul" className="mt-6 grid gap-4 lg:grid-cols-3">
         {content.testimonials.map((testimonial) => (
           <RevealItem as="li" key={testimonial.company}>
-            <figure className="flex h-full flex-col rounded-card bg-surface p-7">
+            <figure className="flex h-full flex-col card-gradient rounded-card bg-surface p-7">
               <Quote aria-hidden className="size-6 text-brand/40" />
               <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-pretty">{testimonial.quote}</blockquote>
               <figcaption className="mt-6 text-sm font-semibold">{testimonial.company}</figcaption>

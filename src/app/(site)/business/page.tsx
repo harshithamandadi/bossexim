@@ -28,7 +28,7 @@ export default function BusinessPage() {
       <LocalNav items={getLocalNavItems(routes.business)} />
 
       <Section id={ids.model}>
-        <ProseSplit content={businessModel}>
+        <ProseSplit content={businessModel} accent="mark">
           <HighlightGrid items={businessModel.models} className="mt-10 max-w-2xl" />
         </ProseSplit>
       </Section>
@@ -38,19 +38,19 @@ export default function BusinessPage() {
         <ServicesBento className="mt-14" />
       </Section>
 
-      <Section id={ids.why}>
-        <ProseSplit content={whyUs}>
+      <Section id={ids.why} tone="dark">
+        <ProseSplit content={whyUs} accent={false}>
           <HighlightGrid items={whyUs.strengths} className="mt-10 max-w-2xl" />
         </ProseSplit>
       </Section>
 
       <Section id={ids.focus} tone="mist">
-        <ProseSplit content={currentFocus} />
+        <ProseSplit content={currentFocus} accent={false} />
         <FocusPanel className="mt-14" />
       </Section>
 
       <Section id={ids.beyond}>
-        <ProseSplit content={beyondFocus}>
+        <ProseSplit content={beyondFocus} accent="globe">
           <RevealGroup as="ul" className="mt-10 flex max-w-2xl flex-wrap gap-2">
             {beyondFocus.criteria.map((criterion) => (
               <RevealItem as="li" key={criterion}>

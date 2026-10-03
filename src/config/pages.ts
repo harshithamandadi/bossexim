@@ -8,7 +8,7 @@ const { company } = siteConfig;
 export const homeContent: {
   hero: SectionContent & { highlight: string; primaryCta: LinkItem; secondaryCta: LinkItem };
   services: SectionContent & { cta: LinkItem };
-  products: SectionContent & { cta: LinkItem };
+  products: SectionContent & { cta: LinkItem; previous: string; next: string };
   world: SectionContent & { cta: LinkItem; legend: { core: string; network: string; worldwide: string } };
   process: SectionContent & { cta: LinkItem };
 } = {
@@ -34,6 +34,8 @@ export const homeContent: {
     description:
       "Selected agricultural products for international buyers, and polymers and recyclable metals for Indian manufacturers and recyclers.",
     cta: { label: "View all products", href: routes.products },
+    previous: "Previous products",
+    next: "Next products",
   },
   world: {
     eyebrow: "Worldwide Trade",

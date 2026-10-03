@@ -243,6 +243,7 @@ export const seedProducts: SeedProduct[] = [
   },
   {
     slug: "pulses-and-dal-products",
+    photos: [{ file: "pulses.jpg", alt: "Green, red and black lentils laid out in rows" }],
     name: "Pulses & Dal Products",
     direction: "export",
     category: "Pulses",
@@ -322,6 +323,7 @@ export const seedProducts: SeedProduct[] = [
   },
   {
     slug: "groundnuts-and-peanuts",
+    photos: [{ file: "groundnuts.jpg", alt: "Whole in-shell peanuts" }],
     name: "Groundnuts & Peanuts",
     direction: "export",
     category: "Oilseeds & nuts",
@@ -350,6 +352,7 @@ export const seedProducts: SeedProduct[] = [
   },
   {
     slug: "jaggery",
+    photos: [{ file: "jaggery.jpg", alt: "Blocks of golden cane jaggery in a bowl" }],
     name: "Jaggery",
     direction: "export",
     category: "Natural sweeteners",
@@ -380,6 +383,7 @@ export const seedProducts: SeedProduct[] = [
   /* ─────────────────────────────── Imports ─────────────────────────────── */
   {
     slug: "polypropylene",
+    photos: [{ file: "polypropylene.jpg", alt: "Coloured polypropylene resin granules" }],
     name: "Polypropylene (PP)",
     direction: "import",
     category: "Polymers",
@@ -408,6 +412,7 @@ export const seedProducts: SeedProduct[] = [
   },
   {
     slug: "polyethylene",
+    photos: [{ file: "polyethylene.jpg", alt: "Blue polyethylene plastic pellets" }],
     name: "Polyethylene (PE)",
     direction: "import",
     category: "Polymers",
@@ -436,6 +441,7 @@ export const seedProducts: SeedProduct[] = [
   },
   {
     slug: "polyester-chips",
+    photos: [{ file: "polyester-chips.jpg", alt: "Used PET bottles collected for recycling" }],
     name: "Polyester Chips",
     direction: "import",
     category: "Polymers",
@@ -465,6 +471,7 @@ export const seedProducts: SeedProduct[] = [
   },
   {
     slug: "aluminium-scrap",
+    photos: [{ file: "aluminium-scrap.jpg", alt: "Aluminium cans gathered for recycling" }],
     name: "Aluminium Scrap",
     direction: "import",
     category: "Metal scrap",
@@ -494,6 +501,7 @@ export const seedProducts: SeedProduct[] = [
   },
   {
     slug: "copper-scrap",
+    photos: [{ file: "copper-scrap.jpg", alt: "Bright copper wire strands" }],
     name: "Copper Scrap",
     direction: "import",
     category: "Metal scrap",
@@ -522,6 +530,7 @@ export const seedProducts: SeedProduct[] = [
   },
   {
     slug: "iron-scrap",
+    photos: [{ file: "iron-scrap.jpg", alt: "Ferrous scrap stockpiles at a waterside scrap yard" }],
     name: "Iron Scrap",
     direction: "import",
     category: "Metal scrap",
@@ -551,6 +560,7 @@ export const seedProducts: SeedProduct[] = [
   },
   {
     slug: "stainless-steel-scrap",
+    photos: [{ file: "stainless-steel-scrap.jpg", alt: "Pile of steel nails and offcuts" }],
     name: "Stainless Steel Scrap",
     direction: "import",
     category: "Metal scrap",
