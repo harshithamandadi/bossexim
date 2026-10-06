@@ -133,7 +133,7 @@ export function ProductOverview({ product, catalogue }: { product: Product; cata
           <dl className="overflow-hidden rounded-card text-sm ring-1 ring-inset ring-border">
             {getProductFacts(product, catalogue).map((fact) => (
               <div key={fact.label} className="grid grid-cols-[8.5rem_minmax(0,1fr)] border-b border-border last:border-b-0">
-                <dt className="bg-mist px-4 py-4 font-medium text-navy/70">{fact.label}</dt>
+                <dt className="bg-surface px-4 py-4 font-medium text-fg-mute">{fact.label}</dt>
                 <dd className="bg-elevated px-4 py-4 font-semibold">{fact.value}</dd>
               </div>
             ))}
@@ -160,7 +160,7 @@ export function ProductSpecifications({ product }: { product: Product }) {
     <Section tone="mist" spacing="compact">
       <h2 className="type-h3">{productLabels.specificationsTitle}</h2>
       <p className="mt-2 text-[15px] text-fg-mute">{productLabels.specificationsNote}</p>
-      <RevealGroup as="ul" className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <RevealGroup as="ul" className="mt-6 grid gap-4">
         {product.specifications.map((table) => (
           <RevealItem as="li" key={table.title}>
             <SpecificationCard table={table} />
@@ -171,39 +171,32 @@ export function ProductSpecifications({ product }: { product: Product }) {
   );
 }
 
+/** One spec table as a compact grid of tiles: 4 across on desktop (a 12-row table is 4 × 3), 3 on tablets, 2 on phones. */
 function SpecificationCard({ table }: { table: SpecificationTable }) {
   return (
-    <article className="h-full rounded-card bg-elevated p-5 shadow-[0_20px_50px_-35px_rgb(8_33_79/0.35)] ring-1 ring-inset ring-border sm:p-6">
-      <div className="flex items-start gap-3">
-        <span aria-hidden className="brand-gradient mt-1 h-8 w-1 shrink-0 rounded-full" />
-        <div>
-          <h3 className="type-h4">{table.title}</h3>
-          {table.subtitle && <p className="mt-0.5 text-[13px] text-fg-mute">{table.subtitle}</p>}
-        </div>
+    <article className="rounded-card bg-elevated p-5 shadow-[0_20px_50px_-35px_rgb(8_33_79/0.35)] ring-1 ring-inset ring-border sm:p-6">
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span aria-hidden className="brand-gradient h-5 w-1 self-center rounded-full" />
+        <h3 className="type-h4">{table.title}</h3>
+        {table.subtitle && <p className="text-[13px] text-fg-mute">{table.subtitle}</p>}
       </div>
-      {/* Label column shaded, values bold: parameters and data read as two distinct columns. */}
-      <dl className="mt-5 overflow-hidden rounded-xl text-[13px] ring-1 ring-inset ring-border">
+      <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-xl bg-border ring-1 ring-border sm:grid-cols-3 lg:grid-cols-4">
         {table.rows.map((row) => (
-          <div
-            key={row.label}
-            className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] border-b border-border last:border-b-0"
-          >
-            <dt className="bg-mist px-3 py-2.5 font-medium text-navy/70">{row.label}</dt>
-            <dd className="px-3 py-2.5 font-semibold text-fg">{row.value}</dd>
+          <div key={row.label} className="bg-canvas px-3.5 py-3">
+            <dt className="text-[11px] font-semibold tracking-wide text-fg-mute uppercase">{row.label}</dt>
+            <dd className="mt-1 text-[13.5px] leading-snug font-semibold text-pretty">{row.value}</dd>
           </div>
         ))}
       </dl>
       {table.keyFeatures && (
-        <div className="mt-5">
-          <p className="type-eyebrow text-[10px] text-fg-mute">{productLabels.keyFeatures}</p>
-          <ul className="mt-2 flex flex-wrap gap-1.5">
-            {table.keyFeatures.map((feature) => (
-              <li key={feature}>
-                <Chip variant="outline">{feature}</Chip>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="mt-4 flex flex-wrap items-center gap-1.5">
+          <li className="type-eyebrow mr-1 text-[10px] text-fg-mute">{productLabels.keyFeatures}</li>
+          {table.keyFeatures.map((feature) => (
+            <li key={feature}>
+              <Chip variant="outline">{feature}</Chip>
+            </li>
+          ))}
+        </ul>
       )}
     </article>
   );

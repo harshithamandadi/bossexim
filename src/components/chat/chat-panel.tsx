@@ -98,11 +98,38 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
   }
 
   /** Echoes the visitor's message and queues Aira's replies (delivering any still "typing" first). */
+  // Questions answered so far, and whether Aira has already offered a follow-up.
+  const [questionCount, setQuestionCount] = useState(0);
+  const [askedForContact, setAskedForContact] = useState(false);
+
   function send(input: VisitorInput, echo: string) {
     if (isSubmitting) return;
     const response = respond(flow, input, { faqs, products, search });
+    const startsCapture = response.flow.kind === "callback" || response.flow.kind === "buying";
+    if (startsCapture) setAskedForContact(true);
+
+    // A question answered outside the buying and call-back flows counts towards the follow-up offer.
+    const isQuestion = (input.kind === "text" || input.kind === "faq") && response.flow.kind === "browse";
+    const answered = isQuestion ? questionCount + 1 : questionCount;
+    setQuestionCount(answered);
+    const offerFollowUp = !askedForContact && !startsCapture && isQuestion && answered >= content.contactAsk.afterQuestions;
+    if (offerFollowUp) setAskedForContact(true);
+    const replies: AssistantMessage[] = offerFollowUp
+      ? [
+          ...response.replies,
+          {
+            from: "assistant",
+            text: content.contactAsk.text,
+            choices: [
+              { id: "callback", label: content.contactAsk.yes },
+              { id: "menu", label: content.contactAsk.no },
+            ],
+          },
+        ]
+      : response.replies;
+
     setMessages((current) => [...current, ...pendingReplies, { from: "visitor", text: echo }]);
-    setPendingReplies(response.replies);
+    setPendingReplies(replies);
     setFlow(response.flow);
     if (response.submit) submit(response.submit);
     if (response.callback) requestCallback(response.callback);

@@ -79,8 +79,18 @@ export function groupVerticalHref(slug: string): string {
   return `${routes.group}/${slug}`;
 }
 
+/** A BOSS Container Line service page, e.g. /boss-group/container-line/nvocc. */
+export function containerLineServiceHref(slug: string): string {
+  return `${groupVerticalHref("container-line")}/${slug}`;
+}
+
 export function productsViewHref(direction: TradeDirection): string {
   return `${routes.products}?view=${direction}`;
+}
+
+/** A product category's section on the Products page. */
+export function productCategoryHref(direction: TradeDirection, category: string): string {
+  return `${productsViewHref(direction)}#${toAnchorId(category)}`;
 }
 
 /** The registration form on the Partner page, with an enquiry type pre-selected. */

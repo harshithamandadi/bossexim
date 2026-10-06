@@ -5,12 +5,13 @@
 import type { LinkItem, NavGroup } from "@/types/content";
 import { enquiryTypes } from "./contact";
 import { groupVerticals } from "./group";
+import { productCategories } from "./products";
 import {
   anchorHref,
   contactHref,
   groupVerticalHref,
   partnerFormHref,
-  productsViewHref,
+  productCategoryHref,
   routes,
   sectionIds,
   toAnchorId,
@@ -84,18 +85,12 @@ export const mainNavigation: NavGroup[] = [
   {
     label: "Products",
     href: routes.products,
-    items: [
-      {
-        label: "Exports from India",
-        href: productsViewHref("export"),
-        description: "Rice, spices, pulses, dehydrated foods and more.",
-      },
-      {
-        label: "Imports",
-        href: productsViewHref("import"),
-        description: "Polymers and recyclable metals for Indian industry.",
-      },
-    ],
+    // One link per category (exports first, then imports), straight to its section.
+    items: productCategories.map((category) => ({
+      label: category.name,
+      href: productCategoryHref(category.direction, category.name),
+      description: category.description,
+    })),
   },
   {
     label: "Trade Process",

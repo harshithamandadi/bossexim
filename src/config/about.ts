@@ -62,13 +62,14 @@ export const visionMissionValues: {
 };
 
 /** Leadership profiles are managed in the admin (Website content → Team / Leadership). */
-export const leadership: { heading: SectionContent; emptyState: string } = {
+export const leadership: { heading: SectionContent; emptyState: string; readProfile: string } = {
   heading: {
     eyebrow: "Our Team / Leadership",
     title: "The People Who Lead BGEXIM",
     description: "Leadership experience across shipping, logistics, construction, hospitality, retail and technology.",
   },
   emptyState: "Leadership profiles will be published here soon.",
+  readProfile: "Read full profile",
 };
 
 /** The registrations we list; their numbers are entered in the admin (Settings → Company details). */

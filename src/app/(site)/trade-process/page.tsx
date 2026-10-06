@@ -42,7 +42,7 @@ export default async function TradeProcessPage() {
 
       <Section id={ids.quality} tone="dark">
         <SectionHeader {...qualityVerification.heading} />
-        <FeatureGrid items={qualityVerification.items} className="mt-14" />
+        <FeatureGrid items={qualityVerification.items} className="mt-10" />
         <Motto className="mt-12">{qualityVerification.motto}</Motto>
       </Section>
 
@@ -70,7 +70,7 @@ export default async function TradeProcessPage() {
             </p>
           )}
         </ProseSplit>
-        <Reveal className="mt-16 overflow-hidden rounded-panel">
+        <Reveal className="mt-12 overflow-hidden rounded-panel">
           <TradeRoutesStage products={catalogue.products} markets={catalogue.markets} />
         </Reveal>
         <MarketGrid catalogue={catalogue} className="mt-4" />

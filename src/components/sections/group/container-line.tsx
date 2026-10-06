@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { GradientGlow } from "@/components/ui/gradient-glow";
-import { IconTile } from "@/components/ui/icon";
 import { SectionHeader } from "@/components/ui/section-header";
 import { containerLine } from "@/config";
+import { ServiceCardLink } from "./container-line-service";
 
 export function ContainerLineSpotlight() {
   return (
@@ -32,16 +32,10 @@ export function ContainerLineSpotlight() {
           <p className="type-h4 border-l-2 border-brand pt-2 pl-5">{containerLine.motto}</p>
         </Reveal>
       </div>
-      <RevealGroup as="ul" className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <RevealGroup as="ul" className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {containerLine.services.map((service) => (
-          <RevealItem
-            as="li"
-            key={service.title}
-            className="card-gradient rounded-card bg-surface/80 p-6 ring-1 ring-inset ring-border backdrop-blur"
-          >
-            <IconTile icon={service.icon} size="sm" variant="soft" />
-            <h3 className="type-h4 mt-5">{service.title}</h3>
-            <p className="mt-1.5 text-sm leading-relaxed text-fg-mute">{service.description}</p>
+          <RevealItem as="li" key={service.slug}>
+            <ServiceCardLink service={service} />
           </RevealItem>
         ))}
       </RevealGroup>

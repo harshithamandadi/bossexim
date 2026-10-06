@@ -14,6 +14,8 @@ export const uiLabels = {
   mobileNavigation: "Menu",
   photos: "photos",
   previous: "Previous",
+  darkMode: "Switch to dark mode",
+  lightMode: "Switch to light mode",
   next: "Next",
   notFound: {
     eyebrow: "404",

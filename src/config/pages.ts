@@ -8,7 +8,7 @@ const { company } = siteConfig;
 export const homeContent: {
   hero: SectionContent & { highlight: string; primaryCta: LinkItem; secondaryCta: LinkItem };
   services: SectionContent & { cta: LinkItem };
-  products: SectionContent & { cta: LinkItem; previous: string; next: string };
+  products: SectionContent & { cta: LinkItem; previous: string; next: string; viewRow: string };
   world: SectionContent & { cta: LinkItem; legend: { core: string; network: string; worldwide: string } };
   process: SectionContent & { cta: LinkItem };
 } = {
@@ -36,6 +36,7 @@ export const homeContent: {
     cta: { label: "View all products", href: routes.products },
     previous: "Previous products",
     next: "Next products",
+    viewRow: "See all",
   },
   world: {
     eyebrow: "Worldwide Trade",
@@ -54,9 +55,10 @@ export const homeContent: {
 };
 
 export const closingCta: CallToAction = {
-  title: "Ready to Trade Beyond Boundaries?",
+  // The approved tagline, word for word (client request: use it consistently).
+  title: company.tagline,
   description:
-    "If you have a genuine business opportunity and would like to explore international trade with BGEXIM, we invite you to buy, sell or partner with us.",
+    "Have a genuine business opportunity? Explore international trade with BGEXIM — we invite you to buy, sell or partner with us.",
   primary: { label: "Send an enquiry", href: contactHref() },
   secondary: { label: "Partner with us", href: routes.partner },
 };

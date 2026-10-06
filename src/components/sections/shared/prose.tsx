@@ -3,8 +3,8 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { DottedGlobe } from "@/components/ui/dotted-globe";
 import { IconTile } from "@/components/ui/icon";
 import { LogoMark } from "@/components/ui/logo";
-import { WorldDotsMap } from "@/components/ui/world-dots-map";
-import { networkPoints, siteConfig, tradeOrigin } from "@/config";
+import { FootprintMap } from "@/components/ui/footprint-map";
+import { siteConfig } from "@/config";
 import { SectionHeader } from "@/components/ui/section-header";
 import { SplitLayout } from "@/components/ui/split-layout";
 import { cn } from "@/lib/cn";
@@ -42,7 +42,7 @@ export function AccentPanel({ variant = "map", caption = siteConfig.company.mott
       <div data-tone="dark" className="deep-gradient relative isolate overflow-hidden rounded-panel p-6 shadow-[0_30px_60px_-35px_rgb(8_33_79/0.6)]">
         <div aria-hidden className="dot-grid absolute inset-0 -z-10 opacity-25 [mask-image:radial-gradient(ellipse_at_top_right,#000,transparent_70%)]" />
         {variant === "map" && (
-          <WorldDotsMap origin={tradeOrigin.coordinates} points={networkPoints.map((place) => place.coordinates)} className="opacity-90" />
+          <FootprintMap />
         )}
         {variant === "globe" && (
           <div className="relative mx-auto aspect-square w-3/4 rounded-full bg-[radial-gradient(circle_at_35%_30%,#4fa8e8,#1560bd_55%,#0a3270)] shadow-[0_0_80px_-10px_rgb(79_168_232/0.6)]">

@@ -11,7 +11,7 @@ export function VisionMission() {
   return (
     <>
       <SectionHeader {...heading} />
-      <RevealGroup className="mt-14 grid gap-4 lg:grid-cols-2">
+      <RevealGroup className="mt-10 grid gap-4 lg:grid-cols-2">
         {statements.map((statement, index) => (
           <RevealItem key={statement.label}>
             <div data-tone={index === 0 ? "dark" : undefined} className={cn("h-full rounded-panel bg-surface p-8 sm:p-12", index === 0 ? "deep-gradient" : "card-gradient")}>
@@ -21,7 +21,7 @@ export function VisionMission() {
           </RevealItem>
         ))}
       </RevealGroup>
-      <FeatureGrid items={values} columns={3} variant="plain" className="mt-16" />
+      <FeatureGrid items={values} columns={3} variant="plain" className="mt-12" />
     </>
   );
 }

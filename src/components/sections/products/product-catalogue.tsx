@@ -3,8 +3,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { SegmentedControl } from "@/components/ui/segmented-control";
-import { productLabels, tradeDirections } from "@/config/products";
-import { createCatalogue, type MarketFilter } from "@/lib/catalogue";
+import { productCategories, productLabels, tradeDirections } from "@/config/products";
+import { toAnchorId } from "@/config/routes";
+import { createCatalogue, groupByCategory, type MarketFilter } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
 import { pluralize } from "@/lib/format";
 import { DURATION, EASE_SMOOTH, SPRING_SNAPPY } from "@/lib/motion";
@@ -12,6 +13,16 @@ import type { Market, Product, TradeDirection } from "@/types/content";
 import { ProductCard } from "./product-card";
 
 const DIRECTIONS: TradeDirection[] = ["export", "import"];
+const CATEGORY_ORDER = productCategories.map((category) => category.name);
+
+/** Known categories in their set order; any others (added in the admin) after them. */
+function sortByCategory<T extends { category: string }>(groups: T[]): T[] {
+  const rank = (name: string) => {
+    const index = CATEGORY_ORDER.indexOf(name);
+    return index === -1 ? CATEGORY_ORDER.length : index;
+  };
+  return [...groups].sort((a, b) => rank(a.category) - rank(b.category));
+}
 
 /** Exports / Imports segmented control, market filter and an animated product grid. */
 interface ProductCatalogueProps {
@@ -72,22 +83,35 @@ export function ProductCatalogue({ initialView, products, markets }: ProductCata
       </AnimatePresence>
       </div>
 
-      <motion.ul layout className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <AnimatePresence mode="popLayout" initial={false}>
-          {visibleProducts.map((product) => (
-            <motion.li
-              key={product.slug}
-              layout
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
-              transition={SPRING_SNAPPY}
-            >
-              <ProductCard product={product} markets={catalogue.markets} />
-            </motion.li>
-          ))}
-        </AnimatePresence>
-      </motion.ul>
+      {/* Products grouped by category, in the order set in config/products.ts. */}
+      <div className="mt-8 space-y-12">
+        {sortByCategory(groupByCategory(visibleProducts)).map(({ category, items }) => (
+          <section key={category} id={toAnchorId(category)} className="scroll-mt-52">
+            <div className="flex items-baseline justify-between gap-4 border-b border-border pb-3">
+              <h2 className="type-h3">{category}</h2>
+              <span className="text-sm text-fg-mute">
+                {items.length} {pluralize(items.length, productLabels.line, productLabels.lines)}
+              </span>
+            </div>
+            <motion.ul layout className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <AnimatePresence mode="popLayout" initial={false}>
+                {items.map((product) => (
+                  <motion.li
+                    key={product.slug}
+                    layout
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={SPRING_SNAPPY}
+                  >
+                    <ProductCard product={product} markets={catalogue.markets} />
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </motion.ul>
+          </section>
+        ))}
+      </div>
     </div>
   );
 }

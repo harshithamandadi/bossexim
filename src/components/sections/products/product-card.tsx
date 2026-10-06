@@ -8,6 +8,7 @@ import { productLabels } from "@/config/products";
 import { productHref } from "@/config/routes";
 import { cn } from "@/lib/cn";
 import type { Market, Product } from "@/types/content";
+import { toAlpha3 } from "@/lib/country-codes";
 
 interface ProductCardProps {
   product: Product;
@@ -21,7 +22,7 @@ export function ProductCard({ product, markets, className }: ProductCardProps) {
   const arrow = (
     <ArrowUpRight
       aria-hidden
-      className="size-4 text-navy transition-[color,transform] duration-300 ease-smooth group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand"
+      className="size-4 text-fg transition-[color,transform] duration-300 ease-smooth group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand"
     />
   );
 
@@ -46,7 +47,7 @@ export function ProductCard({ product, markets, className }: ProductCardProps) {
             <Icon name={product.icon} className="relative size-12 text-white/90 transition-transform duration-500 ease-smooth group-hover:scale-110" />
           </div>
         )}
-        <span className="absolute top-3 right-3 grid size-9 place-items-center rounded-full bg-white/90 shadow-sm">{arrow}</span>
+        <span className="absolute top-3 right-3 grid size-9 place-items-center rounded-full bg-elevated/90 shadow-sm">{arrow}</span>
       </div>
       <p className="type-eyebrow mt-5 text-fg-mute">{product.category}</p>
       <h3 className="type-h4 mt-2">{product.name}</h3>
@@ -61,7 +62,7 @@ export function ProductTags({ product, markets, className }: ProductCardProps) {
   const tags =
     product.direction === "export"
       ? [
-          ...product.markets.map((code) => ({ label: code, title: markets.find((market) => market.code === code)?.name ?? code })),
+          ...product.markets.map((code) => ({ label: toAlpha3(code), title: markets.find((market) => market.code === code)?.name ?? code })),
           // Markets are a current focus, not a limit.
           { label: `+ ${productLabels.worldwide}`, title: productLabels.worldwideTitle },
         ]
@@ -79,5 +80,37 @@ export function ProductTags({ product, markets, className }: ProductCardProps) {
         </li>
       ))}
     </ul>
+  );
+}
+
+/** A compact card — photo and name only — for the gliding rows on Home. */
+export function ProductMiniCard({ product, className }: { product: Product; className?: string }) {
+  const photo = product.images?.[0];
+  return (
+    <Link
+      href={productHref(product.slug)}
+      className={cn(
+        "group card-gradient block h-full overflow-hidden rounded-2xl bg-surface p-2 ring-1 ring-inset ring-border",
+        "transition-[transform,box-shadow] duration-500 ease-smooth hover:-translate-y-1 hover:shadow-[0_20px_40px_-24px_rgb(8_33_79/0.4)]",
+        className,
+      )}
+    >
+      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-surface">
+        {photo ? (
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            fill
+            sizes="220px"
+            className="object-cover transition-transform duration-500 ease-smooth group-hover:scale-[1.05]"
+          />
+        ) : (
+          <div aria-hidden className="brand-gradient absolute inset-0 grid place-items-center">
+            <Icon name={product.icon} className="size-9 text-white/90" />
+          </div>
+        )}
+      </div>
+      <p className="truncate px-1.5 pt-2.5 pb-1 text-[14px] font-semibold">{product.name}</p>
+    </Link>
   );
 }

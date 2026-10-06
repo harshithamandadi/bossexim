@@ -33,7 +33,7 @@ export default async function AboutPage() {
 
       <Section id={ids.overview}>
         <AboutOverview />
-        {video && <VideoSlot video={video} playLabel={corporateVideo.playLabel} className="mx-auto mt-16 max-w-5xl" />}
+        {video && <VideoSlot video={video} playLabel={corporateVideo.playLabel} className="mx-auto mt-12 max-w-5xl" />}
       </Section>
 
       <Section id={ids.vision} tone="mist">
@@ -42,7 +42,7 @@ export default async function AboutPage() {
 
       <Section id={ids.leadership}>
         <SectionHeader {...leadership.heading} />
-        <TeamGrid className="mt-14" />
+        <TeamGrid className="mt-10" />
       </Section>
 
       <Section id={ids.compliance} tone="mist">

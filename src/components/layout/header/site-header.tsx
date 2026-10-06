@@ -14,6 +14,7 @@ import { SPRING_ISLAND } from "@/lib/motion";
 import { isActivePath } from "@/lib/navigation";
 import { DesktopPanel } from "./desktop-panel";
 import { MobileMenu } from "./mobile-menu";
+import { ThemeToggle } from "./theme-toggle";
 
 const ISLAND_RADIUS = 26;
 const MOBILE_MENU_ID = "mobile-menu";
@@ -53,8 +54,9 @@ export function SiteHeader() {
         onMouseLeave={() => setOpenGroupLabel(null)}
         className={cn(
           // relative: anchors the outgoing menu panel while it fades out (popLayout).
-          "pointer-events-auto relative w-full max-w-md overflow-hidden bg-canvas/75 text-fg ring-1 ring-white/10",
-          "backdrop-blur-2xl backdrop-saturate-150 transition-[background-color,box-shadow] duration-500 xl:w-auto xl:max-w-none",
+          // Spans the page width so the logo always sits on the left (client request).
+          "pointer-events-auto relative w-full max-w-7xl overflow-hidden bg-canvas/75 text-fg ring-1 ring-white/10",
+          "backdrop-blur-2xl backdrop-saturate-150 transition-[background-color,box-shadow] duration-500",
           (isScrolled || isExpanded) && "bg-canvas/90 shadow-[0_24px_60px_-24px_rgb(0_0_0/0.55)]",
         )}
       >
@@ -68,7 +70,7 @@ export function SiteHeader() {
             <Logo />
           </Link>
 
-          <nav aria-label={uiLabels.mainNavigation} className="ml-3 hidden xl:block">
+          <nav aria-label={uiLabels.mainNavigation} className="mx-auto hidden xl:block">
             <ul className="flex items-center">
               {mainNavigation.map((group) => {
                 const isOpen = group.label === openGroupLabel;
@@ -95,7 +97,8 @@ export function SiteHeader() {
             </ul>
           </nav>
 
-          <div className="ml-auto flex items-center gap-1.5 pl-2">
+          <div className="ml-auto flex items-center gap-1.5 pl-2 xl:ml-0">
+            <ThemeToggle />
             <ButtonLink href={contactLink.href} onClick={closeAll} size="sm" className="hidden sm:inline-flex">
               {contactLink.label}
             </ButtonLink>

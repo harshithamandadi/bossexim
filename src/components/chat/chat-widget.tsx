@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { MessageCircleMore, X } from "lucide-react";
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, type Ref } from "react";
 import { chatbotContent } from "@/config/chatbot";
 import { onOpenChat } from "@/lib/chat-events";
@@ -17,7 +18,6 @@ const ChatPanel = dynamic(() => loadPanel().then((module) => module.ChatPanel), 
 
 /** Delay before the launcher appears, so it never competes with a page's own entrance. */
 const LAUNCHER_DELAY_S = 1.2;
-const TEASER_DISMISSED_KEY = "aira-teaser-dismissed";
 /** Phones get no teaser: the client asked for less disturbance on mobile. */
 const TEASER_MEDIA = "(min-width: 768px)";
 /** Same ids as Aira's main menu (assistant-flow.ts), listed here so the panel's code can stay lazy-loaded. */
@@ -44,39 +44,42 @@ export function ChatWidget({ faqs, products, formToken }: ChatWidgetProps) {
   const [request, setRequest] = useState<ChatRequest>();
   const launcherRef = useRef<HTMLButtonElement>(null);
 
+  // The greeting bubble: shown on every page a few seconds after arriving, and back
+  // about 25 seconds after it's dismissed (client request). Never on phones.
+  const pathname = usePathname();
+  const [teaserPath, setTeaserPath] = useState(pathname);
   const [showTeaser, setShowTeaser] = useState(false);
+  const [teaserDelay, setTeaserDelay] = useState(chatbotContent.teaser.delaySeconds);
+  const [teaserCycle, setTeaserCycle] = useState(0);
+
+  if (pathname !== teaserPath) {
+    setTeaserPath(pathname);
+    setShowTeaser(false);
+    setTeaserDelay(chatbotContent.teaser.delaySeconds);
+    setTeaserCycle((cycle) => cycle + 1);
+  }
+
+  useEffect(() => {
+    if (!window.matchMedia(TEASER_MEDIA).matches) return;
+    const timer = window.setTimeout(() => setShowTeaser(true), teaserDelay * 1000);
+    return () => window.clearTimeout(timer);
+  }, [teaserCycle, teaserDelay]);
 
   const dismissTeaser = useCallback(() => {
     setShowTeaser(false);
-    try {
-      sessionStorage.setItem(TEASER_DISMISSED_KEY, "1");
-    } catch {
-      // Storage can be blocked; the teaser simply shows again next visit.
-    }
+    setTeaserDelay(chatbotContent.teaser.returnAfterSeconds);
+    setTeaserCycle((cycle) => cycle + 1);
   }, []);
 
   const open = useCallback(
     (question?: string, choice?: ChatChoice) => {
-      dismissTeaser();
+      setShowTeaser(false);
       setHasOpened(true);
       setIsOpen(true);
       if (question || choice) setRequest({ id: Date.now(), question, choice });
     },
-    [dismissTeaser],
+    [],
   );
-
-  // Once per visit, on larger screens, Aira says hello after a few seconds.
-  useEffect(() => {
-    let dismissed = false;
-    try {
-      dismissed = sessionStorage.getItem(TEASER_DISMISSED_KEY) === "1";
-    } catch {
-      dismissed = false;
-    }
-    if (dismissed || !window.matchMedia(TEASER_MEDIA).matches) return;
-    const timer = window.setTimeout(() => setShowTeaser(true), chatbotContent.teaser.delaySeconds * 1000);
-    return () => window.clearTimeout(timer);
-  }, []);
 
   const close = useCallback(() => {
     setIsOpen(false);

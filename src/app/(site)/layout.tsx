@@ -7,8 +7,11 @@ import "../globals.css";
 export const metadata: Metadata = rootMetadata;
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
-  colorScheme: "light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f3f8fe" },
+    { media: "(prefers-color-scheme: dark)", color: "#061936" },
+  ],
+  colorScheme: "light dark",
 };
 
 export default function SiteLayout({ children }: Readonly<{ children: ReactNode }>) {

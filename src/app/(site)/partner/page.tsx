@@ -40,7 +40,7 @@ export default async function PartnerPage({ searchParams }: PartnerPageProps) {
 
       <Section>
         <SectionHeader {...partnerContent.heading} />
-        <PartnerTracks withAnchors className="mt-14" />
+        <PartnerTracks withAnchors className="mt-10" />
       </Section>
 
       <Section id={sectionIds.partner.form} tone="mist" className="scroll-mt-8">

@@ -27,7 +27,8 @@ export async function SiteFooter() {
             <Link href={routes.home} aria-label={`${company.name} — home`} className="inline-block rounded-lg">
               <Logo showDescriptor />
             </Link>
-            <p className="type-body mt-6 text-fg-mute">{company.summary}</p>
+            <p className="mt-6 font-display text-lg font-bold">{company.tagline}</p>
+            <p className="type-body mt-2 text-fg-mute">{company.summary}</p>
             <SocialLinks links={social} className="mt-8" />
           </div>
 
@@ -47,7 +48,7 @@ export async function SiteFooter() {
 
         <p
           aria-hidden
-          className="mt-16 bg-linear-to-b from-fg/25 to-transparent bg-clip-text text-center font-display text-[clamp(2.5rem,11vw,10rem)] leading-none font-semibold tracking-[-0.06em] whitespace-nowrap text-transparent select-none"
+          className="mt-12 bg-linear-to-b from-fg/25 to-transparent bg-clip-text text-center font-display text-[clamp(2.5rem,11vw,10rem)] leading-none font-semibold tracking-[-0.06em] whitespace-nowrap text-transparent select-none"
         >
           {company.wordmark.primary} {company.wordmark.secondary}
         </p>

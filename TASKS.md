@@ -279,9 +279,47 @@ Anything new is written down and approved before it's built (§10).
 - [x] **Product photos**: all 14 products now have a photo. The 10 new ones are stock images (8 public domain CC0 from rawpixel, StockSnap and Wikimedia; jaggery and polyethylene are CC BY-SA 4.0 from Wikimedia Commons, credited on their product pages via `photoCredits`). Sources in `src/payload/seed/images/SOURCES.json`. Replace with the client’s own photos when available.
 - [x] **Aira animations** (inspired by kobra.systems; our own code): replies stream in word by word with a blur-to-sharp fade, extra content and option chips spring in one by one after the text, visitor messages pop with a spring, the chat follows new content with a jump-to-latest button when you scroll up, a live online dot, and an invitation pulse ring plus icon wiggle on the launcher until first opened. All off for reduced-motion visitors.
 - [x] **Card sliders**: endless, smooth gliding rows with ← → arrows and drag/swipe (pause on hover; static when the cards already fit; still for reduced motion) — Home products, related products and key markets on product pages, Trade Process markets, BOSS Group awards, Container Line testimonials, "More from BOSS Group".
+- [x] **Hero (client markup, 6 Oct)**: flat dotted world map across the whole hero background, no trade lines, faded out behind the text column for readability; wheel back to white icons (no photos); globe land dots larger and brighter so the world map reads clearly; BOSS logo + "BOSS Group" badge with "Merchant Exporter | Merchant Importer" above the headline; "Supply Chain Solutions" removed from the roles.
 - [x] **Market flags**: flags on the market tiles, the Core Markets column (Business), the trade-lane list and map labels; each market tile shows its flag (flag-icons, MIT, all ISO flags in `public/flags` so markets added in the admin get theirs), plus a "Worldwide" tile closing the grid.
 - [x] **Less white**: light sections tinted blue with soft gradient glows; gradient cards everywhere; more dark navy sections (Quality & Verification, Why BGEXIM); gradient panels (world map, spinning globe or BOSS mark) fill the empty column under split headings on large screens.
-- [x] **Home products row**: carousel with ← → arrows (it still advances every 4 s, but stops as soon as a visitor uses the arrows or swipes, and pauses on hover) instead of a non-stop ticker.
+- [x] **Home products row**: superseded by the endless card sliders below.
 - [x] **Colours**: brand gradient on primary buttons, icon tiles and product placeholders; deep navy gradient on dark sections, panels and footer. Theme unchanged.
 - [x] **Aira**: greeting teaser with quick-start buttons (desktop, once per visit, never on phones); compact launcher on phones; new "📞 Request a Call Back" path collects name, email, phone and topic and saves a general enquiry with a BGX reference; offered whenever Aira can't answer.
 - [ ] **Confirm with the client**: the dashed "worldwide, on request" lanes (illustrative, not current trade); the "Countries in our trade network" figure (core markets + the Container Line network); the vertical-page copy (from their documents and the BOSS Australia site); whether the BGEXIM card should stay on the BOSS Group page.
+
+### R4. Client review round 4 (6 Oct 2026) — built, awaiting client review
+
+Final review with the client: **Monday 12 Oct, around 9–10 a.m. (time to confirm).**
+
+**Can start now (no client input needed)**
+- [x] **R4.1** Replace two-letter country codes with three-letter codes (UAE → ARE, SA → SAU, SG → SGP…) on tiles, lists, chips and map labels. Flags keep working from the two-letter code behind the scenes.
+- [x] **R4.2** Home: separate Export and Import products into two scrolling rows.
+- [x] **R4.3** Home: smaller product cards — photo and name only, no description.
+- [x] **R4.4** Use the approved tagline "Trade Beyond Boundaries" consistently (same wording and capitalisation everywhere: hero, CTA, footer, share image, page titles).
+- [x] **R4.5** Fix the logo looking half white / half blue (the mark and "Global EXIM" render in different colours on the dark header). Use one consistent treatment; use the client's official logo files when they arrive.
+- [x] **R4.6** Show the BOSS logo consistently on the left of every page header (desktop and phone).
+- [x] **R4.7** Reduce excess empty space and tighten alignment across all pages.
+- [x] **R4.8** Product specifications: compact, consistent layout. **Proposal to confirm:** spec cards in rows — 4 per row on desktop, 3 on laptop/tablet (the "four-by-three" arrangement).
+- [x] **R4.9** Aira: show the greeting prompt again when the visitor moves to a new page.
+- [x] **R4.10** Aira: if the prompt is dismissed, bring it back after about 20–30 seconds.
+- [x] **R4.11** Aira: after two or three questions, ask for phone number and email (skippable), so the team can follow up.
+- [x] **R4.12** Visible dark / light mode switch in the header.
+- [x] **R4.13** Keep the other business verticals (Retail, Constructions, Hospitality, IT, BPO) to one page each — already the case.
+
+**Built from existing material (confirm with the client)**
+- [x] **R4.14** Add the new products to the product list and menu — needs the product list and content (see resource checklist).
+  - Done from the PRODUCT PORTFOLIO: Pomegranate, Fresh Onions, Indian Mangoes, Dehydrated Fruits, Ginger/Moringa/Amla, Frozen Shrimp — with spec tables and portfolio photos; menu lists categories.
+- [x] **R4.15** Organise products under the correct categories — needs the approved category list.
+  - Done with our own category list (Rice & Grains, Spices, Pulses, Fresh Fruits & Vegetables, Dehydrated & Herbal, Seafood, Nuts & Oilseeds, Natural Sweeteners; imports: Polymers, Metal Scrap). Products page is grouped by category; menu links jump to each group.
+- [x] **R4.16** Replace the dotted world-map / Global Sourcing graphic with the client's own image.
+  - Done with the BOSS Footprint map (2nd resources): placeholder text painted out, legend cropped. Used on the Global Sourcing card and the BOSS Group intro panel.
+- [x] **R4.17** Six Container Line service pages: NVOCC, Freight Forwarding, Container Trading, Break Bulk Cargo, Project Cargo, 3PL & Warehousing. We can build them from the brochure text, but each needs approved copy and photos; Project Cargo has no client copy yet.
+  - Done at /boss-group/container-line/<service>, from the client's service docs, Container Line website and brochure (brochure cut-out photos for 4 services; Project Cargo and 3PL show an icon until photos arrive). **Project Cargo copy is our draft** — confirm with the client.
+- [x] **R4.18** Profiles and photos for the three founders / leaders.
+  - Done as profile cards with a branded monogram until photos are uploaded in the admin (Team / Leadership → photo); long bios fold under "Read full profile".
+- [x] **R4.19** Correct the BOSS Group timeline once the client confirms the year groupings.
+  - Done: milestones grouped into eras — Foundations 2000–05, Growth 2009–16, Development 2017–19, Diversification 2022–24. Confirm the groupings with the client.
+
+**Client coordination**
+- [ ] Send the missing-content checklist (products/categories, founder profiles/photos, logo/tagline, replacement map, corrected timeline, six service pages' content/images).
+- [ ] Confirm the Monday final-review date and start time (around 9–10 a.m. was discussed).

@@ -122,6 +122,42 @@
   color-scheme: dark;
 }
 
+/* ──────────────────────── Dark mode (visitor's choice) ────────────────────────
+   The header switch sets data-theme="dark" on <html>. Light and mist sections then
+   take navy tokens; dark sections stay as they are. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"] [data-tone="light"] {
+  --color-logo: #ffffff;
+  --color-mist: #0b2252;
+  --color-canvas: #061936;
+  --color-surface: #0e2a5a;
+  --color-elevated: #133470;
+  --color-fg: #e8f1fd;
+  --color-fg-mute: #a3bce0;
+  --color-border: rgb(255 255 255 / 0.13);
+  --color-brand: #6fb6f0;
+  --color-danger: #ff8a80;
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"] [data-tone="mist"] {
+  --color-canvas: #0a2150;
+  --color-surface: #11306a;
+  --color-elevated: #16397a;
+}
+
+:root[data-theme="dark"] [data-tone="dark"] {
+  --color-canvas: #04122b;
+  --color-surface: #0c2752;
+}
+
+:root[data-theme="dark"] body {
+  background-color: #061936;
+}
+
 /* ─────────────────────────────── Base ─────────────────────────────── */
 @layer base {
   html {
@@ -265,8 +301,9 @@
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-brand) 12%, transparent);
 }
 
-/* Inside dark sections the card sheen is a blue glow instead of white. */
-[data-tone="dark"] .card-gradient {
+/* Inside dark sections (and in dark mode) the card sheen is a blue glow instead of white. */
+[data-tone="dark"] .card-gradient,
+:root[data-theme="dark"] .card-gradient {
   background-image: linear-gradient(155deg, color-mix(in oklab, var(--color-surface) 75%, var(--color-tide)) 0%, var(--color-surface) 65%);
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
 }

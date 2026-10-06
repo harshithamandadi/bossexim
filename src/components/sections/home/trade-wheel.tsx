@@ -9,7 +9,6 @@ import {
   useReducedMotion,
   useTransform,
 } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState, type PointerEvent } from "react";
@@ -22,7 +21,7 @@ import { cn } from "@/lib/cn";
 import { pluralize } from "@/lib/format";
 import { DURATION, EASE_SMOOTH, SPRING_SNAPPY, VIEWPORT_ONCE } from "@/lib/motion";
 import type { IconName } from "@/lib/icons";
-import type { ImageAsset, Product } from "@/types/content";
+import type { Product } from "@/types/content";
 
 /* Geometry, in viewBox units. */
 const SIZE = 500;
@@ -40,8 +39,6 @@ const ORBIT_RESPONSE = 5;
 interface Segment {
   category: string;
   icon: IconName;
-  /** The first product photo in the category; the icon is shown when there is none. */
-  image?: ImageAsset;
   href: string;
   caption: string;
 }
@@ -56,7 +53,6 @@ function buildSegments(products: Product[]): Segment[] {
       {
         category,
         icon: lead.icon,
-        image: items.find((item) => item.images?.length)?.images?.[0],
         href: productsViewHref(lead.direction),
         caption: `${items.length} ${direction.singular.toLowerCase()} ${pluralize(items.length, productLabels.line, productLabels.lines)}`,
       },
@@ -233,14 +229,7 @@ function SegmentPod({ segment, isActive, ...props }: SegmentPodProps) {
           isActive ? "shadow-xl shadow-navy/35" : "shadow-lg shadow-navy/25",
         )}
       >
-        {segment.image ? (
-          <>
-            <Image src={segment.image.src} alt="" fill sizes="80px" className="object-cover" />
-            <span aria-hidden className="absolute inset-0 rounded-full ring-2 ring-white ring-inset" />
-          </>
-        ) : (
-          <Icon name={segment.icon} className="size-5 text-brand sm:size-6" />
-        )}
+        <Icon name={segment.icon} className="size-5 text-brand sm:size-6" />
       </motion.span>
       <span className="sr-only">{segment.category}</span>
     </Link>

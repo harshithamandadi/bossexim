@@ -6,10 +6,11 @@ import Link from "next/link";
 import type { ComponentType } from "react";
 import { Chip } from "@/components/ui/chip";
 import { Icon } from "@/components/ui/icon";
-import { WorldDotsMap } from "@/components/ui/world-dots-map";
-import { containerLine, networkPoints, productHref, tradeOrigin } from "@/config";
+import { FootprintMap } from "@/components/ui/footprint-map";
+import { containerLine, containerLineServiceHref, productHref } from "@/config";
 import { groupByCategory, type Catalogue } from "@/lib/catalogue";
 import type { ServiceVisual } from "@/types/content";
+import { toAlpha3 } from "@/lib/country-codes";
 
 interface VisualProps {
   catalogue: Catalogue;
@@ -29,7 +30,7 @@ function ExportsVisual({ catalogue }: VisualProps) {
             </span>
             <span className="min-w-0">
               <span className="block truncate text-sm font-medium">{product.name}</span>
-              <span className="block text-xs tracking-wide text-fg-mute">{product.markets.join(" · ")}</span>
+              <span className="block text-xs tracking-wide text-fg-mute">{product.markets.map(toAlpha3).join(" · ")}</span>
             </span>
           </Link>
         </li>
@@ -66,23 +67,22 @@ function LogisticsVisual() {
   return (
     <ul className="flex flex-wrap gap-1.5">
       {containerLine.services.map((service) => (
-        <li key={service.title}>
-          <Chip variant="outline">
-            <Icon name={service.icon} className="size-3.5" />
-            {service.title}
-          </Chip>
+        <li key={service.slug}>
+          <Link href={containerLineServiceHref(service.slug)} className="group">
+            <Chip variant="outline" className="transition-colors group-hover:text-fg">
+              <Icon name={service.icon} className="size-3.5" />
+              {service.title}
+            </Chip>
+          </Link>
         </li>
       ))}
     </ul>
   );
 }
 
-/** A dotted world with lanes from India: sourcing is not limited to a handful of countries. */
-function SourcingVisual({ catalogue }: VisualProps) {
-  const points = [...catalogue.markets.map((market) => market.coordinates), ...networkPoints.map((place) => place.coordinates)].filter(
-    (point) => point.lat !== tradeOrigin.coordinates.lat || point.lon !== tradeOrigin.coordinates.lon,
-  );
-  return <WorldDotsMap origin={tradeOrigin.coordinates} points={points} />;
+/** The client's own footprint map: sourcing reaches well beyond a handful of countries. */
+function SourcingVisual() {
+  return <FootprintMap />;
 }
 
 export const serviceVisuals: Record<ServiceVisual, ComponentType<VisualProps>> = {

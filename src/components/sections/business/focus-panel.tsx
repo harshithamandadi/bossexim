@@ -7,6 +7,7 @@ import { currentFocus, productHref } from "@/config";
 import { cn } from "@/lib/cn";
 import { getCatalogue } from "@/lib/content/queries";
 import type { Product } from "@/types/content";
+import { toAlpha3 } from "@/lib/country-codes";
 
 /** "We export → To → We import", derived entirely from the catalogue. */
 export async function FocusPanel({ className }: { className?: string }) {
@@ -30,7 +31,7 @@ export async function FocusPanel({ className }: { className?: string }) {
               leading={<Flag code={market.code} className="w-8 rounded-md shadow-sm ring-1 ring-white/25" />}
             >
               {market.name}
-              <span className="ml-2 text-xs font-semibold tracking-wide text-fg-mute">{market.code}</span>
+              <span className="ml-2 text-xs font-semibold tracking-wide text-fg-mute">{toAlpha3(market.code)}</span>
             </FocusRow>
           ))}
         </FocusColumn>

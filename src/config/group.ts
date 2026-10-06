@@ -33,12 +33,166 @@ export interface Office {
   address: string;
 }
 
+/**
+ * A BOSS Container Line service, with its own page at /boss-group/container-line/<slug>.
+ * Copy comes from the client's service documents ("6) a) 1–4"), the Container Line
+ * website text and its brochure. `description` is the short card text.
+ */
+export interface ContainerLineService extends Feature {
+  slug: string;
+  /** Cut-out photo from the Container Line brochure; services without one show their icon. */
+  image?: ImageAsset;
+  paragraphs: string[];
+  highlightsTitle: string;
+  highlights: string[];
+  /** How the service supports BGEXIM's trade (from the client's documents). */
+  forExim?: string[];
+}
+
+export const containerLineServices: ContainerLineService[] = [
+  {
+    slug: "nvocc",
+    title: "NVOCC",
+    description:
+      "Dependable line services with a customer-focused approach — documents for customs and harbour services, liaison with local and port authorities, handling of goods, freight collection and contact with shippers and receivers.",
+    icon: "container",
+    image: { src: "/images/group/container-line/nvocc.webp", alt: "Port cranes beside a loaded container ship", width: 1200, height: 591 },
+    paragraphs: [
+      "BOSS Container Line provides NVOCC services designed to support reliable and cost-effective container movement across selected international trade routes. As an NVOCC operator, the company works with carriers, agents, shippers and consignees to coordinate containerised cargo movement without operating its own vessel fleet.",
+      "The service includes booking coordination, container planning, documentation, routing support and shipment follow-up. Through its network and industry relationships, the team aims to provide practical solutions for customers moving cargo across important regional and international markets.",
+      "Its skilled team makes sure every workflow is checked and completed efficiently, so cargo is delivered safely and on time — with a commitment to continuous improvement and to growing its equipment fleet together with its customers.",
+    ],
+    highlightsTitle: "What We Handle",
+    highlights: [
+      "Booking coordination and container planning",
+      "Documents for customs and harbour services",
+      "Liaison with local and harbour authorities",
+      "Supply, transport and handling of goods",
+      "Freight and cargo collection",
+      "Contact with shippers and receivers of the goods",
+    ],
+    forExim: [
+      "For BGEXIM, access to NVOCC capability supports a better understanding of freight options, container availability, routing and shipment planning — particularly useful for commodity and industrial cargo, where freight cost and timing are important parts of the final landed cost.",
+      "The focus remains on reliable execution, clear communication and efficient cargo movement.",
+    ],
+  },
+  {
+    slug: "freight-forwarding",
+    title: "Freight Forwarding",
+    description:
+      "From basic transportation to major logistics projects through a global partner network — air and ocean freight on a door-to-door basis, including regulatory requirements, to internationally accepted standards.",
+    icon: "route",
+    image: { src: "/images/group/container-line/freight-forwarding.webp", alt: "A fully loaded container ship at sea", width: 1200, height: 686 },
+    paragraphs: [
+      "BOSS Container Line provides freight-forwarding services for customers requiring coordinated movement of cargo from origin to destination. The service can cover ocean freight, multimodal transport, documentation, customs-related coordination, door-to-door movement and other logistics requirements depending on the shipment.",
+      "Through a network of carriers, agents and service partners, the team can support both standard and more complex cargo movements. Freight forwarding is not only about booking space; it also requires coordination between the supplier, shipper, port, shipping line, customs, transporter and consignee.",
+      "The team is well placed to handle large volumes of cargo, including regulatory requirements, with air freight and ocean freight on a door-to-door basis — to internationally accepted quality standards.",
+    ],
+    highlightsTitle: "What We Handle",
+    highlights: ["Ocean freight", "Air freight", "Multimodal transport", "Door-to-door movement", "Documentation", "Customs-related coordination"],
+    forExim: [
+      "This capability supports BGEXIM with practical logistics knowledge when evaluating international trade opportunities. Freight, transit time, routing and destination costs can materially affect a transaction, particularly for bulk or commodity products.",
+      "The objective is efficient, compliant and dependable cargo coordination across the supply chain.",
+    ],
+  },
+  {
+    slug: "container-trading",
+    title: "Container Trading",
+    description:
+      "New, used, refurbished and customised containers for sale or lease to shipping lines and logistics providers — including containers cleared by customs for domestic and onshore use.",
+    icon: "arrow-left-right",
+    image: { src: "/images/group/container-line/container-trading.webp", alt: "Stacks of shipping containers at a depot", width: 1200, height: 486 },
+    paragraphs: [
+      "BOSS Container Line’s trading activities include the buying, selling and leasing of shipping containers and related equipment according to market requirements. The business works with shipping lines, logistics providers, traders and other customers who require suitable container assets for export, onshore or operational use.",
+      "The trading activity includes standard and customised containers, subject to availability, condition and commercial terms. Where applicable, containers may also be cleared for domestic use in accordance with customs requirements.",
+      "Its inventory of new, used, refurbished and customised containers is available for sale or lease with flexibility and support — letting container seekers buy quality assets for export or onshore use.",
+    ],
+    highlightsTitle: "What We Offer",
+    highlights: [
+      "New, used and refurbished containers",
+      "Customised containers",
+      "Sale or lease",
+      "For shipping lines, logistics providers and traders",
+      "Assets for export or onshore use",
+      "Customs-cleared containers for domestic use, where applicable",
+    ],
+    forExim: [
+      "Container trading gives the wider BOSS ecosystem practical exposure to asset sourcing, commercial negotiation, international movement and logistics-market conditions. This experience complements BGEXIM’s broader trading philosophy of identifying genuine demand, sourcing suitable products and executing transactions through structured commercial terms.",
+    ],
+  },
+  {
+    slug: "break-bulk-cargo",
+    title: "Break Bulk Cargo",
+    description:
+      "Oversized or irregular cargo that cannot fit standard containers — steel, machinery, construction equipment and vehicles, loaded individually in crates, drums or directly onto vessels.",
+    icon: "anchor",
+    image: { src: "/images/group/container-line/break-bulk.webp", alt: "Ship cranes lifting a crate aboard a cargo vessel", width: 1200, height: 714 },
+    paragraphs: [
+      "BOSS Container Line supports break bulk cargo movements for oversized, heavy or irregular cargo that cannot be efficiently transported in standard shipping containers. Typical break bulk cargo can include machinery, steel, construction equipment and other large industrial items.",
+      "Instead of containers, the cargo travels in bags, boxes, crates, drums or barrels, or is rolled, lifted or pushed directly onto a ship or barge.",
+      "Unlike containerised cargo, break bulk shipments require cargo-specific planning for loading, lifting, securing, vessel space, ports and handling arrangements. Costs and operational requirements can vary significantly depending on the cargo dimensions, weight, origin and destination.",
+    ],
+    highlightsTitle: "Typical Cargo",
+    highlights: [
+      "Reels and rolls",
+      "Steel girders and structural steel",
+      "Machinery and manufacturing equipment",
+      "Construction equipment",
+      "Vehicles",
+      "Heavy or oversized goods",
+    ],
+    forExim: [
+      "The ability to support break bulk cargo adds flexibility to the wider BOSS logistics offering and can also benefit BGEXIM when evaluating future opportunities involving machinery, industrial equipment or project cargo.",
+      "The focus is on safe handling, correct planning and coordinated movement from loading point to destination.",
+    ],
+  },
+  {
+    slug: "project-cargo",
+    title: "Project Cargo",
+    // DRAFT — the client's documents ask us to write this service's copy ("You only write"); confirm with the client.
+    description:
+      "Planned movement of heavy, high-value and time-critical project shipments — route and equipment planning, carrier and port coordination, documentation and on-site follow-up from origin to final delivery.",
+    icon: "boxes",
+    paragraphs: [
+      "Project cargo covers heavy, high-value and time-critical shipments for industrial and infrastructure projects — consignments where each movement needs its own plan rather than a standard booking.",
+      "BOSS Container Line coordinates these movements by drawing on its break bulk, freight-forwarding and NVOCC capabilities, together with its network of carriers, agents and service partners.",
+      "Planning covers the route, equipment, lifting and securing, vessel space and port handling, with documentation and follow-up through to final delivery.",
+    ],
+    highlightsTitle: "What We Coordinate",
+    highlights: [
+      "Route and equipment planning",
+      "Lifting, loading and securing arrangements",
+      "Carrier, vessel and port coordination",
+      "Documentation",
+      "Shipment follow-up",
+      "Delivery to the final destination",
+    ],
+  },
+  {
+    slug: "3pl-and-warehousing",
+    title: "3PL & Warehousing",
+    description:
+      "End-to-end warehouse and logistics solutions — inventory management, order fulfilment, cargo storage and transport coordination, aimed at minimising delays and optimising supply chains.",
+    icon: "warehouse",
+    paragraphs: [
+      "BOSS Container Line provides end-to-end warehouse and logistics solutions, including inventory management, order fulfilment and transport coordination.",
+      "Its global network supports efficient cargo storage and delivery. Committed to minimising delays and optimising supply chains, BOSS aims to be a reliable partner for seamless, timely and cost-effective service.",
+    ],
+    highlightsTitle: "What We Handle",
+    highlights: ["Inventory management", "Order fulfilment", "Cargo storage", "Transport coordination"],
+  },
+];
+
+export function getContainerLineService(slug: string): ContainerLineService | undefined {
+  return containerLineServices.find((service) => service.slug === slug);
+}
+
 export const containerLine: {
   heading: SectionContent;
   paragraphs: string[];
   motto: string;
   image: ImageAsset;
-  services: Feature[];
+  services: ContainerLineService[];
 } = {
   heading: {
     eyebrow: "Our Services",
@@ -57,45 +211,7 @@ export const containerLine: {
     width: 1200,
     height: 589,
   },
-  services: [
-    {
-      title: "NVOCC",
-      description:
-        "Dependable line services with a customer-focused approach — documents for customs and harbour services, liaison with local and port authorities, handling of goods, freight collection and contact with shippers and receivers.",
-      icon: "container",
-    },
-    {
-      title: "Freight Forwarding",
-      description:
-        "From basic transportation to major logistics projects through a global partner network — air and ocean freight on a door-to-door basis, including regulatory requirements, to internationally accepted standards.",
-      icon: "route",
-    },
-    {
-      title: "Container Trading",
-      description:
-        "New, used, refurbished and customised containers for sale or lease to shipping lines and logistics providers — including containers cleared by customs for domestic and onshore use.",
-      icon: "arrow-left-right",
-    },
-    {
-      title: "Break Bulk Cargo",
-      description:
-        "Oversized or irregular cargo that cannot fit standard containers — steel, machinery, construction equipment and vehicles, loaded individually in crates, drums or directly onto vessels.",
-      icon: "anchor",
-    },
-    {
-      title: "Project Cargo",
-      // DRAFT — the client's document asks us to write this service's copy; confirm with the client.
-      description:
-        "Planned movement of heavy, high-value and time-critical project shipments — route and equipment planning, carrier and port coordination, documentation and on-site follow-up from origin to final delivery.",
-      icon: "boxes",
-    },
-    {
-      title: "3PL & Warehousing",
-      description:
-        "End-to-end warehouse and logistics solutions — inventory management, order fulfilment, cargo storage and transport coordination, aimed at minimising delays and optimising supply chains.",
-      icon: "warehouse",
-    },
-  ],
+  services: containerLineServices,
 };
 
 /** BOSS Container Line's network ("Our Sectors") and offices, from its brochure and footprint map. */
@@ -202,6 +318,13 @@ export interface Milestone {
   title: string;
 }
 
+/** A chapter of the Group's journey: a span of years and its milestones. */
+export interface JourneyEra {
+  period: string;
+  title: string;
+  milestones: Milestone[];
+}
+
 export interface GroupLeader {
   name: string;
   role: string;
@@ -211,7 +334,7 @@ export interface GroupLeader {
 /** BOSS Group's journey, mainly through BOSS Australia (from the BOSS Australia website). */
 export const groupJourney: {
   heading: SectionContent;
-  milestones: Milestone[];
+  eras: JourneyEra[];
   values: { title: string; text: string };
   leadersTitle: string;
   leaders: GroupLeader[];
@@ -222,20 +345,45 @@ export const groupJourney: {
     description:
       "Built on trust and friendship, BOSS began as a shared vision among friends from real estate, construction, IT and hospitality — united by trust, integrity and a passion for building something meaningful.",
   },
-  milestones: [
-    { year: "2000", title: "BOSS established in Australia" },
-    { year: "2002", title: "First outlet opened in Wollongong" },
-    { year: "2004", title: "Entered Brisbane" },
-    { year: "2005", title: "Relationship with BP established; headquarters in Brisbane" },
-    { year: "2009", title: "First convenience store (SPAR)" },
-    { year: "2014", title: "10+ sites in operation" },
-    { year: "2016", title: "Relationship with AMPOL established" },
-    { year: "2017", title: "First complete greenfield site (Hattonvale)" },
-    { year: "2018", title: "Relationship with Shell established" },
-    { year: "2019", title: "Greenfield site developed (AMPOL Wacol)" },
-    { year: "2022", title: "Elite Construction & Projects established; first hotel acquired (Adelaide); relationship with Caltex" },
-    { year: "2023", title: "Fuel volume of 75 ML a year; Elite completes its first project" },
-    { year: "2024", title: "First EV site opened — BP Brackenridge" },
+  // Milestones from the BOSS Australia website, grouped into eras (round-4 feedback).
+  eras: [
+    {
+      period: "2000 – 2005",
+      title: "Foundations",
+      milestones: [
+        { year: "2000", title: "BOSS established in Australia" },
+        { year: "2002", title: "First outlet opened in Wollongong" },
+        { year: "2004", title: "Entered Brisbane" },
+        { year: "2005", title: "Relationship with BP established; headquarters in Brisbane" },
+      ],
+    },
+    {
+      period: "2009 – 2016",
+      title: "Growth",
+      milestones: [
+        { year: "2009", title: "First convenience store (SPAR)" },
+        { year: "2014", title: "10+ sites in operation" },
+        { year: "2016", title: "Relationship with AMPOL established" },
+      ],
+    },
+    {
+      period: "2017 – 2019",
+      title: "Development",
+      milestones: [
+        { year: "2017", title: "First complete greenfield site (Hattonvale)" },
+        { year: "2018", title: "Relationship with Shell established" },
+        { year: "2019", title: "Greenfield site developed (AMPOL Wacol)" },
+      ],
+    },
+    {
+      period: "2022 – 2024",
+      title: "Diversification",
+      milestones: [
+        { year: "2022", title: "Elite Construction & Projects established; first hotel acquired (Adelaide); relationship with Caltex" },
+        { year: "2023", title: "Fuel volume of 75 ML a year; Elite completes its first project" },
+        { year: "2024", title: "First EV site opened — BP Brackenridge" },
+      ],
+    },
   ],
   values: {
     title: "Growing with Purpose, Leading with Integrity",
@@ -544,6 +692,8 @@ export const groupVerticals: GroupVertical[] = [
 
 export const groupVerticalLabels = {
   services: "Our Services",
+  moreServices: "More Container Line Services",
+  forExim: "How It Supports BGEXIM",
   otherVerticals: "More from BOSS Group",
 };
 

@@ -267,10 +267,9 @@ export const chatbotContent = {
       {
         id: "phone",
         label: "Phone / WhatsApp",
-        question: "Your phone or WhatsApp number, with the country code? (Optional)",
+        question: "Your phone or WhatsApp number, with the country code?",
         input: "tel",
         placeholder: "+971 …",
-        optional: true,
       },
       {
         id: "message",
@@ -286,11 +285,22 @@ export const chatbotContent = {
     failure: "Sorry — we couldn't save your details just now. Please try again, or email us at",
   },
 
+  /** After a couple of questions, Aira offers to have the team follow up (client request). */
+  contactAsk: {
+    afterQuestions: 2,
+    text: "Would you like our trade team to follow up with you directly? Share your email and phone number and we’ll get in touch.",
+    yes: "📞 Share my contact details",
+    no: "Not now",
+  },
+
   /** A small greeting bubble beside the launcher on larger screens (never on phones). */
   teaser: {
     text: "👋 Hi, I'm Aira. Looking for Indian products or a quote?",
     dismiss: "Dismiss",
-    delaySeconds: 6,
+    /** After arriving on a page. */
+    delaySeconds: 3,
+    /** After the visitor dismisses it. */
+    returnAfterSeconds: 25,
   },
   backToMenu: "Main menu",
   smallTalk: {

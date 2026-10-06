@@ -54,7 +54,8 @@ export function Logo({ className, showDescriptor = false }: { className?: string
       <LogoMark className="h-6 w-auto shrink-0 text-logo" />
       <span className="flex flex-col leading-none">
         <span className="font-display text-[15px] font-extrabold tracking-tight whitespace-nowrap">
-          {wordmark.primary} <span className="font-semibold text-fg-mute">{wordmark.secondary}</span>
+          {/* One colour throughout (not half white, half blue); the weight sets the two words apart. */}
+          {wordmark.primary} <span className="font-medium">{wordmark.secondary}</span>
         </span>
         {showDescriptor && (
           <span className="mt-1.5 text-[10px] font-semibold tracking-[0.16em] text-fg-mute uppercase">{descriptor}</span>

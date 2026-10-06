@@ -25,7 +25,7 @@ export function ProcessScroller({ content }: { content: ProcessContent }) {
   const aside = (
     <>
       <SectionHeader {...heading} />
-      <div aria-hidden className="mt-14 hidden lg:block">
+      <div aria-hidden className="mt-10 hidden lg:block">
         <div className="flex items-baseline gap-3">
           <span className="type-hero relative block overflow-hidden tabular-nums">
             <AnimatePresence mode="popLayout" initial={false}>

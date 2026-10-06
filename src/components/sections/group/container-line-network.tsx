@@ -37,7 +37,7 @@ export function ContainerLineNetwork() {
         ))}
       </RevealGroup>
 
-      <div className="mt-16 flex flex-wrap items-baseline justify-between gap-4">
+      <div className="mt-12 flex flex-wrap items-baseline justify-between gap-4">
         <h3 className="type-h3">{content.officesTitle}</h3>
         <a
           href={content.website.href}
@@ -62,7 +62,7 @@ export function ContainerLineNetwork() {
         ))}
       </RevealGroup>
 
-      <h3 className="type-h3 mt-16">{content.testimonialsTitle}</h3>
+      <h3 className="type-h3 mt-12">{content.testimonialsTitle}</h3>
       <Carousel
         className="mt-4"
         label={content.testimonialsTitle}

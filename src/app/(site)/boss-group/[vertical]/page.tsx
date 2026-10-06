@@ -86,7 +86,7 @@ function VerticalBody({ vertical }: { vertical: GroupVertical }) {
     <Section spacing="compact">
       <ProseSplit content={vertical.intro} accent="mark" />
       {vertical.capabilities.map((group) => (
-        <div key={group.title ?? vertical.slug} className="mt-14">
+        <div key={group.title ?? vertical.slug} className="mt-10">
           <h2 className="type-h3">{group.title ?? groupVerticalLabels.services}</h2>
           <FeatureGrid items={group.items} columns={3} className="mt-6" />
         </div>

@@ -35,7 +35,7 @@ export default function BusinessPage() {
 
       <Section tone="mist">
         <SectionHeader {...homeContent.services} />
-        <ServicesBento className="mt-14" />
+        <ServicesBento className="mt-10" />
       </Section>
 
       <Section id={ids.why} tone="dark">
@@ -46,7 +46,7 @@ export default function BusinessPage() {
 
       <Section id={ids.focus} tone="mist">
         <ProseSplit content={currentFocus} accent={false} />
-        <FocusPanel className="mt-14" />
+        <FocusPanel className="mt-10" />
       </Section>
 
       <Section id={ids.beyond}>

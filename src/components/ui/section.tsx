@@ -5,8 +5,8 @@ import { Container, type ContainerSize } from "./container";
 export type SectionTone = "light" | "mist" | "dark";
 
 const spacingStyles = {
-  default: "py-20 sm:py-24",
-  compact: "py-14 sm:py-16",
+  default: "py-16 sm:py-20",
+  compact: "py-12 sm:py-14",
   none: "",
 } as const;
 

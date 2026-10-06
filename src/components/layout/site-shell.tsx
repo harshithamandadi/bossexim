@@ -2,6 +2,7 @@ import { Inter, Inter_Tight } from "next/font/google";
 import type { ReactNode } from "react";
 import { ChatWidget } from "@/components/chat/chat-widget";
 import { SiteHeader } from "@/components/layout/header/site-header";
+import { THEME_INIT_SCRIPT } from "@/components/layout/header/theme-toggle";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { uiLabels } from "@/config";
@@ -33,8 +34,10 @@ export async function SiteShell({ children }: { children: ReactNode }) {
     }));
 
   return (
-    <html lang="en" className={cn(inter.variable, interTight.variable)}>
+    // suppressHydrationWarning: the theme script may set data-theme before React hydrates.
+    <html lang="en" className={cn(inter.variable, interTight.variable)} suppressHydrationWarning>
       <body data-tone="light" className="bg-canvas font-sans text-fg antialiased">
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(getOrganizationJsonLd(company)) }}

@@ -65,3 +65,21 @@ export const photoCredits: Record<string, { text: string; href: string }> = {
     href: "https://commons.wikimedia.org/wiki/File:Pellet_azul.jpg",
   },
 };
+
+/**
+ * Product categories, in the order they appear in the menu and on the Products
+ * page. Products in the admin are grouped by their "Category" text; categories
+ * not listed here still appear on the page, after these.
+ */
+export const productCategories: { name: string; direction: TradeDirection; description: string }[] = [
+  { name: "Rice & Grains", direction: "export", description: "Basmati and non-basmati rice." },
+  { name: "Spices", direction: "export", description: "Turmeric, cardamom, pepper, chillies & blends." },
+  { name: "Pulses", direction: "export", description: "Toor, moong, chana, masoor and urad dal." },
+  { name: "Fresh Fruits & Vegetables", direction: "export", description: "Pomegranate, onions and mangoes." },
+  { name: "Dehydrated & Herbal", direction: "export", description: "Onion, garlic, fruits, ginger, moringa, amla." },
+  { name: "Seafood", direction: "export", description: "Frozen Indian shrimp." },
+  { name: "Nuts & Oilseeds", direction: "export", description: "Groundnuts and peanut kernels." },
+  { name: "Natural Sweeteners", direction: "export", description: "Traditional Indian jaggery." },
+  { name: "Polymers", direction: "import", description: "PP, PE and polyester chips." },
+  { name: "Metal Scrap", direction: "import", description: "Aluminium, copper, iron and stainless steel." },
+];

@@ -15,13 +15,14 @@ const paragraphs = (...items: string[]) => items.join("\n\n");
 const FOOD_PACKING = "Food-Grade Export Packaging";
 const AGREED = "As per agreed specification";
 
-export const seedProducts: SeedProduct[] = [
+/** Products from the client's per-product documents. */
+const documentProducts: SeedProduct[] = [
   /* ─────────────────────────────── Exports ─────────────────────────────── */
   {
     slug: "rice",
     name: "Rice",
     direction: "export",
-    category: "Grains",
+    category: "Rice & Grains",
     icon: "wheat",
     summary: "Basmati, non-Basmati, long-grain and buyer-specific Indian rice varieties.",
     description: paragraphs(
@@ -192,7 +193,7 @@ export const seedProducts: SeedProduct[] = [
     slug: "dehydrated-onion-and-garlic",
     name: "Dehydrated Onion & Garlic",
     direction: "export",
-    category: "Dehydrated foods",
+    category: "Dehydrated & Herbal",
     icon: "sun",
     summary: "Flakes, granules, minced and powder — for food processors, seasoning companies and institutional buyers.",
     description: paragraphs(
@@ -326,7 +327,7 @@ export const seedProducts: SeedProduct[] = [
     photos: [{ file: "groundnuts.jpg", alt: "Whole in-shell peanuts" }],
     name: "Groundnuts & Peanuts",
     direction: "export",
-    category: "Oilseeds & nuts",
+    category: "Nuts & Oilseeds",
     icon: "nut",
     summary: "Shelled groundnuts, peanut kernels and blanched peanuts in selected size and count grades.",
     description: paragraphs(
@@ -355,7 +356,7 @@ export const seedProducts: SeedProduct[] = [
     photos: [{ file: "jaggery.jpg", alt: "Blocks of golden cane jaggery in a bowl" }],
     name: "Jaggery",
     direction: "export",
-    category: "Natural sweeteners",
+    category: "Natural Sweeteners",
     icon: "candy",
     summary: "Traditional Indian jaggery in blocks, powder or granules for wholesale, food-processing and retail buyers.",
     description: paragraphs(
@@ -474,7 +475,7 @@ export const seedProducts: SeedProduct[] = [
     photos: [{ file: "aluminium-scrap.jpg", alt: "Aluminium cans gathered for recycling" }],
     name: "Aluminium Scrap",
     direction: "import",
-    category: "Metal scrap",
+    category: "Metal Scrap",
     icon: "recycle",
     summary: "Cable, extrusion, sheet, cast, UBC and formwork/Mivan scrap for Indian recyclers and foundries.",
     description: paragraphs(
@@ -504,7 +505,7 @@ export const seedProducts: SeedProduct[] = [
     photos: [{ file: "copper-scrap.jpg", alt: "Bright copper wire strands" }],
     name: "Copper Scrap",
     direction: "import",
-    category: "Metal scrap",
+    category: "Metal Scrap",
     icon: "cable",
     summary: "Wire and cable, bare and high-grade, sheet and plate, and profile or busbar copper scrap.",
     description: paragraphs(
@@ -533,7 +534,7 @@ export const seedProducts: SeedProduct[] = [
     photos: [{ file: "iron-scrap.jpg", alt: "Ferrous scrap stockpiles at a waterside scrap yard" }],
     name: "Iron Scrap",
     direction: "import",
-    category: "Metal scrap",
+    category: "Metal Scrap",
     icon: "hammer",
     summary: "HMS, shredded, plate and structural, and cast iron scrap for Indian mills, recyclers and foundries.",
     description: paragraphs(
@@ -563,7 +564,7 @@ export const seedProducts: SeedProduct[] = [
     photos: [{ file: "stainless-steel-scrap.jpg", alt: "Pile of steel nails and offcuts" }],
     name: "Stainless Steel Scrap",
     direction: "import",
-    category: "Metal scrap",
+    category: "Metal Scrap",
     icon: "cog",
     summary: "Stainless steel scrap in grades 202, 304 and 316, with composition reviewed before confirmation.",
     description: paragraphs(
@@ -587,3 +588,311 @@ export const seedProducts: SeedProduct[] = [
     ],
   },
 ];
+
+/* ───────────── Further export lines, from the BGEXIM Product Portfolio ───────────── */
+
+const FRESH_DOCS = [
+  "IEC",
+  "APEDA RCMC (where applicable)",
+  "Phytosanitary certificate",
+  "Certificate of origin",
+  "Pre-shipment inspection report (on request)",
+  "Packing list and commercial invoice",
+  "Commercial shipping documents",
+];
+
+const portfolioProducts: SeedProduct[] = [
+  {
+    slug: "pomegranate",
+    photos: [{ file: "pomegranate.jpg", alt: "Fresh Indian pomegranate, whole and halved" }],
+    name: "Pomegranate",
+    direction: "export",
+    category: "Fresh Fruits & Vegetables",
+    icon: "cherry",
+    summary: "Fresh Indian pomegranates, including Bhagwa, in export-grade cartons for importers and retail buyers.",
+    description: paragraphs(
+      "India is one of the world’s leading pomegranate producers, and BGEXIM sources fresh fruit — including the popular Bhagwa variety — for importers, distributors and retail buyers.",
+      "Fruit size, colour and pack size are agreed with each buyer, and shipments are coordinated with export-grade cartons, quality inspection on request and cold-chain logistics suited to the destination.",
+      "Supply is seasonal or on contract, subject to harvest, availability and destination-market requirements.",
+    ),
+    variants: ["Bhagwa", "Other commercial varieties"],
+    variantsLabel: "Varieties",
+    packaging: "Export-grade cartons, or packing as per the buyer’s requirement.",
+    specifications: [
+      {
+        title: "Pomegranate",
+        subtitle: "Fresh Indian Pomegranate",
+        rows: [
+          { label: "Origin", value: "India" },
+          { label: "Product", value: "Fresh Pomegranate" },
+          { label: "Varieties", value: "Bhagwa & other commercial varieties" },
+          { label: "Fruit Size", value: "As per buyer requirement" },
+          { label: "Colour", value: "Natural Red / Variety Specific" },
+          { label: "Appearance", value: "Fresh, Clean & Well-Developed" },
+          { label: "Packing", value: "Export-Grade Cartons / Buyer Requirement" },
+          { label: "Pack Size", value: "As per market requirement" },
+          { label: "Shelf Life", value: "Subject to storage & logistics conditions" },
+          { label: "Quality Inspection", value: "Available on Request" },
+          { label: "Private Label", value: "Available on Request" },
+          { label: "Supply", value: "Seasonal / Contract Supply" },
+        ],
+        keyFeatures: ["Attractive Appearance", "Fresh Produce", "Selected Grades", "Export Packaging"],
+      },
+    ],
+    documentation: FRESH_DOCS,
+    markets: ["AE", "SA", "SG", "MY"],
+  },
+  {
+    slug: "fresh-onions",
+    photos: [{ file: "onions.jpg", alt: "A heap of fresh red Indian onions" }],
+    name: "Fresh Onions",
+    direction: "export",
+    category: "Fresh Fruits & Vegetables",
+    icon: "carrot",
+    summary: "Fresh Indian red and white onions in selected sizes, packed in mesh bags, jute bags or cartons.",
+    description: paragraphs(
+      "BGEXIM sources fresh Indian onions — red, white or buyer-specified varieties — for importers, wholesalers and distributors.",
+      "Bulb size, packing and quality parameters are agreed for each order, with inspection available on request. Onions are supplied firm, clean and well-dried, in mesh bags, jute bags or cartons.",
+      "Supply is seasonal or in bulk, subject to harvest, availability and export regulations at the time of shipment.",
+    ),
+    variants: ["Red", "White", "Buyer-specified"],
+    variantsLabel: "Varieties",
+    packaging: "Mesh bags, jute bags or cartons — 5 / 10 / 25 / 50 kg or as the buyer requires.",
+    specifications: [
+      {
+        title: "Indian Onions",
+        subtitle: "Fresh Indian Onions | Export Quality",
+        rows: [
+          { label: "Origin", value: "India" },
+          { label: "Form", value: "Fresh Whole Bulbs" },
+          { label: "Varieties", value: "Red / White / Buyer-Specified" },
+          { label: "Size", value: "As per buyer requirement" },
+          { label: "Colour", value: "Natural Red / White" },
+          { label: "Appearance", value: "Firm, Clean & Well-Dried" },
+          { label: "Moisture", value: AGREED },
+          { label: "Foreign Matter", value: AGREED },
+          { label: "Packaging", value: "Mesh Bags / Jute Bags / Cartons" },
+          { label: "Packing", value: "5 / 10 / 25 / 50 kg or Buyer Requirement" },
+          { label: "Inspection", value: "Available on Request" },
+          { label: "Supply", value: "Seasonal / Bulk Supply" },
+        ],
+        keyFeatures: ["Fresh", "Firm Bulbs", "Selected Sizes", "Export Ready"],
+      },
+    ],
+    documentation: FRESH_DOCS,
+    markets: ["AE", "MY", "SG", "ID"],
+  },
+  {
+    slug: "indian-mangoes",
+    photos: [{ file: "mangoes.jpg", alt: "Ripening mangoes on a tree in an Indian orchard" }],
+    name: "Indian Mangoes",
+    direction: "export",
+    category: "Fresh Fruits & Vegetables",
+    icon: "citrus",
+    summary: "Premium Indian mangoes — Alphonso, Kesar, Banganapalli and more — with cold-chain export logistics.",
+    description: paragraphs(
+      "Indian mangoes are prized worldwide for their flavour and aroma. BGEXIM sources premium export-quality fruit across the leading varieties, including Alphonso, Kesar, Banganapalli, Totapuri, Dashehari, Langra, Chausa and Neelum.",
+      "Fruit is selected mature and suitable for controlled ripening, packed in export-grade food-safe cartons and treated as the destination country requires, with the cold chain maintained throughout.",
+      "Variety, size, grade and packing are customised to each buyer’s requirement, subject to the season and availability.",
+    ),
+    variants: ["Alphonso", "Kesar", "Banganapalli", "Totapuri", "Dashehari", "Langra", "Chausa", "Neelum"],
+    variantsLabel: "Varieties",
+    packaging: "Export-grade, food-safe cartons; variety, size and pack customised to the buyer.",
+    specifications: [
+      {
+        title: "Indian Premium Mangoes",
+        subtitle: "Alphonso · Kesar · Banganapalli & more",
+        rows: [
+          { label: "Origin", value: "India" },
+          { label: "Grade", value: "Premium Export Quality" },
+          { label: "Weight", value: "200–400 g per fruit" },
+          { label: "Maturity", value: "Mature & suitable for controlled ripening" },
+          { label: "Quality", value: "Firm, clean, sound & fresh" },
+          { label: "Packing", value: "Export-grade, food-safe cartons" },
+          { label: "Treatment", value: "As per destination-country requirements" },
+          { label: "Cold Chain", value: "Maintained throughout export logistics" },
+          { label: "Customization", value: "Variety, size, grade & packing as per buyer requirement" },
+        ],
+      },
+    ],
+    documentation: [...FRESH_DOCS, "Treatment certificate (as required by destination)"],
+    markets: ["AE", "SA", "SG", "MY"],
+  },
+  {
+    slug: "frozen-shrimp",
+    photos: [{ file: "shrimp.jpg", alt: "Cooked Indian shrimp, peeled and deveined" }],
+    name: "Frozen Shrimp",
+    direction: "export",
+    category: "Seafood",
+    icon: "shrimp",
+    summary: "Premium Indian frozen shrimp (Vannamei) — HOSO, HLSO, P&D or PDTO, IQF or block frozen.",
+    description: paragraphs(
+      "BGEXIM sources premium Indian frozen shrimp, mainly Vannamei subject to availability, for importers, distributors and food-service buyers.",
+      "Form, processing, freezing method, count size and glazing are specified by the buyer — HOSO, HLSO, P&D, PDTO, raw or cooked, IQF or block frozen — and shipments are coordinated through the cold chain.",
+      "Quality is subject to agreed specifications and inspection, with certificates as applicable to the destination market.",
+    ),
+    variants: ["HOSO", "HLSO", "P&D", "PDTO", "Raw", "Cooked", "IQF", "Block frozen"],
+    variantsLabel: "Forms & processing",
+    packaging: "Export-grade food packaging, packed as per the buyer’s requirement.",
+    specifications: [
+      {
+        title: "Indian Shrimp",
+        subtitle: "Premium Indian Frozen Shrimp",
+        rows: [
+          { label: "Origin", value: "India" },
+          { label: "Species", value: "Vannamei, subject to availability" },
+          { label: "Form", value: "HOSO / HLSO / P&D / PDTO / Buyer-Specified" },
+          { label: "Processing", value: "Raw / Cooked / Buyer Requirement" },
+          { label: "Freezing", value: "IQF / Block Frozen" },
+          { label: "Size", value: "Buyer-Specified Count" },
+          { label: "Glazing", value: "As per buyer requirement" },
+          { label: "Packaging", value: "Export-Grade Food Packaging" },
+          { label: "Packing", value: "As per Buyer Requirement" },
+          { label: "Quality", value: "Subject to agreed specifications & inspection" },
+          { label: "Certificates", value: "As Applicable to Destination Market" },
+          { label: "Supply", value: "Frozen / Contract Supply" },
+        ],
+        keyFeatures: ["Export Processing", "Multiple Sizes", "Customized Specifications", "Cold-Chain Coordination"],
+      },
+    ],
+    documentation: [
+      "IEC",
+      "MPEDA registration (where applicable)",
+      "Health certificate",
+      "Certificate of origin",
+      "Certificate of analysis",
+      "Catch / aquaculture certificate (as required)",
+      "Commercial shipping documents",
+    ],
+    markets: ["AE", "SG", "MY"],
+  },
+  {
+    slug: "dehydrated-fruits",
+    photos: [{ file: "dehydrated-fruits.jpg", alt: "Bowls of dehydrated mango, kiwi, banana and other fruits" }],
+    name: "Dehydrated Fruits",
+    direction: "export",
+    category: "Dehydrated & Herbal",
+    icon: "apple",
+    summary: "Mango, pineapple, papaya, banana and more — dried as slices, chunks, dices or flakes.",
+    description: paragraphs(
+      "BGEXIM supplies Indian dehydrated fruits — mango, pineapple, papaya, banana, apple, jackfruit, guava, strawberry and more — for food manufacturers, snack brands, bakeries and retail packers.",
+      "Fruit is supplied as slices, chunks, dices or flakes, hot-air dried, sun dried or freeze dried, with moisture, sweetness, sulphur treatment, cut size and packaging customised to the buyer.",
+      "Quality certification is provided as applicable — HACCP, ISO 22000, FSSC 22000, BRCGS, Halal or Kosher — depending on the supplier and destination market.",
+    ),
+    variants: ["Mango", "Pineapple", "Papaya", "Banana", "Apple", "Jackfruit", "Guava", "Strawberry"],
+    variantsLabel: "Available fruits",
+    packaging: "Vacuum bags, PE liners, PP bags, cartons or bulk packing — 100 g to 20 kg, or as required.",
+    specifications: [
+      {
+        title: "Dehydrated Fruits",
+        subtitle: "Standard / Typical Export Range",
+        rows: [
+          { label: "Origin", value: "India" },
+          { label: "Form", value: "Slices / Chunks / Dices / Flakes" },
+          { label: "Processing", value: "Hot Air Dried / Sun Dried / Freeze Dried" },
+          { label: "Colour", value: "Natural / Characteristic of the fruit" },
+          { label: "Taste & Aroma", value: "Characteristic, free from off-flavour" },
+          { label: "Moisture", value: "Generally ≤ 10–20%, by fruit and buyer specification" },
+          { label: "Sulphur / SO₂", value: "As per destination-country and buyer requirements" },
+          { label: "Food Grade", value: "Yes" },
+          { label: "Packing Size", value: "100 g / 250 g / 500 g / 1 kg / 5 kg / 10 kg / 20 kg" },
+          { label: "Shelf Life", value: "Typically 6–12 months" },
+          { label: "Storage", value: "Cool, dry place away from direct sunlight" },
+          { label: "Certification", value: "HACCP / ISO 22000 / FSSC 22000 / BRCGS / Halal / Kosher (as applicable)" },
+        ],
+      },
+    ],
+    documentation: [
+      "IEC",
+      "APEDA RCMC (where applicable)",
+      "Certificate of origin",
+      "Certificate of analysis",
+      "Food-safety certificates (as applicable)",
+      "Commercial shipping documents",
+    ],
+    markets: ["AE", "SG", "MY", "AU"],
+  },
+  {
+    slug: "herbal-products",
+    photos: [{ file: "herbal-products.jpg", alt: "Dehydrated ginger, moringa leaf powder and amla powder in bowls" }],
+    name: "Ginger, Moringa & Amla",
+    direction: "export",
+    category: "Dehydrated & Herbal",
+    icon: "sprout",
+    summary: "Dehydrated ginger, moringa leaf powder and amla powder for food, nutraceutical and herbal buyers.",
+    description: paragraphs(
+      "Alongside dehydrated onion and garlic, BGEXIM sources premium dehydrated and herbal products from India: dehydrated ginger, moringa leaf powder and amla (Indian gooseberry) powder.",
+      "These products serve food manufacturers, nutraceutical and supplement brands, herbal companies and retail packers. Form, mesh size, moisture and packing are confirmed against each buyer’s specification.",
+    ),
+    variants: ["Dehydrated ginger", "Moringa leaf powder", "Amla powder"],
+    variantsLabel: "Products",
+    packaging: "5 / 10 / 20 / 25 kg food-grade packing, or as the buyer requires.",
+    specifications: [
+      {
+        title: "Dehydrated Ginger",
+        subtitle: "Slices / Flakes / Granules / Powder",
+        rows: [
+          { label: "Moisture", value: "≤ 8%" },
+          { label: "Purity", value: "99%, Food Grade" },
+          { label: "Packing", value: "10 / 20 / 25 kg" },
+        ],
+      },
+      {
+        title: "Moringa Leaf Powder",
+        subtitle: "Fine Powder",
+        rows: [
+          { label: "Moisture", value: "≤ 7–8%" },
+          { label: "Mesh", value: "80–100 Mesh" },
+          { label: "Grade", value: "Food / Nutraceutical" },
+          { label: "Packing", value: "10 / 20 / 25 kg" },
+        ],
+      },
+      {
+        title: "Amla Powder",
+        subtitle: "Fine Powder",
+        rows: [
+          { label: "Moisture", value: "≤ 8–10%" },
+          { label: "Mesh", value: "60–100 Mesh" },
+          { label: "Grade", value: "Food / Herbal" },
+          { label: "Packing", value: "5 / 10 / 20 / 25 kg" },
+        ],
+      },
+    ],
+    documentation: [
+      "IEC",
+      "Certificate of origin",
+      "Certificate of analysis",
+      "Food-safety or organic certificates (as applicable)",
+      "Commercial shipping documents",
+    ],
+    markets: ["AE", "SG", "MY", "AU"],
+  },
+];
+
+/** Products grouped category by category, in the order they appear on the site. */
+const CATALOGUE_ORDER = [
+  "rice",
+  "spices-and-spice-blends",
+  "dried-chillies",
+  "pulses-and-dal-products",
+  "pomegranate",
+  "fresh-onions",
+  "indian-mangoes",
+  "dehydrated-onion-and-garlic",
+  "dehydrated-fruits",
+  "herbal-products",
+  "frozen-shrimp",
+  "groundnuts-and-peanuts",
+  "jaggery",
+  "polypropylene",
+  "polyethylene",
+  "polyester-chips",
+  "aluminium-scrap",
+  "copper-scrap",
+  "iron-scrap",
+  "stainless-steel-scrap",
+];
+
+export const seedProducts: SeedProduct[] = [...documentProducts, ...portfolioProducts].sort(
+  (a, b) => CATALOGUE_ORDER.indexOf(a.slug) - CATALOGUE_ORDER.indexOf(b.slug),
+);

@@ -8,7 +8,7 @@ import { WORLD_DOTS } from "@/lib/world-dots";
 const SPIN_SPEED = 9;
 /** Starts with India facing the viewer. */
 const START_LONGITUDE = 78;
-const TILT_DEGREES = 18;
+const TILT_DEGREES = 12;
 const HIGHLIGHT = { lon: 78.5, lat: 17.4 };
 const RADIANS = Math.PI / 180;
 
@@ -52,7 +52,8 @@ export function DottedGlobe({ paused = false, className }: DottedGlobeProps) {
 
       const radius = (canvas.width / 2) * 0.96;
       const centre = canvas.width / 2;
-      const dotRadius = Math.max(canvas.width / 230, 1);
+      // Large enough for neighbouring dots to almost touch, so continents read clearly.
+      const dotRadius = Math.max(canvas.width / 150, 1.2);
       context.clearRect(0, 0, canvas.width, canvas.height);
 
       const project = (lon: number, lat: number) => {
@@ -70,7 +71,7 @@ export function DottedGlobe({ paused = false, className }: DottedGlobeProps) {
       for (const [lon, lat] of WORLD_DOTS) {
         const point = project(lon, lat);
         if (point.depth <= 0) continue;
-        context.globalAlpha = 0.25 + point.depth * 0.75;
+        context.globalAlpha = 0.45 + point.depth * 0.55;
         context.fillStyle = "#ffffff";
         context.beginPath();
         context.arc(point.x, point.y, dotRadius, 0, Math.PI * 2);

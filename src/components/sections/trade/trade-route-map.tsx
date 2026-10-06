@@ -14,6 +14,7 @@ import { DURATION, EASE_SMOOTH } from "@/lib/motion";
 import { WORLD_DOTS } from "@/lib/world-dots";
 import type { LabelAnchor, Market, MarketCode } from "@/types/content";
 import { laneInteractionProps, type ActiveLaneChange } from "./lane-interaction";
+import { toAlpha3 } from "@/lib/country-codes";
 
 const MAP_SIZE: MapSize = { width: 1000, height: 690 };
 const MAP_BOUNDS: MapBounds = { west: 30, east: 160, north: 38, south: -45 };
@@ -265,7 +266,7 @@ function MarketLabel({ market, point, lineCount, isActive, isDimmed, onActiveCha
       )}
     >
       <Flag code={market.code} className="w-3.5 rounded-[2px] sm:w-4" />
-      <span className="font-semibold">{market.code}</span>
+      <span className="font-semibold">{toAlpha3(market.code)}</span>
       <span className="hidden text-fg-mute md:inline">{market.shortName}</span>
     </button>
   );

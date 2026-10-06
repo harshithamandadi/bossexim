@@ -23,7 +23,7 @@ export const siteConfig: SiteConfig = {
     descriptor: "Global Trading Company",
     tagline: "Trade Beyond Boundaries",
     focus: "Global Sourcing | International Trading | Supply Chain Solutions",
-    roles: ["Merchant Exporter", "Merchant Importer", "Supply Chain Solutions"],
+    roles: ["Merchant Exporter", "Merchant Importer"],
     parentGroup: "BOSS Group",
     summary:
       "BOSS Global EXIM Pvt. Ltd. (BGEXIM) connects reliable suppliers, genuine buyers and international markets through structured sourcing, trading and supply-chain coordination.",

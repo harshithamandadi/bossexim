@@ -18,7 +18,7 @@ interface PageHeroProps {
 
 export function PageHero({ content, align = "start", leading, children, media }: PageHeroProps) {
   return (
-    <section data-tone="light" className="relative overflow-hidden bg-canvas pt-36 pb-16 text-fg sm:pt-44 sm:pb-20">
+    <section data-tone="light" className="relative overflow-hidden bg-canvas pt-32 pb-12 text-fg sm:pt-36 sm:pb-14">
       <div aria-hidden className="sky-wash absolute inset-0" />
       <div
         aria-hidden

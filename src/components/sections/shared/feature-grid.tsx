@@ -53,7 +53,7 @@ export function FeatureBand({ content, id, tone, columns }: FeatureBandProps) {
   return (
     <Section id={id} tone={tone}>
       <SectionHeader {...content.heading} />
-      <FeatureGrid items={content.items} columns={columns} className="mt-14" />
+      <FeatureGrid items={content.items} columns={columns} className="mt-10" />
     </Section>
   );
 }

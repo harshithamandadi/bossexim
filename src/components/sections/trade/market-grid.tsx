@@ -12,6 +12,7 @@ import { contactHref, productHref } from "@/config/routes";
 import type { Catalogue } from "@/lib/catalogue";
 import { cn } from "@/lib/cn";
 import type { Market } from "@/types/content";
+import { toAlpha3 } from "@/lib/country-codes";
 
 /** A market's flag, code, name and region — shared by the presence grid and product pages. */
 export function MarketTile({ market, children, className }: { market: Market; children?: ReactNode; className?: string }) {
@@ -25,7 +26,7 @@ export function MarketTile({ market, children, className }: { market: Market; ch
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3.5">
           <Flag code={market.code} className="w-14 rounded-xl shadow-[0_8px_20px_-8px_rgb(8_33_79/0.45)] ring-2 ring-white" />
-          <span className="type-h2 gradient-text leading-none">{market.code}</span>
+          <span className="type-h2 gradient-text leading-none">{toAlpha3(market.code)}</span>
         </div>
         <Chip variant="outline" className="bg-canvas/70 backdrop-blur">
           {market.region}
