@@ -17,6 +17,7 @@ import { Media } from "./payload/collections/media";
 import { Products } from "./payload/collections/products";
 import { Resources } from "./payload/collections/resources";
 import { SiteVisits } from "./payload/collections/site-visits";
+import { AssistantQuestions } from "./payload/collections/assistant-questions";
 import { TeamMembers } from "./payload/collections/team-members";
 import { Users } from "./payload/collections/users";
 import { smtpEmailAdapter } from "./payload/email";
@@ -67,7 +68,7 @@ export default buildConfig({
         Logo: "/payload/admin/brand#AdminLogo",
         Icon: "/payload/admin/brand#AdminIcon",
       },
-      beforeDashboard: ["/payload/admin/dashboard-welcome#DashboardWelcome", "/payload/admin/visits-by-country#VisitsByCountry"],
+      beforeDashboard: ["/payload/admin/dashboard-welcome#DashboardWelcome", "/payload/admin/visits-by-country#VisitsByCountry", "/payload/admin/aira-insights#AiraInsights"],
     },
   },
   // Order sets the admin's sidebar groups: Inbox, Insights, Catalogue, Website content, Settings (with Company details), Files.
@@ -75,6 +76,7 @@ export default buildConfig({
     Enquiries,
     EnquiryFiles,
     SiteVisits,
+    AssistantQuestions,
     Products,
     Markets,
     Faqs,

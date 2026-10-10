@@ -1,6 +1,7 @@
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { IconTile } from "@/components/ui/icon";
 import { cn } from "@/lib/cn";
+import { formatStepNumber } from "@/lib/format";
 import type { Feature } from "@/types/content";
 
 /** The process steps as one compact row of numbered tiles (the full version lives on Trade Process). */
@@ -13,12 +14,14 @@ export function ProcessStrip({ steps, className }: { steps: Feature[]; className
           key={step.title}
           className="relative overflow-hidden card-gradient rounded-card bg-surface p-5 ring-1 ring-inset ring-border"
         >
-          <span aria-hidden className="absolute -top-3 -right-1 font-display text-6xl font-extrabold text-fg/5">
-            {index + 1}
-          </span>
-          <IconTile icon={step.icon} size="sm" variant="soft" />
+          <div className="flex items-start justify-between gap-3">
+            <IconTile icon={step.icon} size="sm" variant="soft" />
+            <span className="font-display text-2xl leading-none font-extrabold text-brand/70 tabular-nums">
+              {formatStepNumber(index + 1)}
+            </span>
+          </div>
           <h3 className="mt-4 font-display text-[17px] font-bold">{step.title}</h3>
-          <p className="mt-1.5 line-clamp-3 text-[13px] leading-snug text-fg-mute">{step.description}</p>
+          <p className="mt-1.5 line-clamp-4 text-[13px] leading-snug text-fg-mute">{step.description}</p>
         </RevealItem>
       ))}
     </RevealGroup>

@@ -80,7 +80,7 @@ function ServiceCard({ service, slot, catalogue }: { service: Service; slot: Ben
           ))}
         </ul>
       </div>
-      <div className={cn(!isSplit && "mt-auto")}>
+      <div className={cn("flex flex-col", !isSplit && "flex-1 justify-end")}>
         <Visual catalogue={catalogue} />
       </div>
     </article>

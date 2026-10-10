@@ -32,7 +32,7 @@ export const Enquiries: CollectionConfig = {
   admin: {
     group: ADMIN_GROUPS.inbox,
     useAsTitle: "name",
-    defaultColumns: ["reference", "name", "type", "company", "email", "notificationStatus", "createdAt"],
+    defaultColumns: ["reference", "name", "type", "company", "email", "source", "notificationStatus", "createdAt"],
     listSearchableFields: ["reference", "name", "email", "company", "message"],
     description:
       "Every enquiry sent from the website, newest first. Reply by email; “Email alert” shows whether your team was notified.",

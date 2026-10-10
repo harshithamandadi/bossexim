@@ -1,6 +1,6 @@
 import { sql, type SQLiteAdapter } from "@payloadcms/db-sqlite";
 import type { ServerProps } from "payload";
-import { countryName, UNKNOWN_COUNTRY } from "../collections/site-visits";
+import { countryName, UNKNOWN_COUNTRY } from "../visitor";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const VISITS_HREF = "/admin/collections/site-visits";

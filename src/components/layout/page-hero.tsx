@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { Container } from "@/components/ui/container";
-import { LogoMark } from "@/components/ui/logo";
 import { cn } from "@/lib/cn";
 import { WaveDivider } from "@/components/ui/wave-divider";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -25,8 +24,6 @@ export function PageHero({ content, align = "start", leading, children, media }:
         aria-hidden
         className="map-dots absolute inset-0 opacity-50 [mask-image:radial-gradient(70%_65%_at_80%_10%,#000,transparent_72%)]"
       />
-      {/* A large, very faint BOSS mark behind the heading (client request: logo watermark). */}
-      <LogoMark className="pointer-events-none absolute top-20 -right-16 h-[26rem] w-auto text-brand/[0.05] select-none sm:-right-10" />
       <WaveDivider />
       <Container className="relative">
         {leading && <div className="mb-10">{leading}</div>}

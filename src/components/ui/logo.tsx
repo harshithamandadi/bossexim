@@ -53,7 +53,8 @@ export function Logo({ className, showDescriptor = false }: { className?: string
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <LogoMark className="h-6 w-auto shrink-0 text-logo" />
       <span className="flex flex-col leading-none">
-        <span className="font-display text-[15px] font-extrabold tracking-tight whitespace-nowrap">
+        {/* The display face sits high in its line box; the nudge centres it on the mark. */}
+        <span className="translate-y-[1.5px] font-display text-[15px] font-extrabold tracking-tight whitespace-nowrap">
           {/* One colour throughout (not half white, half blue); the weight sets the two words apart. */}
           {wordmark.primary} <span className="font-medium">{wordmark.secondary}</span>
         </span>

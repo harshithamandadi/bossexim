@@ -70,6 +70,7 @@ export interface Config {
     enquiries: Enquiry;
     'enquiry-files': EnquiryFile;
     'site-visits': SiteVisit;
+    'assistant-questions': AssistantQuestion;
     products: Product;
     markets: Market;
     faqs: Faq;
@@ -90,6 +91,7 @@ export interface Config {
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     'enquiry-files': EnquiryFilesSelect<false> | EnquiryFilesSelect<true>;
     'site-visits': SiteVisitsSelect<false> | SiteVisitsSelect<true>;
+    'assistant-questions': AssistantQuestionsSelect<false> | AssistantQuestionsSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     markets: MarketsSelect<false> | MarketsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
@@ -217,6 +219,23 @@ export interface SiteVisit {
   page?: string | null;
   referrer?: string | null;
   device?: ('desktop' | 'mobile') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Every question visitors ask Aira, and whether an FAQ answered it. Filter by “Not answered” to see which FAQs to add. Enquiries and call-back requests made through Aira are under Inbox → Enquiries.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "assistant-questions".
+ */
+export interface AssistantQuestion {
+  id: number;
+  question: string;
+  result: 'answered' | 'suggested' | 'unanswered';
+  answer?: string | null;
+  page?: string | null;
+  country?: string | null;
+  countryName?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -832,6 +851,10 @@ export interface PayloadLockedDocument {
         value: number | SiteVisit;
       } | null)
     | ({
+        relationTo: 'assistant-questions';
+        value: number | AssistantQuestion;
+      } | null)
+    | ({
         relationTo: 'products';
         value: number | Product;
       } | null)
@@ -972,6 +995,20 @@ export interface SiteVisitsSelect<T extends boolean = true> {
   page?: T;
   referrer?: T;
   device?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "assistant-questions_select".
+ */
+export interface AssistantQuestionsSelect<T extends boolean = true> {
+  question?: T;
+  result?: T;
+  answer?: T;
+  page?: T;
+  country?: T;
+  countryName?: T;
   updatedAt?: T;
   createdAt?: T;
 }

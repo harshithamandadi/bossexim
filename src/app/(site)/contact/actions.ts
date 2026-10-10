@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { contactContent } from "@/config/contact";
 import { getCatalogue, getCompanyDetails } from "@/lib/content/queries";
-import { toAssistantEnquiry, toCallbackEnquiry } from "@/lib/enquiry/assistant";
+import { AIRA_SOURCE, toAssistantEnquiry, toCallbackEnquiry } from "@/lib/enquiry/assistant";
 import { deliverEnquiry } from "@/lib/enquiry/deliver";
 import { checkFormToken } from "@/lib/enquiry/form-token";
 import { isRateLimited } from "@/lib/enquiry/rate-limit";
@@ -68,7 +68,7 @@ export async function submitAssistantEnquiry(answers: unknown, formToken: unknow
   );
   if (!enquiry || isRateLimited(await clientAddress())) return { ok: false, fallbackEmail };
 
-  const { delivered, reference } = await deliverEnquiry(enquiry, { source: "assistant" });
+  const { delivered, reference } = await deliverEnquiry(enquiry, { source: AIRA_SOURCE });
   return delivered ? { ok: true, reference } : { ok: false, fallbackEmail };
 }
 
@@ -79,6 +79,6 @@ export async function submitAssistantCallback(answers: unknown, formToken: unkno
   if (checkFormToken(formToken) !== "valid") return { ok: false, fallbackEmail };
   const enquiry = toCallbackEnquiry(answers);
   if (!enquiry || isRateLimited(await clientAddress())) return { ok: false, fallbackEmail };
-  const { delivered, reference } = await deliverEnquiry(enquiry, { source: "assistant" });
+  const { delivered, reference } = await deliverEnquiry(enquiry, { source: AIRA_SOURCE });
   return delivered ? { ok: true, reference } : { ok: false, fallbackEmail };
 }

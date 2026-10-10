@@ -40,6 +40,8 @@ export interface Office {
  */
 export interface ContainerLineService extends Feature {
   slug: string;
+  /** A few words for compact tiles, e.g. on the services overview. */
+  tagline: string;
   /** Cut-out photo from the Container Line brochure; services without one show their icon. */
   image?: ImageAsset;
   paragraphs: string[];
@@ -52,6 +54,7 @@ export interface ContainerLineService extends Feature {
 export const containerLineServices: ContainerLineService[] = [
   {
     slug: "nvocc",
+    tagline: "Container line services as an NVOCC",
     title: "NVOCC",
     description:
       "Dependable line services with a customer-focused approach — documents for customs and harbour services, liaison with local and port authorities, handling of goods, freight collection and contact with shippers and receivers.",
@@ -78,6 +81,7 @@ export const containerLineServices: ContainerLineService[] = [
   },
   {
     slug: "freight-forwarding",
+    tagline: "Ocean, air & door-to-door freight",
     title: "Freight Forwarding",
     description:
       "From basic transportation to major logistics projects through a global partner network — air and ocean freight on a door-to-door basis, including regulatory requirements, to internationally accepted standards.",
@@ -97,6 +101,7 @@ export const containerLineServices: ContainerLineService[] = [
   },
   {
     slug: "container-trading",
+    tagline: "Buy, sell or lease containers",
     title: "Container Trading",
     description:
       "New, used, refurbished and customised containers for sale or lease to shipping lines and logistics providers — including containers cleared by customs for domestic and onshore use.",
@@ -122,6 +127,7 @@ export const containerLineServices: ContainerLineService[] = [
   },
   {
     slug: "break-bulk-cargo",
+    tagline: "Oversized & heavy cargo",
     title: "Break Bulk Cargo",
     description:
       "Oversized or irregular cargo that cannot fit standard containers — steel, machinery, construction equipment and vehicles, loaded individually in crates, drums or directly onto vessels.",
@@ -148,6 +154,7 @@ export const containerLineServices: ContainerLineService[] = [
   },
   {
     slug: "project-cargo",
+    tagline: "Planned heavy-lift shipments",
     title: "Project Cargo",
     // DRAFT — the client's documents ask us to write this service's copy ("You only write"); confirm with the client.
     description:
@@ -170,6 +177,7 @@ export const containerLineServices: ContainerLineService[] = [
   },
   {
     slug: "3pl-and-warehousing",
+    tagline: "Storage, inventory & fulfilment",
     title: "3PL & Warehousing",
     description:
       "End-to-end warehouse and logistics solutions — inventory management, order fulfilment, cargo storage and transport coordination, aimed at minimising delays and optimising supply chains.",
@@ -318,13 +326,6 @@ export interface Milestone {
   title: string;
 }
 
-/** A chapter of the Group's journey: a span of years and its milestones. */
-export interface JourneyEra {
-  period: string;
-  title: string;
-  milestones: Milestone[];
-}
-
 export interface GroupLeader {
   name: string;
   role: string;
@@ -334,7 +335,7 @@ export interface GroupLeader {
 /** BOSS Group's journey, mainly through BOSS Australia (from the BOSS Australia website). */
 export const groupJourney: {
   heading: SectionContent;
-  eras: JourneyEra[];
+  milestones: Milestone[];
   values: { title: string; text: string };
   leadersTitle: string;
   leaders: GroupLeader[];
@@ -345,64 +346,16 @@ export const groupJourney: {
     description:
       "Built on trust and friendship, BOSS began as a shared vision among friends from real estate, construction, IT and hospitality — united by trust, integrity and a passion for building something meaningful.",
   },
-  // Milestones from the BOSS Australia website, grouped into 3-year periods (client request);
-  // periods with no milestones are left out.
-  eras: [
-    {
-      period: "2000 – 2002",
-      title: "The Beginning",
-      milestones: [
-        { year: "2000", title: "BOSS established in Australia" },
-        { year: "2002", title: "First outlet opened in Wollongong" },
-      ],
-    },
-    {
-      period: "2003 – 2005",
-      title: "Building the Base",
-      milestones: [
-        { year: "2004", title: "Entered Brisbane" },
-        { year: "2005", title: "Relationship with BP established; headquarters in Brisbane" },
-      ],
-    },
-    {
-      period: "2009 – 2011",
-      title: "Into Convenience Retail",
-      milestones: [{ year: "2009", title: "First convenience store (SPAR)" }],
-    },
-    {
-      period: "2012 – 2014",
-      title: "Scaling Up",
-      milestones: [{ year: "2014", title: "10+ sites in operation" }],
-    },
-    {
-      period: "2015 – 2017",
-      title: "New Partnerships",
-      milestones: [
-        { year: "2016", title: "Relationship with AMPOL established" },
-        { year: "2017", title: "First complete greenfield site (Hattonvale)" },
-      ],
-    },
-    {
-      period: "2018 – 2020",
-      title: "Greenfield Development",
-      milestones: [
-        { year: "2018", title: "Relationship with Shell established" },
-        { year: "2019", title: "Greenfield site developed (AMPOL Wacol)" },
-      ],
-    },
-    {
-      period: "2021 – 2023",
-      title: "Diversification",
-      milestones: [
-        { year: "2022", title: "Elite Construction & Projects established; first hotel acquired (Adelaide); relationship with Caltex" },
-        { year: "2023", title: "Fuel volume of 75 ML a year; Elite completes its first project" },
-      ],
-    },
-    {
-      period: "2024 – 2026",
-      title: "Future-Ready",
-      milestones: [{ year: "2024", title: "First EV site opened — BP Brackenridge" }],
-    },
+  // Key milestones only, from the BOSS Australia website — roughly one every three
+  // years, keeping a closer pair where both matter (client request, Oct 2026).
+  milestones: [
+    { year: "2000", title: "BOSS established in Australia" },
+    { year: "2005", title: "Relationship with BP; headquarters in Brisbane" },
+    { year: "2009", title: "First convenience store (SPAR)" },
+    { year: "2014", title: "10+ sites in operation" },
+    { year: "2017", title: "First complete greenfield site (Hattonvale)" },
+    { year: "2022", title: "Elite Construction & Projects established; first hotel acquired" },
+    { year: "2024", title: "First EV site opened — BP Brackenridge" },
   ],
   values: {
     title: "Growing with Purpose, Leading with Integrity",

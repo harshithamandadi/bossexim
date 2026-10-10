@@ -318,12 +318,15 @@ Final review with the client: **Monday 12 Oct, around 9–10 a.m. (time to confi
 - [x] **R4.18** Profiles and photos for the three founders / leaders.
   - Done as profile cards with a branded monogram until photos are uploaded in the admin (Team / Leadership → photo); long bios fold under "Read full profile".
 - [x] **R4.19** Correct the BOSS Group timeline once the client confirms the year groupings.
-  - Done: milestones grouped into 3-year periods (client request, 10 Oct): 2000–02 … 2024–26; periods with no milestone (2006–08) are left out.
+  - Done (10 Oct): key milestones only (2000, 2005, 2009, 2014, 2017, 2022, 2024 — roughly every 3 years) on a curved line, no boxes; a straight vertical line on phones.
 
 **Follow-ups (10 Oct)**
 - [x] Home "Trading Without Borders" heading → "Trade Beyond Boundaries".
 - [x] Logo watermark: small faded BOSS mark on photos (products, galleries, Container Line) and a large faint mark behind page headers and the Home hero.
 - [x] Admin → dashboard "Website visits by country" (7 days / 30 days / all time) and Insights → Website visits. One visit per browser session; country from Vercel's geo header; no IP or personal data stored. Needs the new migration on deploy (runs automatically in `vercel-build`).
+
+- [x] Aira in the admin: enquiries and call-backs already went to Inbox → Enquiries; now marked "Sent from: Aira (website chat)" with a column for it. New Insights → Aira questions logs every question typed or picked (answered / suggested / not answered — never contact details), plus a dashboard panel with 30-day counts and recent unanswered questions.
+- [x] No empty space in the service cards: import lines as photo tiles, Container Line services as linked tiles that fill the card.
 
 **Client coordination**
 - [ ] Send the missing-content checklist (products/categories, founder profiles/photos, logo/tagline, replacement map, corrected timeline, six service pages' content/images).

@@ -15,12 +15,31 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.run(sql`CREATE INDEX \`site_visits_country_idx\` ON \`site_visits\` (\`country\`);`)
   await db.run(sql`CREATE INDEX \`site_visits_updated_at_idx\` ON \`site_visits\` (\`updated_at\`);`)
   await db.run(sql`CREATE INDEX \`site_visits_created_at_idx\` ON \`site_visits\` (\`created_at\`);`)
+  await db.run(sql`CREATE TABLE \`assistant_questions\` (
+  	\`id\` integer PRIMARY KEY NOT NULL,
+  	\`question\` text NOT NULL,
+  	\`result\` text NOT NULL,
+  	\`answer\` text,
+  	\`page\` text,
+  	\`country\` text,
+  	\`country_name\` text,
+  	\`updated_at\` text DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL,
+  	\`created_at\` text DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')) NOT NULL
+  );
+  `)
+  await db.run(sql`CREATE INDEX \`assistant_questions_result_idx\` ON \`assistant_questions\` (\`result\`);`)
+  await db.run(sql`CREATE INDEX \`assistant_questions_country_idx\` ON \`assistant_questions\` (\`country\`);`)
+  await db.run(sql`CREATE INDEX \`assistant_questions_updated_at_idx\` ON \`assistant_questions\` (\`updated_at\`);`)
+  await db.run(sql`CREATE INDEX \`assistant_questions_created_at_idx\` ON \`assistant_questions\` (\`created_at\`);`)
   await db.run(sql`ALTER TABLE \`payload_locked_documents_rels\` ADD \`site_visits_id\` integer REFERENCES site_visits(id);`)
+  await db.run(sql`ALTER TABLE \`payload_locked_documents_rels\` ADD \`assistant_questions_id\` integer REFERENCES assistant_questions(id);`)
   await db.run(sql`CREATE INDEX \`payload_locked_documents_rels_site_visits_id_idx\` ON \`payload_locked_documents_rels\` (\`site_visits_id\`);`)
+  await db.run(sql`CREATE INDEX \`payload_locked_documents_rels_assistant_questions_id_idx\` ON \`payload_locked_documents_rels\` (\`assistant_questions_id\`);`)
 }
 
 export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
   await db.run(sql`DROP TABLE \`site_visits\`;`)
+  await db.run(sql`DROP TABLE \`assistant_questions\`;`)
   await db.run(sql`PRAGMA foreign_keys=OFF;`)
   await db.run(sql`CREATE TABLE \`__new_payload_locked_documents_rels\` (
   	\`id\` integer PRIMARY KEY NOT NULL,

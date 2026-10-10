@@ -1,5 +1,5 @@
 import * as migration_20260927_035445_initial from './20260927_035445_initial';
-import * as migration_20261010_081559_site_visits from './20261010_081559_site_visits';
+import * as migration_20261010_083602_insights from './20261010_083602_insights';
 
 export const migrations = [
   {
@@ -8,8 +8,8 @@ export const migrations = [
     name: '20260927_035445_initial',
   },
   {
-    up: migration_20261010_081559_site_visits.up,
-    down: migration_20261010_081559_site_visits.down,
-    name: '20261010_081559_site_visits'
+    up: migration_20261010_083602_insights.up,
+    down: migration_20261010_083602_insights.down,
+    name: '20261010_083602_insights'
   },
 ];

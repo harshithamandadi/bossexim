@@ -38,6 +38,7 @@ import {
 import { ChatBubble, TypingBubble } from "./chat-bubble";
 import { StreamingText, streamDuration } from "./streaming-text";
 import { ChatComposer } from "./chat-composer";
+import { logQuestion } from "./question-log";
 
 /** A question sent from elsewhere on the site; `id` lets the same question be asked twice. */
 export interface ChatRequest {
@@ -110,6 +111,8 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
 
     // A question answered outside the buying and call-back flows counts towards the follow-up offer.
     const isQuestion = (input.kind === "text" || input.kind === "faq") && response.flow.kind === "browse";
+    // Only questions asked while browsing — never answers to the buying or call-back steps (contact details).
+    if (isQuestion && flow.kind === "browse") recordQuestion(input, response.replies[0]?.text);
     const answered = isQuestion ? questionCount + 1 : questionCount;
     setQuestionCount(answered);
     const offerFollowUp = !askedForContact && !startsCapture && isQuestion && answered >= content.contactAsk.afterQuestions;
@@ -133,6 +136,16 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
     setFlow(response.flow);
     if (response.submit) submit(response.submit);
     if (response.callback) requestCallback(response.callback);
+  }
+
+  /** Reports the question to the admin (Insights → Aira questions), with whether an FAQ answered it. */
+  function recordQuestion(input: VisitorInput, replyText: string | undefined) {
+    if (input.kind === "faq") return logQuestion(input.item.question, "answered", input.item.question);
+    if (input.kind !== "text" || !replyText) return;
+    if (replyText === content.smallTalk.greeting || replyText === content.smallTalk.thanks) return;
+    if (replyText === content.fallback) return logQuestion(input.text, "unanswered");
+    if (replyText === content.didYouMean) return logQuestion(input.text, "suggested");
+    logQuestion(input.text, "answered", faqs.find((faq) => faq.answer === replyText)?.question);
   }
 
   const ask = (question: string, item?: FaqItem) =>
@@ -401,7 +414,7 @@ function PanelHeader({ titleId, showHandle, canRestart, onRestart, onClose, onDr
       {showHandle && (
         <span aria-hidden title={content.dragHandle} className="absolute top-2 left-1/2 h-1 w-10 -translate-x-1/2 rounded-full bg-fg/15" />
       )}
-      <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-logo text-white">
+      <span className="grid size-9 shrink-0 place-items-center rounded-xl brand-gradient text-white">
         <LogoMark className="h-3.5 w-auto" />
       </span>
       <div className="min-w-0 flex-1">

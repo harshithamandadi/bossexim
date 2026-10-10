@@ -41,7 +41,7 @@ const SOURCE_LABELS: Record<string, string> = {
 };
 
 export interface DeliveryOptions {
-  /** The page the form was sent from, or "assistant" for the chatbot. */
+  /** The page the form was sent from, or AIRA_SOURCE for the chatbot. */
   source?: string;
   files?: File[];
 }

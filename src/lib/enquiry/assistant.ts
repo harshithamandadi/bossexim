@@ -6,6 +6,10 @@
 import { buyingSteps, chatbotContent, OTHER_PRODUCT_ANSWER, type BuyingStep, type BuyingStepId, type ContactStepId } from "@/config/chatbot";
 import { OTHER_PRODUCT_VALUE, PATTERNS, type Enquiry, type EnquiryDetail } from "./schema";
 
+/** "Sent from" on enquiries Aira saves; "assistant" on ones saved before Oct 2026. */
+export const AIRA_SOURCE = "Aira (website chat)";
+export const AIRA_SOURCES = [AIRA_SOURCE, "assistant"];
+
 export type BuyingAnswers = Partial<Record<BuyingStepId, string>>;
 export type AnswerProblem = "required" | "email" | "tel" | "url";
 
