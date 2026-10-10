@@ -34,20 +34,18 @@ export function GroupJourney() {
         </RevealGroup>
       </div>
 
-      <RevealGroup as="ol" interval={0.06} className="space-y-4 lg:mt-2">
+      <RevealGroup as="ol" interval={0.05} className="grid content-start gap-3 sm:grid-cols-2 lg:mt-2">
         {content.eras.map((era, index) => (
-          <RevealItem as="li" key={era.period} className="card-gradient rounded-card bg-surface p-6 ring-1 ring-inset ring-border sm:p-7">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <h3 className="type-h4">
-                <span className="mr-2.5 font-display text-sm font-bold text-fg-mute tabular-nums">{formatStepNumber(index + 1)}</span>
-                {era.title}
-              </h3>
-              <p className="font-display text-sm font-bold text-brand tabular-nums">{era.period}</p>
-            </div>
-            <ol className="relative mt-5 space-y-4 border-l border-border pl-6">
+          <RevealItem as="li" key={era.period} className="card-gradient rounded-card bg-surface p-5 ring-1 ring-inset ring-border">
+            <p className="font-display text-sm font-bold text-brand tabular-nums">
+              <span className="mr-2 text-fg-mute">{formatStepNumber(index + 1)}</span>
+              {era.period}
+            </p>
+            <h3 className="type-h4 mt-1">{era.title}</h3>
+            <ol className="relative mt-4 space-y-3 border-l border-border pl-5">
               {era.milestones.map((milestone) => (
                 <li key={`${milestone.year}-${milestone.title}`} className="relative">
-                  <span aria-hidden className="absolute top-1.5 -left-[29px] size-2.5 rounded-full bg-brand ring-4 ring-surface" />
+                  <span aria-hidden className="absolute top-1.5 -left-[25px] size-2.5 rounded-full bg-brand ring-4 ring-surface" />
                   <p className="font-display text-sm font-bold text-brand tabular-nums">{milestone.year}</p>
                   <p className="mt-0.5 text-[15px] leading-snug">{milestone.title}</p>
                 </li>

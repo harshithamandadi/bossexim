@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     enquiries: Enquiry;
     'enquiry-files': EnquiryFile;
+    'site-visits': SiteVisit;
     products: Product;
     markets: Market;
     faqs: Faq;
@@ -88,6 +89,7 @@ export interface Config {
   collectionsSelect: {
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     'enquiry-files': EnquiryFilesSelect<false> | EnquiryFilesSelect<true>;
+    'site-visits': SiteVisitsSelect<false> | SiteVisitsSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
     markets: MarketsSelect<false> | MarketsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
@@ -201,6 +203,22 @@ export interface EnquiryFile {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * One row per visit (a browser session), recorded by the website. No IP addresses or personal details are stored. The dashboard shows the totals by country.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-visits".
+ */
+export interface SiteVisit {
+  id: number;
+  country: string;
+  countryName?: string | null;
+  page?: string | null;
+  referrer?: string | null;
+  device?: ('desktop' | 'mobile') | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Every export and import line. Each product gets its own page; drag rows to change the order.
@@ -810,6 +828,10 @@ export interface PayloadLockedDocument {
         value: number | EnquiryFile;
       } | null)
     | ({
+        relationTo: 'site-visits';
+        value: number | SiteVisit;
+      } | null)
+    | ({
         relationTo: 'products';
         value: number | Product;
       } | null)
@@ -939,6 +961,19 @@ export interface EnquiryFilesSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-visits_select".
+ */
+export interface SiteVisitsSelect<T extends boolean = true> {
+  country?: T;
+  countryName?: T;
+  page?: T;
+  referrer?: T;
+  device?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

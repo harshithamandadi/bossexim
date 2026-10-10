@@ -318,7 +318,12 @@ Final review with the client: **Monday 12 Oct, around 9–10 a.m. (time to confi
 - [x] **R4.18** Profiles and photos for the three founders / leaders.
   - Done as profile cards with a branded monogram until photos are uploaded in the admin (Team / Leadership → photo); long bios fold under "Read full profile".
 - [x] **R4.19** Correct the BOSS Group timeline once the client confirms the year groupings.
-  - Done: milestones grouped into eras — Foundations 2000–05, Growth 2009–16, Development 2017–19, Diversification 2022–24. Confirm the groupings with the client.
+  - Done: milestones grouped into 3-year periods (client request, 10 Oct): 2000–02 … 2024–26; periods with no milestone (2006–08) are left out.
+
+**Follow-ups (10 Oct)**
+- [x] Home "Trading Without Borders" heading → "Trade Beyond Boundaries".
+- [x] Logo watermark: small faded BOSS mark on photos (products, galleries, Container Line) and a large faint mark behind page headers and the Home hero.
+- [x] Admin → dashboard "Website visits by country" (7 days / 30 days / all time) and Insights → Website visits. One visit per browser session; country from Vercel's geo header; no IP or personal data stored. Needs the new migration on deploy (runs automatically in `vercel-build`).
 
 **Client coordination**
 - [ ] Send the missing-content checklist (products/categories, founder profiles/photos, logo/tagline, replacement map, corrected timeline, six service pages' content/images).

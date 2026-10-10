@@ -40,7 +40,7 @@ export const homeContent: {
   },
   world: {
     eyebrow: "Worldwide Trade",
-    title: "Trading Without Borders",
+    title: company.tagline,
     description:
       "From our base in India we serve buyers and suppliers worldwide — with core markets across the Middle East, Southeast Asia and Australia, and a logistics network reaching the Gulf, Africa, CIS countries, China and beyond.",
     cta: { label: "Explore our global presence", href: anchorHref(routes.tradeProcess, sectionIds.tradeProcess.presence) },

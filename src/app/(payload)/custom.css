@@ -208,3 +208,118 @@
   font-weight: 600;
   color: #b45309;
 }
+
+/* Dashboard: website visits by country */
+.bg-visits {
+  margin-bottom: 32px;
+  padding: 28px;
+  border-radius: 20px;
+  border: 1px solid var(--theme-elevation-100);
+  background: var(--theme-elevation-0);
+}
+
+.bg-visits__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.bg-visits__title {
+  margin: 8px 0 0;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: var(--bg-navy);
+}
+
+.bg-visits__totals {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+@media (max-width: 700px) {
+  .bg-visits__totals {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.bg-visits__totals div {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--bg-ice);
+}
+
+.bg-visits__totals dt {
+  font-size: 12px;
+  color: var(--theme-elevation-600);
+}
+
+.bg-visits__totals dd {
+  margin: 4px 0 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--bg-navy);
+}
+
+.bg-visits__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.bg-visits__table th,
+.bg-visits__table td {
+  padding: 10px 8px;
+  text-align: right;
+  border-top: 1px solid var(--theme-elevation-100);
+  font-variant-numeric: tabular-nums;
+}
+
+.bg-visits__table thead th {
+  border-top: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-elevation-600);
+}
+
+.bg-visits__table th:first-child {
+  text-align: left;
+}
+
+.bg-visits__table tbody th a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--theme-elevation-800);
+}
+
+.bg-visits__flag {
+  width: 24px;
+  height: 18px;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+
+.bg-visits__flag--unknown {
+  display: inline-grid;
+  place-items: center;
+  font-size: 11px;
+  background: var(--theme-elevation-100);
+}
+
+.bg-visits__bar-cell {
+  width: 30%;
+}
+
+.bg-visits__bar {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #1560bd, #4fa8e8);
+}

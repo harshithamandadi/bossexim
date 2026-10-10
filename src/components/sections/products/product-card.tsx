@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import { PhotoWatermark } from "@/components/ui/photo-watermark";
 import Link from "next/link";
 import { cardStyles } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
@@ -47,6 +48,7 @@ export function ProductCard({ product, markets, className }: ProductCardProps) {
             <Icon name={product.icon} className="relative size-12 text-white/90 transition-transform duration-500 ease-smooth group-hover:scale-110" />
           </div>
         )}
+        {photo && <PhotoWatermark />}
         <span className="absolute top-3 right-3 grid size-9 place-items-center rounded-full bg-elevated/90 shadow-sm">{arrow}</span>
       </div>
       <p className="type-eyebrow mt-5 text-fg-mute">{product.category}</p>
@@ -97,13 +99,16 @@ export function ProductMiniCard({ product, className }: { product: Product; clas
     >
       <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-surface">
         {photo ? (
-          <Image
-            src={photo.src}
-            alt={photo.alt}
-            fill
-            sizes="220px"
-            className="object-cover transition-transform duration-500 ease-smooth group-hover:scale-[1.05]"
-          />
+          <>
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              fill
+              sizes="220px"
+              className="object-cover transition-transform duration-500 ease-smooth group-hover:scale-[1.05]"
+            />
+            <PhotoWatermark size="sm" />
+          </>
         ) : (
           <div aria-hidden className="brand-gradient absolute inset-0 grid place-items-center">
             <Icon name={product.icon} className="size-9 text-white/90" />

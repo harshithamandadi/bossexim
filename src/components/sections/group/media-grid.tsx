@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { PhotoWatermark } from "@/components/ui/photo-watermark";
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Icon } from "@/components/ui/icon";
 import { mediaEvents, toAnchorId, uiLabels } from "@/config";
@@ -50,6 +51,7 @@ function GalleryTile({ gallery, wash }: { gallery: Gallery; wash?: string }) {
             className="object-cover transition-transform duration-700 ease-smooth group-hover:scale-105"
           />
           <div aria-hidden className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
+          <PhotoWatermark className="top-4 bottom-auto" />
         </>
       ) : (
         <div aria-hidden className={cn("absolute inset-0 bg-linear-to-br", wash)}>

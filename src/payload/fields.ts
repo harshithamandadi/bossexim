@@ -4,6 +4,7 @@ import { iconNames } from "@/lib/icons";
 /** Sidebar groups in the admin navigation. */
 export const ADMIN_GROUPS = {
   inbox: "Inbox",
+  insights: "Insights",
   catalogue: "Catalogue",
   content: "Website content",
   settings: "Settings",

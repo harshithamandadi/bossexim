@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { PhotoWatermark } from "@/components/ui/photo-watermark";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { GradientGlow } from "@/components/ui/gradient-glow";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -12,7 +13,7 @@ export function ContainerLineSpotlight() {
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
         <div>
           <SectionHeader {...containerLine.heading} />
-          <Reveal delay={0.1} className="mt-8">
+          <Reveal delay={0.1} className="relative mt-8">
             <Image
               src={containerLine.image.src}
               alt={containerLine.image.alt}
@@ -21,6 +22,7 @@ export function ContainerLineSpotlight() {
               sizes="(min-width: 1024px) 40vw, 90vw"
               className="h-auto w-full drop-shadow-[0_30px_40px_rgb(0_0_0/0.35)]"
             />
+            <PhotoWatermark size="lg" className="bottom-0" />
           </Reveal>
         </div>
         <Reveal className="space-y-4 lg:pt-10">

@@ -345,44 +345,63 @@ export const groupJourney: {
     description:
       "Built on trust and friendship, BOSS began as a shared vision among friends from real estate, construction, IT and hospitality — united by trust, integrity and a passion for building something meaningful.",
   },
-  // Milestones from the BOSS Australia website, grouped into eras (round-4 feedback).
+  // Milestones from the BOSS Australia website, grouped into 3-year periods (client request);
+  // periods with no milestones are left out.
   eras: [
     {
-      period: "2000 – 2005",
-      title: "Foundations",
+      period: "2000 – 2002",
+      title: "The Beginning",
       milestones: [
         { year: "2000", title: "BOSS established in Australia" },
         { year: "2002", title: "First outlet opened in Wollongong" },
+      ],
+    },
+    {
+      period: "2003 – 2005",
+      title: "Building the Base",
+      milestones: [
         { year: "2004", title: "Entered Brisbane" },
         { year: "2005", title: "Relationship with BP established; headquarters in Brisbane" },
       ],
     },
     {
-      period: "2009 – 2016",
-      title: "Growth",
+      period: "2009 – 2011",
+      title: "Into Convenience Retail",
+      milestones: [{ year: "2009", title: "First convenience store (SPAR)" }],
+    },
+    {
+      period: "2012 – 2014",
+      title: "Scaling Up",
+      milestones: [{ year: "2014", title: "10+ sites in operation" }],
+    },
+    {
+      period: "2015 – 2017",
+      title: "New Partnerships",
       milestones: [
-        { year: "2009", title: "First convenience store (SPAR)" },
-        { year: "2014", title: "10+ sites in operation" },
         { year: "2016", title: "Relationship with AMPOL established" },
+        { year: "2017", title: "First complete greenfield site (Hattonvale)" },
       ],
     },
     {
-      period: "2017 – 2019",
-      title: "Development",
+      period: "2018 – 2020",
+      title: "Greenfield Development",
       milestones: [
-        { year: "2017", title: "First complete greenfield site (Hattonvale)" },
         { year: "2018", title: "Relationship with Shell established" },
         { year: "2019", title: "Greenfield site developed (AMPOL Wacol)" },
       ],
     },
     {
-      period: "2022 – 2024",
+      period: "2021 – 2023",
       title: "Diversification",
       milestones: [
         { year: "2022", title: "Elite Construction & Projects established; first hotel acquired (Adelaide); relationship with Caltex" },
         { year: "2023", title: "Fuel volume of 75 ML a year; Elite completes its first project" },
-        { year: "2024", title: "First EV site opened — BP Brackenridge" },
       ],
+    },
+    {
+      period: "2024 – 2026",
+      title: "Future-Ready",
+      milestones: [{ year: "2024", title: "First EV site opened — BP Brackenridge" }],
     },
   ],
   values: {

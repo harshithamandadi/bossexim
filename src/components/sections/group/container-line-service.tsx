@@ -1,5 +1,6 @@
 import { ArrowUpRight, Check } from "lucide-react";
 import Image from "next/image";
+import { PhotoWatermark } from "@/components/ui/photo-watermark";
 import Link from "next/link";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Carousel } from "@/components/ui/carousel";
@@ -34,6 +35,7 @@ export function ServiceMedia({ service }: { service: ContainerLineService }) {
             <Icon name={service.icon} strokeWidth={1.25} className="size-16 text-white" />
           </span>
         )}
+        {service.image && <PhotoWatermark size="lg" />}
       </div>
     </Reveal>
   );

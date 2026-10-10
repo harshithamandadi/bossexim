@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { PhotoWatermark } from "@/components/ui/photo-watermark";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { PageHero } from "@/components/layout/page-hero";
@@ -51,6 +52,7 @@ export function ProductHero({ product }: { product: Product }) {
           <Reveal>
             <div className="relative aspect-[4/3] overflow-hidden rounded-panel bg-surface shadow-[0_40px_80px_-40px_rgb(8_33_79/0.45)]">
               <Image src={photo.src} alt={photo.alt} fill priority sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
+              <PhotoWatermark size="lg" />
             </div>
             {credit && (
               <a href={credit.href} target="_blank" rel="noreferrer" className="mt-2 block text-right text-[11px] text-fg-mute hover:text-fg">
@@ -143,6 +145,7 @@ export function ProductOverview({ product, catalogue }: { product: Product; cata
               {product.images.slice(1).map((image) => (
                 <li key={image.src} className="relative aspect-[4/3] overflow-hidden card-gradient rounded-card bg-surface">
                   <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 20vw, 50vw" className="object-cover" />
+                  <PhotoWatermark size="sm" />
                 </li>
               ))}
             </ul>

@@ -16,6 +16,7 @@ import { Markets } from "./payload/collections/markets";
 import { Media } from "./payload/collections/media";
 import { Products } from "./payload/collections/products";
 import { Resources } from "./payload/collections/resources";
+import { SiteVisits } from "./payload/collections/site-visits";
 import { TeamMembers } from "./payload/collections/team-members";
 import { Users } from "./payload/collections/users";
 import { smtpEmailAdapter } from "./payload/email";
@@ -66,13 +67,14 @@ export default buildConfig({
         Logo: "/payload/admin/brand#AdminLogo",
         Icon: "/payload/admin/brand#AdminIcon",
       },
-      beforeDashboard: ["/payload/admin/dashboard-welcome#DashboardWelcome"],
+      beforeDashboard: ["/payload/admin/dashboard-welcome#DashboardWelcome", "/payload/admin/visits-by-country#VisitsByCountry"],
     },
   },
-  // Order sets the admin's sidebar groups: Inbox, Catalogue, Website content, Settings (with Company details), Files.
+  // Order sets the admin's sidebar groups: Inbox, Insights, Catalogue, Website content, Settings (with Company details), Files.
   collections: [
     Enquiries,
     EnquiryFiles,
+    SiteVisits,
     Products,
     Markets,
     Faqs,

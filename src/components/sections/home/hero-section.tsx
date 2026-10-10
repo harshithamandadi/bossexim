@@ -29,6 +29,8 @@ export function HeroSection({ products }: { products: Product[] }) {
         variant="backdrop"
         className="pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,rgb(0_0_0/0.08)_0%,rgb(0_0_0/0.08)_58%,#000_78%)] lg:[mask-image:linear-gradient(to_right,rgb(0_0_0/0.06)_0%,rgb(0_0_0/0.08)_44%,rgb(0_0_0/0.6)_54%,#000_64%)]"
       />
+      {/* A large, very faint BOSS mark behind the text column (client request: logo watermark). */}
+      <LogoMark className="pointer-events-none absolute bottom-10 -left-28 hidden h-[30rem] w-auto text-brand/[0.045] select-none lg:block" />
       <WaveDivider />
 
       <Container className="relative grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">

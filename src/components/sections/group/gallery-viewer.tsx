@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import Image from "next/image";
+import { PhotoWatermark } from "@/components/ui/photo-watermark";
 import { useRef, type ReactNode } from "react";
 import type { Gallery } from "@/types/content";
 
@@ -52,6 +53,7 @@ export function GalleryViewer({ gallery, closeLabel, children }: GalleryViewerPr
               <figure>
                 <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-surface">
                   <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw" className="object-cover" />
+                  <PhotoWatermark />
                 </div>
                 <figcaption className="mt-2 text-sm leading-snug text-fg-mute">{image.alt}</figcaption>
               </figure>
