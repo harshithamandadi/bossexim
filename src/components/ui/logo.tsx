@@ -18,12 +18,17 @@ function BShape(props: React.SVGProps<SVGGElement>) {
   );
 }
 
-/** Draws in `currentColor`: brand blue on light sections, white on dark ones. */
+/**
+ * Draws in `currentColor`: brand blue on light sections, white on dark ones.
+ * The shapes overlap, so they form a mask that is filled once — a see-through
+ * colour (e.g. `text-white/90`) then stays even instead of doubling up where
+ * the block and lobes of the "B" meet.
+ */
 export function LogoMark({ className }: { className?: string }) {
   const id = useId().replace(/[^a-zA-Z0-9_-]/g, "");
 
   return (
-    <svg viewBox="0 0 272 174" aria-hidden className={className} fill="currentColor">
+    <svg viewBox="0 0 272 174" aria-hidden className={className}>
       <defs>
         <clipPath id={`${id}-bounds`}>
           <rect x="1" y="2" width="270" height="170" />
@@ -37,11 +42,14 @@ export function LogoMark({ className }: { className?: string }) {
           <rect x="0" y="39" width="58" height="14" fill="#000" />
           <rect x="0" y="118" width="58" height="13" fill="#000" />
         </mask>
+        <mask id={`${id}-mark`} maskUnits="userSpaceOnUse" x="0" y="0" width="272" height="174">
+          <circle cx="185" cy="87" r="85" fill="#fff" mask={`url(#${id}-gap)`} />
+          <g clipPath={`url(#${id}-bounds)`} mask={`url(#${id}-slots)`}>
+            <BShape fill="#fff" />
+          </g>
+        </mask>
       </defs>
-      <circle cx="185" cy="87" r="85" mask={`url(#${id}-gap)`} />
-      <g clipPath={`url(#${id}-bounds)`} mask={`url(#${id}-slots)`}>
-        <BShape />
-      </g>
+      <rect width="272" height="174" fill="currentColor" mask={`url(#${id}-mark)`} />
     </svg>
   );
 }
