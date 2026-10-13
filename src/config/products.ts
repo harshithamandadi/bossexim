@@ -45,6 +45,7 @@ export const productLabels = {
   worldwideTitle: "Also supplied to other destinations on request",
   worldwideSuffix: "and worldwide on request",
   relatedTitle: "Related Products",
+  seeAll: "See all",
   packaging: "Packaging",
   specificationsTitle: "Specifications",
   specificationsNote: "Typical specifications. Exact values are agreed for each transaction.",

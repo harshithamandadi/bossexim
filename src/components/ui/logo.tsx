@@ -61,13 +61,14 @@ export function Logo({ className, showDescriptor = false }: { className?: string
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <LogoMark className="h-6 w-auto shrink-0 text-logo" />
       <span className="flex flex-col leading-none">
-        {/* The display face sits high in its line box; the nudge centres it on the mark. */}
-        <span className="translate-y-[1.5px] font-display text-[15px] font-extrabold tracking-tight whitespace-nowrap">
-          {/* One colour throughout (not half white, half blue); the weight sets the two words apart. */}
-          {wordmark.primary} <span className="font-medium">{wordmark.secondary}</span>
+        {/* Inter (not the tight display face) at normal spacing, so the S keeps its proper shape
+            and the words are clearly separated (client request). One colour throughout. */}
+        <span className="font-sans text-[15px] font-bold whitespace-nowrap">
+          {wordmark.primary}
+          <span className="ml-1.5 font-semibold">{wordmark.secondary}</span>
         </span>
         {showDescriptor && (
-          <span className="mt-1.5 text-[10px] font-semibold tracking-[0.16em] text-fg-mute uppercase">{descriptor}</span>
+          <span className="mt-1.5 text-[11px] font-medium text-fg-mute">{descriptor}</span>
         )}
       </span>
     </span>

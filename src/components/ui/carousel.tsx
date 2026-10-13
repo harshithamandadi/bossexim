@@ -22,6 +22,8 @@ interface CarouselProps {
   slideWidth?: string;
   /** Glide speed multiplier, e.g. 0.7 for slower rows. */
   speed?: number;
+  /** Glide left-to-right instead, e.g. for a second row moving opposite to the first. */
+  reverse?: boolean;
   className?: string;
 }
 
@@ -31,7 +33,7 @@ interface CarouselProps {
  * reduced-motion visitors); the arrows glide one card at a time and it carries
  * on afterwards. When the cards already fit, it's a plain static row.
  */
-export function Carousel({ items, label, previousLabel, nextLabel, slideWidth = "18rem", speed = 1, className }: CarouselProps) {
+export function Carousel({ items, label, previousLabel, nextLabel, slideWidth = "18rem", speed = 1, reverse = false, className }: CarouselProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const setRef = useRef<HTMLDivElement>(null);
@@ -86,7 +88,8 @@ export function Carousel({ items, label, previousLabel, nextLabel, slideWidth = 
 
   useAnimationFrame((_, deltaMs) => {
     if (!loops || reduceMotion || isHovered || !isOnScreen || isBusy.current) return;
-    x.set(wrap(x.get() - (SPEED_PX_PER_S * speed * Math.min(deltaMs, 64)) / 1000));
+    const distance = (SPEED_PX_PER_S * speed * Math.min(deltaMs, 64)) / 1000;
+    x.set(wrap(x.get() + (reverse ? distance : -distance)));
   });
 
   /** Glides exactly one card along, then normalises back into the middle copy. */

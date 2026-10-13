@@ -57,13 +57,13 @@ export function ProcessScroller({ content }: { content: ProcessContent }) {
 
   return (
     <SplitLayout aside={aside} stickyAside>
-      <ol className="space-y-4">
+      <ol className="space-y-3">
         {steps.map((step, index) => (
           <li
             key={step.title}
             id={stepIds[index]}
             className={cn(
-              "card-gradient rounded-card bg-surface p-7 transition-opacity duration-500 ease-smooth sm:p-10 lg:flex lg:min-h-[19rem] lg:flex-col",
+              "card-gradient rounded-card bg-surface p-6 transition-opacity duration-500 ease-smooth sm:p-7",
               index !== activeIndex && "lg:opacity-35",
             )}
           >
@@ -71,10 +71,10 @@ export function ProcessScroller({ content }: { content: ProcessContent }) {
               <span className="type-eyebrow text-brand">
                 {stepLabel} {formatStepNumber(index + 1)}
               </span>
-              <IconTile icon={step.icon} variant="soft" />
+              <IconTile icon={step.icon} variant="soft" size="sm" />
             </div>
-            <h3 className="type-h3 mt-8 lg:mt-auto">{step.title}</h3>
-            <p className="type-body mt-3 max-w-md text-pretty text-fg-mute">{step.description}</p>
+            <h3 className="type-h4 mt-4">{step.title}</h3>
+            <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-pretty text-fg-mute">{step.description}</p>
           </li>
         ))}
       </ol>

@@ -139,7 +139,7 @@ export const buyingSteps: BuyingStep[] = [
     label: "Incoterm",
     question: "Which Incoterm are you looking for?",
     input: "choice",
-    options: ["FOB", "CFR", "CIF", NOT_SURE_INCOTERM, "Other"],
+    options: ["FOB", "CFR", "CIF", NOT_SURE_INCOTERM],
     followUps: {
       [NOT_SURE_INCOTERM]: "No problem. Our export team can discuss the appropriate Incoterm based on your shipment requirements.",
     },

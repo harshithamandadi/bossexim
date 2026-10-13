@@ -9,7 +9,7 @@ export const homeContent: {
   hero: SectionContent & { highlight: string; primaryCta: LinkItem; secondaryCta: LinkItem };
   services: SectionContent & { cta: LinkItem };
   products: SectionContent & { cta: LinkItem; previous: string; next: string; viewRow: string };
-  world: SectionContent & { cta: LinkItem; legend: { core: string; network: string; worldwide: string } };
+  world: SectionContent & { cta: LinkItem; legend: string };
   process: SectionContent & { cta: LinkItem };
 } = {
   hero: {
@@ -43,7 +43,7 @@ export const homeContent: {
     description:
       "From our corporate base in India we serve buyers and suppliers worldwide — with core trade markets in Singapore, Malaysia, Australia, the UAE, Thailand, Saudi Arabia and Indonesia, and a wider network across the Gulf, Red Sea and Africa, CIS markets and beyond.",
     cta: { label: "Explore our global presence", href: anchorHref(routes.tradeProcess, sectionIds.tradeProcess.presence) },
-    legend: { core: "Core markets", network: "Logistics network", worldwide: "Worldwide, on request" },
+    legend: "Trade lanes from India — core markets, network and worldwide on request",
   },
   process: {
     eyebrow: "How We Work",

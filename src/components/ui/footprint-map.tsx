@@ -1,23 +1,26 @@
 import Image from "next/image";
 import { cn } from "@/lib/cn";
 
-/** The client's own BOSS footprint map (agency network from the Mediterranean to the Far East). */
+/** The client's BOSS Group presence map: the countries where the Group is present, shaded in navy. */
 export const FOOTPRINT_MAP = {
-  src: "/images/group/boss-footprint-map.webp",
-  width: 2000,
-  height: 980,
-  alt: "BOSS footprint map — agency network across the Middle East, Africa, South Asia and the Far East",
+  src: "/images/group/boss-group-presence.webp",
+  width: 2200,
+  height: 1159,
+  alt: "BOSS Group presence map — India, Australia, the United States, Brazil, the UK and Europe, the Middle East, East Africa, China and Southeast Asia",
 };
 
+/** Shown on a light panel, so the navy-shaded countries stay visible on dark sections too. */
 export function FootprintMap({ className, sizes = "(min-width: 1024px) 40vw, 100vw" }: { className?: string; sizes?: string }) {
   return (
-    <Image
-      src={FOOTPRINT_MAP.src}
-      width={FOOTPRINT_MAP.width}
-      height={FOOTPRINT_MAP.height}
-      alt={FOOTPRINT_MAP.alt}
-      sizes={sizes}
-      className={cn("h-auto w-full rounded-2xl object-cover ring-1 ring-inset ring-white/10", className)}
-    />
+    <div className={cn("overflow-hidden rounded-2xl bg-[#f3f7fc] p-2 ring-1 ring-inset ring-white/10", className)}>
+      <Image
+        src={FOOTPRINT_MAP.src}
+        width={FOOTPRINT_MAP.width}
+        height={FOOTPRINT_MAP.height}
+        alt={FOOTPRINT_MAP.alt}
+        sizes={sizes}
+        className="h-auto w-full"
+      />
+    </div>
   );
 }

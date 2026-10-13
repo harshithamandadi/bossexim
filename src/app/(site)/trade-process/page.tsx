@@ -5,13 +5,12 @@ import { CtaSection } from "@/components/sections/shared/cta-section";
 import { FeatureGrid } from "@/components/sections/shared/feature-grid";
 import { ProcessScroller } from "@/components/sections/shared/process-scroller";
 import { Motto, ProseSplit } from "@/components/sections/shared/prose";
-import { MarketGrid } from "@/components/sections/trade/market-grid";
-import { TradeRoutesStage } from "@/components/sections/trade/trade-routes-stage";
+import { WorldTradeMap } from "@/components/sections/trade/world-trade-map";
 import { ButtonLink } from "@/components/ui/button";
-import { Chip } from "@/components/ui/chip";
+import { Eyebrow } from "@/components/ui/eyebrow";
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
-import { globalPresence, howWeWork, pageContent, qualityVerification, routes, sectionIds } from "@/config";
+import { globalPresence, homeContent, howWeWork, pageContent, qualityVerification, routes, sectionIds } from "@/config";
 import { getCatalogue, getCompanyDetails } from "@/lib/content/queries";
 import { createPageMetadata } from "@/lib/metadata";
 import { getLocalNavItems } from "@/lib/navigation";
@@ -53,13 +52,6 @@ export default async function TradeProcessPage() {
               <RevealItem as="li" key={tier.title} className="card-gradient rounded-card bg-surface p-6">
                 <h3 className="type-h4">{tier.title}</h3>
                 <p className="mt-1 text-sm text-fg-mute">{tier.description}</p>
-                <p className="mt-4 flex flex-wrap gap-1.5">
-                  {tier.places.map((place) => (
-                    <Chip key={place} variant="outline" className="bg-canvas">
-                      {place}
-                    </Chip>
-                  ))}
-                </p>
               </RevealItem>
             ))}
           </RevealGroup>
@@ -70,10 +62,13 @@ export default async function TradeProcessPage() {
             </p>
           )}
         </ProseSplit>
-        <Reveal className="mt-12 overflow-hidden rounded-panel">
-          <TradeRoutesStage products={catalogue.products} markets={catalogue.markets} />
+        {/* One world map with uniform, code-labelled lanes — no country lists or slides (client request). */}
+        <Reveal className="mt-12">
+          <div data-tone="dark" className="deep-gradient rounded-panel p-5 text-fg sm:p-8 lg:p-10">
+            <Eyebrow>{homeContent.world.eyebrow}</Eyebrow>
+            <WorldTradeMap markets={catalogue.markets} label={homeContent.world.legend} className="mt-6" />
+          </div>
         </Reveal>
-        <MarketGrid catalogue={catalogue} className="mt-4" />
       </Section>
 
       <Section tone="mist" spacing="compact">

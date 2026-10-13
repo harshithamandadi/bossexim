@@ -55,7 +55,7 @@ export default async function HomePage() {
       <HomeSection tone="dark">
         <HomeSectionHeader content={world} cta={world.cta} />
         <Reveal className="mt-10">
-          <WorldTradeMap markets={markets} labels={world.legend} />
+          <WorldTradeMap markets={markets} label={world.legend} />
         </Reveal>
       </HomeSection>
 

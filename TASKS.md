@@ -350,3 +350,17 @@ Source: `requirements/3rd resources/` — New Website Structure.docx (site map),
 - [x] **Aira** — greeting "Welcome to BOSS EXIM Global"; product buttons limited to the 10 in the workflow.
 - [ ] **Confirm with the client** — Prasad Kalla's profile was lightly edited for grammar and length; founder roles (Chairman / Director) are from earlier documents; HEIC phone photos converted for the galleries.
 - [ ] **Deploy** — needs one `SEED_ON_BUILD` + `SEED_RESET` deploy (new products, team, galleries, group companies). No database migration needed.
+
+### R6. Client changes (Notion "BOSS GROUP", 13 Oct 2026)
+
+- [x] R6.1 "BOSS EXIM Global" wordmark spacing; remove the big watermark; remove the BOSS Group icon in the hero badge; normal capitalisation (no ALL-CAPS eyebrow); fix the "S" shape in the wordmark.
+- [x] R6.2 Home: smaller world map + an SVG flight; remove photos from the service cards; export/import product rows slide in opposite directions; more balanced trade lanes.
+- [x] R6.3 Country codes: the client's list (UAE, SAU, SGP, MYS, THA, IDN, VNM, AUS, LKA, BGD, USA, LON, CHN) — also in seed data (no 2-letter codes).
+- [x] R6.4 Product page: remove market filter; photo beside the spec table; uniform spec boxes; remove Key Destinations countries; simpler related products with export/import rows.
+- [x] R6.5 Trade Process: smaller step cards; Global Presence without country lists/slides; trade lanes with codes only, consistent, more lanes on the left (Europe/Africa/Americas).
+- [x] R6.6 Remove country slides everywhere.
+- [x] R6.7 BOSS Group journey: a single rising line (no ups and downs), like the client's "Growing Together Globally" image.
+- [x] R6.8 Media & Events: photos scroll.
+- [x] R6.9 Contact: Incoterm — remove "Other", keep "Not sure".
+- [x] R6.10 Presence map: the client's "BOSS Group Presense" map replaces the footprint map everywhere (Global Sourcing card, BOSS Group intro).
+- [ ] Confirm with the client: extra lanes to EGY, KEN, BRA and NGA were added to balance the western side of the map (Container Line network / on request) — keep or drop; "LON" is used for the UK per their list.

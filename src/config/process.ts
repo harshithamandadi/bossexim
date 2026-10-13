@@ -144,11 +144,3 @@ export const globalPresence: ProseContent & {
   ],
 };
 
-/** Labels for the interactive trade-route map. */
-export const tradeLanes = {
-  eyebrow: "Trade lanes",
-  outbound: "Outbound · From India",
-  inbound: "Inbound · To India",
-  legend: { export: "Exports", import: "Imports" },
-  inboundDestination: "India",
-};

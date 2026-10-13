@@ -48,7 +48,7 @@ export async function SiteFooter() {
 
         <p
           aria-hidden
-          className="mt-12 bg-linear-to-b from-fg/25 to-transparent bg-clip-text text-center font-display text-[clamp(2.5rem,11vw,10rem)] leading-none font-semibold tracking-[-0.06em] whitespace-nowrap text-transparent select-none"
+          className="mt-12 bg-linear-to-b from-fg/25 to-transparent bg-clip-text text-center font-display text-[clamp(2.5rem,11vw,10rem)] leading-none font-semibold tracking-[-0.03em] whitespace-nowrap text-transparent select-none"
         >
           {company.wordmark.primary} {company.wordmark.secondary}
         </p>

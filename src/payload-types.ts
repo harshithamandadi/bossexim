@@ -451,7 +451,7 @@ export interface Market {
    */
   shortName: string;
   /**
-   * Two-letter country code.
+   * Three-letter country code, e.g. UAE, SGP, MYS.
    */
   code: string;
   region: string;

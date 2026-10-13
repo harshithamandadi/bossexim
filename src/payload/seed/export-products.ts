@@ -123,16 +123,16 @@ const JAGGERY_DOCS = [
 
 /* Destination markets by category (current focus markets; worldwide on request). */
 const M = {
-  rice: ["AE", "SG", "MY", "SA"],
-  spices: ["AE", "SG", "MY", "AU"],
-  chilli: ["AE", "SG", "MY", "TH"],
-  pulses: ["AE", "SG", "MY", "AU"],
-  vegetables: ["AE", "MY", "SG", "ID"],
-  fruits: ["AE", "SA", "SG", "MY"],
-  dehydrated: ["AE", "SG", "MY", "AU"],
-  seafood: ["AE", "SG", "MY"],
-  manufactured: ["AE", "SG", "MY", "AU"],
-  others: ["AE", "SG", "MY"],
+  rice: ["UAE", "SGP", "MYS", "SAU"],
+  spices: ["UAE", "SGP", "MYS", "AUS"],
+  chilli: ["UAE", "SGP", "MYS", "THA"],
+  pulses: ["UAE", "SGP", "MYS", "AUS"],
+  vegetables: ["UAE", "MYS", "SGP", "IDN"],
+  fruits: ["UAE", "SAU", "SGP", "MYS"],
+  dehydrated: ["UAE", "SGP", "MYS", "AUS"],
+  seafood: ["UAE", "SGP", "MYS"],
+  manufactured: ["UAE", "SGP", "MYS", "AUS"],
+  others: ["UAE", "SGP", "MYS"],
 } satisfies Record<string, MarketCode[]>;
 
 export const exportProducts: SeedProduct[] = [
@@ -1339,7 +1339,7 @@ export const exportProducts: SeedProduct[] = [
         ),
       },
     ],
-    markets: ["AE", "MY", "TH"],
+    markets: ["UAE", "MYS", "THA"],
     photos: photo("groundnuts", "In-shell peanuts and red-skinned peanut kernels"),
   },
 ];

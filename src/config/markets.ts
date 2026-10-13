@@ -1,5 +1,5 @@
 /** Destination markets are managed in the admin (Catalogue → Markets). */
-import type { GeoPoint } from "@/types/content";
+import type { GeoPoint, LabelAnchor } from "@/types/content";
 
 /** Where export routes start on the map. */
 export const tradeOrigin: { code: string; name: string; coordinates: GeoPoint } = {
@@ -42,13 +42,20 @@ export const networkPoints: NetworkPoint[] = [
 ];
 
 /**
- * Illustrative hubs beyond the current focus, drawn as dashed "on request" lanes
- * on the world map: BOSS EXIM evaluates new markets case by case.
+ * Trade lanes drawn on the world maps beside the core markets (which come from the
+ * admin). The client's code list (Oct 2026) adds VNM, LKA, BGD, USA, LON and CHN;
+ * Egypt and Kenya are on BOSS Container Line's network, and Brazil and Nigeria
+ * balance the western side as markets served on request. Labels show codes only.
  */
-export const worldwideHubs: NetworkPoint[] = [
-  { name: "Europe", coordinates: { lat: 51.92, lon: 4.48 } },
-  { name: "North America", coordinates: { lat: 40.71, lon: -74.0 } },
-  { name: "South America", coordinates: { lat: -23.96, lon: -46.33 } },
-  { name: "West Africa", coordinates: { lat: 6.45, lon: 3.39 } },
-  { name: "East Asia", coordinates: { lat: 35.44, lon: 139.64 } },
+export const extraTradeLanes: { code: string; name: string; coordinates: GeoPoint; labelAnchor: LabelAnchor }[] = [
+  { code: "VNM", name: "Vietnam", coordinates: { lat: 10.82, lon: 106.63 }, labelAnchor: "right" },
+  { code: "LKA", name: "Sri Lanka", coordinates: { lat: 6.93, lon: 79.85 }, labelAnchor: "bottom" },
+  { code: "BGD", name: "Bangladesh", coordinates: { lat: 22.33, lon: 91.83 }, labelAnchor: "top" },
+  { code: "CHN", name: "China", coordinates: { lat: 31.23, lon: 121.47 }, labelAnchor: "right" },
+  { code: "LON", name: "United Kingdom", coordinates: { lat: 51.51, lon: -0.13 }, labelAnchor: "top" },
+  { code: "USA", name: "United States", coordinates: { lat: 40.71, lon: -74.0 }, labelAnchor: "top" },
+  { code: "EGY", name: "Egypt", coordinates: { lat: 31.26, lon: 32.3 }, labelAnchor: "top" },
+  { code: "KEN", name: "Kenya", coordinates: { lat: -4.04, lon: 39.67 }, labelAnchor: "bottom" },
+  { code: "BRA", name: "Brazil", coordinates: { lat: -23.96, lon: -46.33 }, labelAnchor: "bottom" },
+  { code: "NGA", name: "Nigeria", coordinates: { lat: 6.45, lon: 3.39 }, labelAnchor: "bottom" },
 ];

@@ -5,7 +5,6 @@ import type { ReactNode } from "react";
 import { PageHero } from "@/components/layout/page-hero";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { toParagraphs } from "@/components/sections/shared/prose";
-import { MarketTile, WorldwideTile } from "@/components/sections/trade/market-grid";
 import { Carousel } from "@/components/ui/carousel";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { ButtonLink } from "@/components/ui/button";
@@ -26,8 +25,10 @@ import {
   uiLabels,
 } from "@/config";
 import type { Catalogue } from "@/lib/catalogue";
-import type { ExportProduct, Product, SpecificationTable } from "@/types/content";
-import { ProductCard } from "./product-card";
+import { cn } from "@/lib/cn";
+import { toAlpha3 } from "@/lib/country-codes";
+import type { Product, SpecificationTable } from "@/types/content";
+import { ProductMiniCard } from "./product-card";
 
 export function ProductHero({ product }: { product: Product }) {
   const direction = tradeDirections[product.direction];
@@ -88,7 +89,7 @@ function getProductFacts(product: Product, catalogue: Catalogue): { label: strin
           label: facts.markets,
           value: `${catalogue
             .getMarketsForProduct(product)
-            .map((market) => market.shortName)
+            .map((market) => toAlpha3(market.code))
             .join(", ")} ${productLabels.worldwideSuffix}`,
         }
       : { label: facts.origin, value: facts.originValue },
@@ -158,23 +159,35 @@ export function ProductOverview({ product, catalogue }: { product: Product; cata
 
 export function ProductSpecifications({ product }: { product: Product }) {
   if (!product.specifications) return null;
+  const photo = product.images?.[0];
 
   return (
     <Section tone="mist" spacing="compact">
       <h2 className="type-h3">{productLabels.specificationsTitle}</h2>
       <p className="mt-2 text-[15px] text-fg-mute">{productLabels.specificationsNote}</p>
-      <RevealGroup as="ul" className="mt-6 grid gap-4">
-        {product.specifications.map((table) => (
-          <RevealItem as="li" key={table.title}>
-            <SpecificationCard table={table} />
-          </RevealItem>
-        ))}
-      </RevealGroup>
+      {/* The product photo beside its specification table (client request). */}
+      <div className={cn("mt-6 grid items-start gap-6", photo && "lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]")}>
+        {photo && (
+          <Reveal className="lg:sticky lg:top-36">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-surface ring-1 ring-inset ring-border lg:aspect-square">
+              <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 1024px) 30vw, 100vw" className="object-cover" />
+              <PhotoWatermark />
+            </div>
+          </Reveal>
+        )}
+        <RevealGroup as="ul" className="grid gap-4">
+          {product.specifications.map((table) => (
+            <RevealItem as="li" key={table.title}>
+              <SpecificationCard table={table} />
+            </RevealItem>
+          ))}
+        </RevealGroup>
+      </div>
     </Section>
   );
 }
 
-/** One spec table as a compact grid of tiles: 4 across on desktop (a 12-row table is 4 × 3), 3 on tablets, 2 on phones. */
+/** One spec table as a grid of equal tiles (every box the same size — client request): 3 across beside the photo, 2 on phones. */
 function SpecificationCard({ table }: { table: SpecificationTable }) {
   return (
     <article className="rounded-card bg-elevated p-5 shadow-[0_20px_50px_-35px_rgb(8_33_79/0.35)] ring-1 ring-inset ring-border sm:p-6">
@@ -183,10 +196,10 @@ function SpecificationCard({ table }: { table: SpecificationTable }) {
         <h3 className="type-h4">{table.title}</h3>
         {table.subtitle && <p className="text-[13px] text-fg-mute">{table.subtitle}</p>}
       </div>
-      <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-xl bg-border ring-1 ring-border sm:grid-cols-3 lg:grid-cols-4">
+      <dl className="mt-4 grid auto-rows-fr grid-cols-2 gap-px overflow-hidden rounded-xl bg-border ring-1 ring-border sm:grid-cols-3">
         {table.rows.map((row) => (
           <div key={row.label} className="bg-canvas px-3.5 py-3">
-            <dt className="text-[11px] font-semibold tracking-wide text-fg-mute uppercase">{row.label}</dt>
+            <dt className="text-xs font-semibold text-fg-mute">{row.label}</dt>
             <dd className="mt-1 text-[13.5px] leading-snug font-semibold text-pretty">{row.value}</dd>
           </div>
         ))}
@@ -230,42 +243,44 @@ export function ProductDocumentation({ product }: { product: Product }) {
   );
 }
 
-export function ProductMarkets({ product, catalogue }: { product: ExportProduct; catalogue: Catalogue }) {
-  return (
-    <Section tone="mist" spacing="compact">
-      <h2 className="type-h3">{productLabels.marketsTitle}</h2>
-      <p className="mt-2 text-[15px] text-fg-mute">{productLabels.marketsNote}</p>
-      <Carousel
-        className="mt-6"
-        label={productLabels.marketsTitle}
-        previousLabel={uiLabels.previous}
-        nextLabel={uiLabels.next}
-        slideWidth="17rem"
-        items={[
-          ...catalogue.getMarketsForProduct(product).map((market) => <MarketTile key={market.code} market={market} />),
-          <WorldwideTile key="worldwide" />,
-        ]}
-      />
-    </Section>
-  );
-}
-
+/** Related products as compact cards (photo and name only), in an exports row and an imports row gliding opposite ways. */
 export function RelatedProducts({ product, catalogue }: { product: Product; catalogue: Catalogue }) {
-  const related = catalogue.getRelatedProducts(product, Number.POSITIVE_INFINITY);
-  if (related.length === 0) return null;
+  const rows = (["export", "import"] as const)
+    .map((direction) => ({
+      direction,
+      items: (direction === "export" ? catalogue.exportProducts : catalogue.importProducts).filter((item) => item.slug !== product.slug),
+    }))
+    // The product's own direction first.
+    .sort((a, b) => Number(b.direction === product.direction) - Number(a.direction === product.direction))
+    .filter((row) => row.items.length > 0);
+  if (rows.length === 0) return null;
 
   return (
     <Section spacing="compact">
       <h2 className="type-h3">{productLabels.relatedTitle}</h2>
-      <Carousel
-        className="mt-6"
-        label={productLabels.relatedTitle}
-        previousLabel={uiLabels.previous}
-        nextLabel={uiLabels.next}
-        items={related.map((relatedProduct) => (
-          <ProductCard key={relatedProduct.slug} product={relatedProduct} markets={catalogue.markets} className="h-full" />
+      <div className="mt-6 space-y-6">
+        {rows.map((row, index) => (
+          <div key={row.direction}>
+            <div className="flex items-baseline justify-between gap-4">
+              <h3 className="type-eyebrow text-fg-mute">{tradeDirections[row.direction].label}</h3>
+              <Link href={productsViewHref(row.direction)} className="text-sm font-semibold text-brand hover:underline">
+                {productLabels.seeAll}
+              </Link>
+            </div>
+            <Carousel
+              label={tradeDirections[row.direction].label}
+              previousLabel={uiLabels.previous}
+              nextLabel={uiLabels.next}
+              slideWidth="12.5rem"
+              speed={index === 0 ? 1 : 0.85}
+              reverse={index === 1}
+              items={row.items.map((item) => (
+                <ProductMiniCard key={item.slug} product={item} />
+              ))}
+            />
+          </div>
         ))}
-      />
+      </div>
     </Section>
   );
 }

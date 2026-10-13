@@ -6,9 +6,9 @@ import { TradeWheel } from "@/components/sections/home/trade-wheel";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/eyebrow";
-import { LogoMark } from "@/components/ui/logo";
 import { WaveDivider } from "@/components/ui/wave-divider";
 import { WorldDotsMap } from "@/components/ui/world-dots-map";
+import { tradeOrigin } from "@/config/markets";
 import { homeContent, siteConfig } from "@/config";
 import { enterOnLoad } from "@/lib/motion";
 import type { Product } from "@/types/content";
@@ -21,14 +21,18 @@ export function HeroSection({ products }: { products: Product[] }) {
     <section data-tone="light" className="relative overflow-hidden bg-canvas pt-28 pb-20 sm:pt-32 sm:pb-24">
       <div aria-hidden className="sky-wash absolute inset-0" />
       {/*
-        A flat dotted world map across the hero (client request). It fades almost
-        away behind the text column so the headline and copy stay easy to read:
-        the left side on desktop, the top half on phones.
+        A flat dotted world map behind the hero — the whole world at a smaller size
+        (client request), with an aeroplane flying from India to London. It fades
+        away behind the text column so the headline stays easy to read.
       */}
-      <WorldDotsMap
-        variant="backdrop"
-        className="pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,rgb(0_0_0/0.08)_0%,rgb(0_0_0/0.08)_58%,#000_78%)] lg:[mask-image:linear-gradient(to_right,rgb(0_0_0/0.06)_0%,rgb(0_0_0/0.08)_44%,rgb(0_0_0/0.6)_54%,#000_64%)]"
-      />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-24 bottom-16 mx-auto max-w-6xl px-6">
+        <WorldDotsMap
+          variant="backdrop"
+          fit="meet"
+          flight={{ from: tradeOrigin.coordinates, to: { lat: 51.5, lon: -0.13 } }}
+          className="[mask-image:linear-gradient(to_bottom,rgb(0_0_0/0.1)_0%,rgb(0_0_0/0.1)_55%,#000_80%)] lg:[mask-image:linear-gradient(to_right,rgb(0_0_0/0.1)_0%,rgb(0_0_0/0.14)_40%,rgb(0_0_0/0.7)_55%,#000_66%)]"
+        />
+      </div>
       <WaveDivider />
 
       <Container className="relative grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
@@ -38,11 +42,8 @@ export function HeroSection({ products }: { products: Product[] }) {
             {...enterOnLoad(0)}
             className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 lg:justify-start"
           >
-            <span className="inline-flex items-center gap-2.5 rounded-full bg-elevated/85 py-1.5 pr-4 pl-2 shadow-[0_8px_24px_-12px_rgb(8_33_79/0.35)] ring-1 ring-border backdrop-blur">
-              <span className="brand-gradient grid h-7 w-9 place-items-center rounded-full">
-                <LogoMark className="h-3 w-auto text-white" />
-              </span>
-              <span className="font-display text-sm font-bold text-fg">{company.parentGroup}</span>
+            <span className="inline-flex items-center rounded-full bg-elevated/85 px-4 py-1.5 shadow-[0_8px_24px_-12px_rgb(8_33_79/0.35)] ring-1 ring-border backdrop-blur">
+              <span className="text-sm font-bold text-fg">{company.parentGroup}</span>
             </span>
             <ul className="flex items-center gap-3 text-sm font-semibold text-fg/85">
               {company.roles.map((role, index) => (

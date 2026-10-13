@@ -37,7 +37,7 @@ export const Markets: CollectionConfig = {
           required: true,
           unique: true,
           maxLength: 3,
-          admin: { placeholder: "AE", description: "Two-letter country code." },
+          admin: { placeholder: "UAE", description: "Three-letter country code, e.g. UAE, SGP, MYS." },
           hooks: { beforeValidate: [({ value }) => (typeof value === "string" ? value.trim().toUpperCase() : value)] },
         },
         { name: "region", type: "text", required: true, admin: { placeholder: "Middle East" } },

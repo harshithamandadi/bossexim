@@ -3,13 +3,13 @@ import type { ReactNode } from "react";
 import { Reveal } from "@/components/motion/reveal";
 import { Flag } from "@/components/ui/flag";
 import { Icon } from "@/components/ui/icon";
-import { currentFocus, productHref } from "@/config";
+import { currentFocus, productCategories, productCategoryHref } from "@/config";
 import { cn } from "@/lib/cn";
 import { getCatalogue } from "@/lib/content/queries";
-import type { Product } from "@/types/content";
+import type { Product, TradeDirection } from "@/types/content";
 import { toAlpha3 } from "@/lib/country-codes";
 
-/** "We export → To → We import", derived entirely from the catalogue. */
+/** "We export → To → We import": product categories and market codes, from the catalogue. */
 export async function FocusPanel({ className }: { className?: string }) {
   const { labels } = currentFocus;
   const { exportProducts, importProducts, markets } = await getCatalogue();
@@ -21,7 +21,7 @@ export async function FocusPanel({ className }: { className?: string }) {
         className="deep-gradient grid gap-10 rounded-panel p-8 sm:p-12 lg:grid-cols-3 lg:gap-0 lg:divide-x lg:divide-border"
       >
         <FocusColumn label={labels.exports}>
-          <ProductRows products={exportProducts} />
+          <CategoryRows direction="export" products={exportProducts} />
         </FocusColumn>
         <FocusColumn label={labels.markets}>
           {markets.map((market) => (
@@ -30,13 +30,12 @@ export async function FocusPanel({ className }: { className?: string }) {
               bare
               leading={<Flag code={market.code} className="w-8 rounded-md shadow-sm ring-1 ring-white/25" />}
             >
-              {market.name}
-              <span className="ml-2 text-xs font-semibold tracking-wide text-fg-mute">{toAlpha3(market.code)}</span>
+              <span className="font-semibold tracking-wide">{toAlpha3(market.code)}</span>
             </FocusRow>
           ))}
         </FocusColumn>
         <FocusColumn label={labels.imports}>
-          <ProductRows products={importProducts} />
+          <CategoryRows direction="import" products={importProducts} />
         </FocusColumn>
       </div>
     </Reveal>
@@ -52,12 +51,23 @@ function FocusColumn({ label, children }: { label: string; children: ReactNode }
   );
 }
 
-function ProductRows({ products }: { products: Product[] }) {
-  return products.map((product) => (
-    <FocusRow key={product.slug} href={productHref(product.slug)} leading={<Icon name={product.icon} className="size-4" />}>
-      {product.name}
-    </FocusRow>
-  ));
+/** One row per product category (in the menu's order), linking to its section of the Products page. */
+function CategoryRows({ direction, products }: { direction: TradeDirection; products: Product[] }) {
+  const categories = productCategories.filter(
+    (category) => category.direction === direction && products.some((product) => product.category === category.name),
+  );
+  return categories.map((category) => {
+    const first = products.find((product) => product.category === category.name);
+    return (
+      <FocusRow
+        key={category.name}
+        href={productCategoryHref(direction, category.name)}
+        leading={<Icon name={first?.icon ?? "package"} className="size-4" />}
+      >
+        {category.name}
+      </FocusRow>
+    );
+  });
 }
 
 interface FocusRowProps {

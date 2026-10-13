@@ -5,7 +5,6 @@ import { ChatWidget } from "@/components/chat/chat-widget";
 import { SiteHeader } from "@/components/layout/header/site-header";
 import { THEME_INIT_SCRIPT } from "@/components/layout/header/theme-toggle";
 import { SiteFooter } from "@/components/layout/site-footer";
-import { LogoMark } from "@/components/ui/logo";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { assistantProductSlugs, uiLabels } from "@/config";
 import { cn } from "@/lib/cn";
@@ -54,14 +53,6 @@ export async function SiteShell({ children }: { children: ReactNode }) {
           </a>
           <SiteHeader />
           <main id="main">{children}</main>
-          {/*
-            One large BOSS mark, fixed in the middle of the screen behind everything you
-            scroll past (client request: a static watermark across the whole site). It sits
-            above section backgrounds, so it's kept very faint and never catches clicks.
-          */}
-          <div aria-hidden className="pointer-events-none fixed inset-0 z-[5] grid place-items-center">
-            <LogoMark className="h-auto w-[min(78vw,60rem)] text-brand opacity-[0.035]" />
-          </div>
           <SiteFooter />
           <ChatWidget faqs={faqs} products={assistantProducts} formToken={createFormToken()} />
           <VisitBeacon />

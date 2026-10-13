@@ -3,6 +3,7 @@
  * second resource pack (BOSS Container Line brochure and website, BOSS
  * Australia website, BOSS footprint map).
  */
+import type { IconName } from "@/lib/icons";
 import type { Feature, ImageAsset, ProseContent, SectionContent } from "@/types/content";
 
 export const groupIntro: ProseContent = {
@@ -368,6 +369,7 @@ export const groupCompanies: { heading: SectionContent; currentLabel: string } =
 export interface JourneyPeriod {
   period: string;
   text: string;
+  icon: IconName;
 }
 
 export interface Founder {
@@ -391,13 +393,13 @@ export const groupJourney: {
       "From a single retail outlet to a diversified ecosystem across retail, property, hospitality, logistics and international trade.",
   },
   periods: [
-    { period: "2000 – 2003", text: "Established BOSS Group, opened the first Wollongong outlet in 2002, and began building a customer-focused retail platform that became the foundation for future expansion." },
-    { period: "2004 – 2007", text: "Entered Brisbane, established key fuel-industry relationships, relocated headquarters, strengthened operating systems and leadership, and built the management platform needed for wider business diversification and growth." },
-    { period: "2008 – 2011", text: "Expanded convenience retail operations, strengthened service-station capabilities, acquired additional sites and freeholds, and developed deeper experience in managing customer-facing assets, teams and operations at scale." },
-    { period: "2012 – 2015", text: "Reached more than ten operating sites, expanded across retail and property activities, earned business and community recognition, and strengthened BOSS Group’s diversified operating foundation further." },
-    { period: "2016 – 2019", text: "Established major fuel partnerships, completed greenfield developments, expanded construction and property capabilities, and strengthened the Group’s operating network through disciplined investment and execution across markets." },
-    { period: "2020 – 2023", text: "Expanded into hospitality with its first hotel acquisition, entered medical centres and subdivisions, strengthened fuel partnerships, and launched BOSS Container Line in 2023, entering global logistics." },
-    { period: "2024 – 2026", text: "Opened the Group’s first EV site, expanded logistics networks and container assets, strengthened global operations, and successfully established BOSS EXIM (Global) Private Limited in 2026." },
+    { period: "2000 – 2003", text: "Established BOSS Group, opened the first Wollongong outlet in 2002, and began building a customer-focused retail platform that became the foundation for future expansion.", icon: "store" },
+    { period: "2004 – 2007", text: "Entered Brisbane, established key fuel-industry relationships, relocated headquarters, strengthened operating systems and leadership, and built the management platform needed for wider business diversification and growth.", icon: "route" },
+    { period: "2008 – 2011", text: "Expanded convenience retail operations, strengthened service-station capabilities, acquired additional sites and freeholds, and developed deeper experience in managing customer-facing assets, teams and operations at scale.", icon: "building" },
+    { period: "2012 – 2015", text: "Reached more than ten operating sites, expanded across retail and property activities, earned business and community recognition, and strengthened BOSS Group’s diversified operating foundation further.", icon: "badge-check" },
+    { period: "2016 – 2019", text: "Established major fuel partnerships, completed greenfield developments, expanded construction and property capabilities, and strengthened the Group’s operating network through disciplined investment and execution across markets.", icon: "handshake" },
+    { period: "2020 – 2023", text: "Expanded into hospitality with its first hotel acquisition, entered medical centres and subdivisions, strengthened fuel partnerships, and launched BOSS Container Line in 2023, entering global logistics.", icon: "ship" },
+    { period: "2024 – 2026", text: "Opened the Group’s first EV site, expanded logistics networks and container assets, strengthened global operations, and successfully established BOSS EXIM (Global) Private Limited in 2026.", icon: "globe" },
   ],
   values: {
     title: "Growing with Purpose, Leading with Integrity",

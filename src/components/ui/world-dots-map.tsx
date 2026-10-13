@@ -15,20 +15,29 @@ interface WorldDotsMapProps {
   /** Lanes are drawn from the origin to each of these points. */
   origin?: GeoPoint;
   points?: GeoPoint[];
-  /** "backdrop": fills its box (cropping the edges) with softer dots and animated lanes, for use behind content. */
+  /** "backdrop": softer dots and animated lanes, for use behind content. */
   variant?: "inline" | "backdrop";
+  /** Fill the box, cropping the edges ("slice"), or show the whole world ("meet"). */
+  fit?: "slice" | "meet";
+  /** An aeroplane flying a looping route from `flight.from` to `flight.to`. */
+  flight?: { from: GeoPoint; to: GeoPoint };
   className?: string;
 }
 
+/** A small aeroplane (nose pointing along +x, so it follows its path with rotate="auto"). */
+const PLANE_PATH =
+  "M2 -0.8 L-0.6 -0.8 L-3.4 -5 L-4.6 -5 L-3 -0.8 L-6 -0.8 L-7 -2.2 L-7.8 -2.2 L-7.2 0 L-7.8 2.2 L-7 2.2 L-6 0.8 L-3 0.8 L-4.6 5 L-3.4 5 L-0.6 0.8 L2 0.8 Q3.6 0.8 3.6 0 Q3.6 -0.8 2 -0.8 Z";
+
 /** A static dotted world map (no JavaScript), with optional lanes from an origin. */
-export function WorldDotsMap({ origin, points = [], variant = "inline", className }: WorldDotsMapProps) {
+export function WorldDotsMap({ origin, points = [], variant = "inline", fit, flight, className }: WorldDotsMapProps) {
   const start = origin && project(origin, BOUNDS, SIZE);
   const isBackdrop = variant === "backdrop";
+  const flightPath = flight && arcPath(project(flight.from, BOUNDS, SIZE), project(flight.to, BOUNDS, SIZE), 0.35);
 
   return (
     <svg
       viewBox={`0 0 ${SIZE.width} ${SIZE.height}`}
-      preserveAspectRatio={isBackdrop ? "xMidYMid slice" : "xMidYMid meet"}
+      preserveAspectRatio={`xMidYMid ${fit ?? (isBackdrop ? "slice" : "meet")}`}
       aria-hidden
       className={cn(isBackdrop ? "size-full" : "h-auto w-full", className)}
     >
@@ -62,6 +71,17 @@ export function WorldDotsMap({ origin, points = [], variant = "inline", classNam
           );
         })}
       {start && <circle cx={start.x} cy={start.y} r={isBackdrop ? 4 : 8} className="fill-gold" />}
+      {flightPath && (
+        <g>
+          <path d={flightPath} fill="none" strokeWidth={1.2} strokeDasharray="4 6" strokeLinecap="round" className="stroke-brand/55" />
+          {/* The moving plane is hidden for reduced-motion visitors; the dashed route stays. */}
+          <g className="fill-brand motion-reduce:hidden">
+            <path d={PLANE_PATH} transform="scale(1.7)">
+              <animateMotion dur="9s" repeatCount="indefinite" rotate="auto" path={flightPath} />
+            </path>
+          </g>
+        </g>
+      )}
     </svg>
   );
 }

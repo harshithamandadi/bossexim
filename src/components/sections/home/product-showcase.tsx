@@ -42,6 +42,7 @@ export async function ProductShowcase() {
                 nextLabel={content.next}
                 slideWidth="12.5rem"
                 speed={direction === "export" ? 1 : 0.85}
+                reverse={direction === "import"}
                 items={rowProducts.map((product) => <ProductMiniCard key={product.slug} product={product} />)}
               />
             </Reveal>

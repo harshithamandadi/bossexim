@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import {
   ProductDocumentation,
   ProductHero,
-  ProductMarkets,
   ProductOverview,
   ProductSpecifications,
   RelatedProducts,
@@ -46,7 +45,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <ProductOverview product={product} catalogue={catalogue} />
       <ProductSpecifications product={product} />
       <ProductDocumentation product={product} />
-      {product.direction === "export" && <ProductMarkets product={product} catalogue={catalogue} />}
       <RelatedProducts product={product} catalogue={catalogue} />
       <CtaSection />
     </>
