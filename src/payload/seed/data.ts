@@ -37,8 +37,29 @@ export const seedTeam: (Omit<TeamMember, "photo"> & { photo?: { file: string; al
       "Driven by a strong passion for excellence, Mr. Sekhar continues to contribute to business growth by identifying opportunities, strengthening customer and partner relationships, improving operational effectiveness and supporting the organisation’s expansion into new markets and business segments.",
     ].join("\n\n"),
   },
-  { name: "Pradeep K", role: "Chief Operations Officer" },
-  { name: "Nagaraju P", role: "Chief Finance Officer" },
+  // DRAFT role summaries — the client's documents give only name and title. They describe the
+  // role at BOSS EXIM (from the Our Team and How We Work documents), not the person; replace
+  // with the client's own profiles when they arrive.
+  {
+    name: "Pradeep K",
+    role: "Chief Operations Officer",
+    bio: [
+      "As Chief Operations Officer, Pradeep K oversees how BOSS EXIM’s transactions are carried out — from sourcing and supplier coordination to quality verification, documentation, logistics and shipment execution.",
+      "The operations function keeps every trade on its structured process — Understand, Source, Verify, Structure, Execute, Complete — with clear communication and disciplined transaction control from enquiry through delivery.",
+    ].join("
+
+"),
+  },
+  {
+    name: "Nagaraju P",
+    role: "Chief Finance Officer",
+    bio: [
+      "As Chief Finance Officer, Nagaraju P leads BOSS EXIM’s finance function — commercial terms, banking arrangements, secured payment methods and transaction closure.",
+      "The finance function supports disciplined trading by reviewing payment security and commercial feasibility before execution, and by monitoring each transaction through to payment closure.",
+    ].join("
+
+"),
+  },
 ];
 
 export const seedCompanyDetails = {

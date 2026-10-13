@@ -103,7 +103,7 @@ export const enquiryFieldDefinitions: Record<EnquiryField, EnquiryFieldDefinitio
     kind: "select",
     label: "Preferred Incoterm",
     placeholder: "Select an Incoterm",
-    options: ["FOB", "CFR", "CIF", "Not sure"],
+    options: ["EXW","FCA","CPT","CIP","DAP","DPU","DDP","FAS","FOB", "CFR", "CIF", "Not sure"],
   },
   paymentMethod: {
     kind: "select",
