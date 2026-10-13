@@ -97,7 +97,7 @@ function getProductFacts(product: Product, catalogue: Catalogue): { label: strin
       label: facts.specifications,
       value: (
         <Link href={anchorHref(routes.resources, sectionIds.resources.specifications)} className="underline-link">
-          {facts.specificationsValue}
+          {product.specifications?.length ? facts.specificationsLatest : facts.specificationsValue}
         </Link>
       ),
     },

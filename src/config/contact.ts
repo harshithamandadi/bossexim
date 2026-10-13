@@ -272,7 +272,7 @@ export const contactContent = {
     eyebrow: "Enquiry routes",
     title: "Four Ways to Reach Us",
     description:
-      "Each form collects the company and transaction information our team needs to carry out basic background work before responding.",
+      "Contact us through four dedicated enquiry routes: General Enquiry, Buyer Enquiry, Supplier Enquiry and Business Partnership. Each form is designed to collect important company and transaction information so that our team can conduct basic background work before responding.",
   } satisfies SectionContent,
   details: {
     title: "Reach Us Directly",
@@ -335,7 +335,7 @@ export const enquiryEmails = {
   acknowledgement: {
     subject: "We've received your enquiry",
     greeting: "Hello",
-    body: "Thank you for contacting BOSS Global EXIM. Our team has received your",
+    body: "Thank you for contacting BOSS EXIM Global. Our team has received your",
     about: "about",
     reference: "Your reference is",
     closing:

@@ -64,6 +64,23 @@ export type BuyingStepId =
 /** The value the product step stores when the visitor picks "Other product". */
 export const OTHER_PRODUCT_ANSWER = "other";
 
+/**
+ * The products Aira offers as buttons, in the order of the client's chatbot
+ * workflow; anything else goes through "Other Product".
+ */
+export const assistantProductSlugs = [
+  "red-chilli",
+  "turmeric",
+  "green-cardamom",
+  "black-pepper",
+  "basmati-rice",
+  "non-basmati-rice",
+  "pomegranate",
+  "fresh-onions",
+  "dehydrated-fruits",
+  "vannamei-shrimp",
+];
+
 const NEED_ASSISTANCE = "I need assistance";
 const NOT_SURE_INCOTERM = "Not sure";
 
@@ -241,16 +258,16 @@ export const buyingSteps: BuyingStep[] = [
 
 export const chatbotContent = {
   name: "Aira",
-  dialogLabel: "Aira, the BOSS Global EXIM assistant",
+  dialogLabel: "Aira, the BOSS EXIM Global assistant",
   launcher: {
     label: "Chat with Aira",
     open: "Open the website assistant",
     close: "Close the website assistant",
   },
   title: "Aira",
-  subtitle: "BOSS Global EXIM trade assistant",
+  subtitle: "BOSS EXIM Global trade assistant",
   greeting:
-    "👋 Welcome to BOSS Global EXIM. We help international buyers source quality products from India.\n\nHow can we assist you today?",
+    "👋 Welcome to BOSS EXIM Global. We help international buyers source quality products from India.\n\nHow can we assist you today?",
   menu: {
     products: "🌾 Products",
     buying: "📦 Buying Enquiry",
@@ -356,12 +373,12 @@ export const chatbotContent = {
     intro: "Here's a quick introduction. What would you like to know?",
     questions: [
       {
-        question: "What is BOSS Global EXIM?",
+        question: "What is BOSS EXIM Global?",
         answer:
-          "BOSS Global EXIM Pvt. Ltd. is an international trading company engaged in Merchant Exports, Merchant Imports, Global Sourcing, International Trading and Supply Chain Solutions.",
+          "BOSS EXIM (Global) Pvt. Ltd. is an international trading company engaged in Merchant Exports, Merchant Imports, Global Sourcing, International Trading and Supply Chain Solutions.",
       },
       {
-        question: "What does BOSS Global EXIM do?",
+        question: "What does BOSS EXIM Global do?",
         answer:
           "We connect international buyers with Indian products through sourcing, merchant exports, international trading and supply-chain coordination.",
       },
@@ -403,7 +420,7 @@ export const chatbotContent = {
     editQuestion: "Which detail would you like to change?",
     backToSummary: "Back to summary",
     submitting: "Submitting your enquiry…",
-    success: "✅ Thank you! Your enquiry has been successfully submitted to BOSS Global EXIM.",
+    success: "✅ Thank you! Your enquiry has been successfully submitted to BOSS EXIM Global.",
     successFollowUp: "Our export sales team will review your requirement and contact you regarding:",
     successTopics: [
       "Product availability",

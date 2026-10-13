@@ -1,6 +1,7 @@
 import { LocalNav } from "@/components/layout/local-nav";
 import { PageHero } from "@/components/layout/page-hero";
 import { CompanyGrid } from "@/components/sections/group/company-grid";
+import { GroupFounders } from "@/components/sections/group/group-founders";
 import { GroupJourney } from "@/components/sections/group/group-journey";
 import { GroupRecognition } from "@/components/sections/group/group-recognition";
 import { CtaSection } from "@/components/sections/shared/cta-section";
@@ -28,6 +29,7 @@ export default function BossGroupPage() {
       <LocalNav
         items={[
           { id: ids.companies, label: groupCompanies.heading.eyebrow ?? "Group Companies" },
+          { id: ids.founders, label: "Founders" },
           { id: ids.journey, label: "Our Journey" },
           { id: ids.recognition, label: "Recognition" },
         ]}
@@ -50,11 +52,15 @@ export default function BossGroupPage() {
         <CompanyGrid className="mt-10" />
       </Section>
 
-      <Section id={ids.journey} spacing="compact">
+      <Section id={ids.founders} spacing="compact">
+        <GroupFounders />
+      </Section>
+
+      <Section id={ids.journey} tone="mist" spacing="compact">
         <GroupJourney />
       </Section>
 
-      <Section id={ids.recognition} tone="mist" spacing="compact">
+      <Section id={ids.recognition} spacing="compact">
         <GroupRecognition />
       </Section>
 

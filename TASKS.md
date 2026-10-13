@@ -331,3 +331,22 @@ Final review with the client: **Monday 12 Oct, around 9–10 a.m. (time to confi
 **Client coordination**
 - [ ] Send the missing-content checklist (products/categories, founder profiles/photos, logo/tagline, replacement map, corrected timeline, six service pages' content/images).
 - [ ] Confirm the Monday final-review date and start time (around 9–10 a.m. was discussed).
+
+
+### R5. Final resources (13 Oct 2026) — built, awaiting review
+
+Source: `requirements/3rd resources/` — New Website Structure.docx (site map), the content documents it names, Website Photos, the Product Brochure PDF and the chatbot workflow.
+
+- [x] **Company name** — BOSS EXIM (Global) Pvt. Ltd. / "BOSS EXIM" / wordmark "BOSS EXIM Global" everywhere (site, SEO, seed, Aira); email bossexim@bossgrp.com. Domain stays bgexim.com; enquiry references stay BGX-.
+- [x] **Hero** — roles Merchant Exporter | Merchant Importer | Supply Chain Solutions; eyebrow "Global Sourcing & International Trading"; Home copy from the Home document.
+- [x] **About** — new overview, vision/mission/values (six values, with the client's Vision, Mission and Values images), Our Team (Sekhar C with photo, Pradeep K, Nagaraju P — no bios yet for Pradeep and Nagaraju), registrations text.
+- [x] **Business** — model, why, current focus (new products and markets — Vietnam dropped), beyond focus.
+- [x] **Products** — 32 exports + 10 imports, one page each, in the 9 + 3 categories of the structure, with the client's photos, brochure specifications and HSN codes. Chapata Dry Chilli and Tiger Prawns have no brochure specs ("on request"). Clear Medical Bottles & Recycled Plastic Flakes are one product (one shared photo).
+- [x] **Trade Process / Partner** — new copy; buyer, supplier and partner illustrations and benefits.
+- [x] **BOSS Group** — new intro and Our Businesses; Container Line + 6 services (all client copy now, incl. Project Cargo and Warehouse & 3PL) with the client's photos; Retail, Constructions, Hospitality, **Laundromats (new)**, IT, BPO from the final documents with photo galleries; **Founders** (Prasad Kalla, Kris Bodla, Sudhakar Chaluvadi, with photos); Our Journey in the client's seven periods; Recognition with the new award photos and media features.
+- [x] **Media & Events** — gallery photos from Gatherings and BCLL meetings (team, partners, container yards). Leadership, Supplier Visits and Trade Events still empty.
+- [x] **Resources** — BOSS Group Video section (plays the admin video; "coming soon" until added), Corporate Brochure (file pending), Product Specifications on request. BOSS Group Brochure removed (not in the structure).
+- [x] **Contact** — four enquiry routes copy; phone, WhatsApp, hours and map pending (per the document).
+- [x] **Aira** — greeting "Welcome to BOSS EXIM Global"; product buttons limited to the 10 in the workflow.
+- [ ] **Confirm with the client** — Prasad Kalla's profile was lightly edited for grammar and length; founder roles (Chairman / Director) are from earlier documents; HEIC phone photos converted for the galleries.
+- [ ] **Deploy** — needs one `SEED_ON_BUILD` + `SEED_RESET` deploy (new products, team, galleries, group companies). No database migration needed.

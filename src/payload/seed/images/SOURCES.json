@@ -1,72 +1,9 @@
 {
- "pulses-and-dal-products": {
-  "file": "pulses.jpg",
-  "source": "https://www.rawpixel.com/image/5919013/image-public-domain-food-free",
-  "creator": null,
-  "license": "cc0",
-  "license_version": "1.0"
- },
- "groundnuts-and-peanuts": {
-  "file": "groundnuts.jpg",
-  "source": "https://stocksnap.io/photo/peanuts-food-CI7RAD5RGJ",
-  "creator": "Krzysztof%20Puszczy%u0144ski",
-  "license": "cc0",
-  "license_version": "1.0"
- },
- "jaggery": {
-  "file": "jaggery.jpg",
-  "source": "https://commons.wikimedia.org/wiki/File:Jaggery_cubes.jpg",
-  "creator": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:Mangosapiens&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:Mangosapiens (page does not exist)\">Mangosapiens</a>",
-  "license": "CC BY-SA 4.0",
-  "license_version": null
- },
- "polypropylene": {
-  "file": "polypropylene.jpg",
-  "source": "https://www.rawpixel.com/image/5943896/free-public-domain-cc0-photo",
-  "creator": null,
-  "license": "cc0",
-  "license_version": "1.0"
- },
- "polyethylene": {
-  "file": "polyethylene.jpg",
-  "source": "https://commons.wikimedia.org/wiki/File:Pellet_azul.jpg",
-  "creator": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:ISIPLAST_S.A_de_C.V&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:ISIPLAST S.A de C.V (page does not exist)\">ISIPLAST S.A de C.V</a>",
-  "license": "CC BY-SA 4.0",
-  "license_version": null
- },
- "polyester-chips": {
-  "file": "polyester-chips.jpg",
-  "source": "https://www.rawpixel.com/image/3306182/free-photo-image-garbage-plastic-bottle-waste",
-  "creator": "U.S. Department of Agriculture",
-  "license": "cc0",
-  "license_version": "1.0"
- },
- "aluminium-scrap": {
-  "file": "aluminium-scrap.jpg",
-  "source": "https://www.rawpixel.com/image/5963024/free-public-domain-cc0-photo",
-  "creator": null,
-  "license": "cc0",
-  "license_version": "1.0"
- },
- "copper-scrap": {
-  "file": "copper-scrap.jpg",
-  "source": "https://www.rawpixel.com/image/5969991/wire-copper",
-  "creator": null,
-  "license": "cc0",
-  "license_version": "1.0"
- },
- "iron-scrap": {
-  "file": "iron-scrap.jpg",
-  "source": "https://commons.wikimedia.org/w/index.php?curid=155041582",
-  "creator": "Digitura",
-  "license": "cc0",
-  "license_version": "1.0"
- },
- "stainless-steel-scrap": {
-  "file": "stainless-steel-scrap.jpg",
-  "source": "https://www.rawpixel.com/image/5916515/image-background-public-domain-free",
-  "creator": null,
-  "license": "cc0",
-  "license_version": "1.0"
- }
+  "polyester-chips": {
+    "file": "polyester-chips.jpg",
+    "source": "https://www.rawpixel.com/image/3306182/free-photo-image-garbage-plastic-bottle-waste",
+    "creator": "U.S. Department of Agriculture",
+    "license": "cc0",
+    "license_version": "1.0"
+  }
 }

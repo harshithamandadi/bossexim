@@ -14,7 +14,7 @@ import { seedProducts } from "./products";
 
 export { seedProducts };
 
-/** Destination markets. Saudi Arabia and Indonesia are core markets without a product lane yet. */
+/** Core trade markets, from the client's Current Focus and Global Presence documents (India is the base). */
 export const seedMarkets: Market[] = [
   { code: "AE", name: "United Arab Emirates", shortName: "UAE", region: "Middle East", coordinates: { lat: 25.2, lon: 55.3 }, labelAnchor: "top" },
   { code: "SA", name: "Saudi Arabia", shortName: "Saudi Arabia", region: "Middle East", coordinates: { lat: 21.49, lon: 39.19 }, labelAnchor: "bottom" },
@@ -22,51 +22,35 @@ export const seedMarkets: Market[] = [
   { code: "MY", name: "Malaysia", shortName: "Malaysia", region: "South-East Asia", coordinates: { lat: 3.14, lon: 101.69 }, labelAnchor: "left" },
   { code: "TH", name: "Thailand", shortName: "Thailand", region: "South-East Asia", coordinates: { lat: 13.76, lon: 100.5 }, labelAnchor: "top" },
   { code: "ID", name: "Indonesia", shortName: "Indonesia", region: "South-East Asia", coordinates: { lat: -6.2, lon: 106.85 }, labelAnchor: "bottom" },
-  { code: "VN", name: "Vietnam", shortName: "Vietnam", region: "South-East Asia", coordinates: { lat: 10.82, lon: 106.63 }, labelAnchor: "right" },
   { code: "AU", name: "Australia", shortName: "Australia", region: "Oceania", coordinates: { lat: -33.87, lon: 151.21 }, labelAnchor: "left" },
 ];
 
-export const seedTeam: Omit<TeamMember, "photo">[] = [
-  {
-    name: "Prasad Kalla",
-    role: "Chairman",
-    bio: [
-      "Mr. Prasad Kalla, Chairman of the BOSS Group, combines technical expertise, business management experience and entrepreneurial leadership. He holds an Engineering degree in Computer Science from Bangalore University and an MBA from Victoria University of Technology, Melbourne, Australia.",
-      "With more than three decades of business exposure, he has been associated with diversified ventures across India and Australia. The Group’s Australian operations span retail, fuel stations and convenience stores, real estate and construction, hospitality, e-Commerce and IT services, complementing its broader interests in logistics, trading and other business sectors.",
-      "Mr. Kalla has played a key role in expanding the Group by combining practical business insight with technology, disciplined operations and modern management systems. His leadership focuses on long-term growth, diversification, customer service and development of new business opportunities.",
-      "Over the years, BOSS Group and its leadership have received several recognitions, including the Commonwealth Bank & Brisbane Indian Times Multicultural Business & Community Award 2012, BP Buying Group – Compliance Winner 2012, a National Award for outstanding commitment to disability and workplace safety, and recognition for Best Hotel in Category Two for 2012 by the Department of Tourism, Andhra Pradesh, India.",
-      "As Chairman, Mr. Kalla continues to guide BOSS Group toward sustainable growth and stronger international business participation.",
-    ].join("\n\n"),
-  },
-  {
-    name: "Sudhakar C",
-    role: "Director",
-    bio: [
-      "Business savvy individual with deep exposure in many verticals — IT, Shipping Line, Construction, Hospitality, Retail and Gas Stations.",
-      "Worked as a senior executive in Wipro with widespread global experience in Business Operations, Delivery Management and People Supply Management in the areas of ERP and Microsoft Technologies.",
-      "Well-versed in onshore and offshore delivery execution models.",
-    ].join("\n\n"),
-  },
+export const seedTeam: (Omit<TeamMember, "photo"> & { photo?: { file: string; alt: string } })[] = [
   {
     name: "Sekhar C",
     role: "Chief Executive Officer",
+    photo: { file: "team/sekhar-c.jpg", alt: "Sekhar C, Chief Executive Officer" },
     bio: [
-      "Mr. Sekhar Chaluvadi is an engineering graduate in Computer Science Engineering from Karnataka University. He has over 27 years of experience in the Shipping Line, Construction, Hospitality and Logistics industries, with good knowledge of Marketing & Sales. His multi-faceted approach to understanding the needs of the organisation and its customers allows him to provide winning solutions for their unique challenges and maintain customer relationships.",
-      "He leads with a passion-driven approach towards achieving excellence in everything he does.",
+      "Mr. Sekhar Chaluvadi serves as Chief Executive Officer and brings over 27 years of professional experience across the shipping line, construction, hospitality and logistics industries. He is an Engineering graduate in Computer Science Engineering from Karnataka University and has developed strong business expertise through extensive hands-on experience in diverse operational and commercial environments.",
+      "Over the years, Mr. Sekhar has built solid knowledge in marketing, sales, customer relationship management, business development and operational coordination. His multi-faceted approach enables him to understand both organisational requirements and customer expectations, helping him develop practical and effective solutions for complex business challenges.",
+      "He is particularly focused on building long-term customer relationships through trust, transparency, responsiveness and consistent service delivery. His leadership style combines strategic thinking with a practical, results-oriented approach, encouraging teams to maintain high standards of professionalism and accountability.",
+      "Driven by a strong passion for excellence, Mr. Sekhar continues to contribute to business growth by identifying opportunities, strengthening customer and partner relationships, improving operational effectiveness and supporting the organisation’s expansion into new markets and business segments.",
     ].join("\n\n"),
   },
+  { name: "Pradeep K", role: "Chief Operations Officer" },
+  { name: "Nagaraju P", role: "Chief Finance Officer" },
 ];
 
 export const seedCompanyDetails = {
   contact: {
-    email: "bgexim@bossgrp.com",
+    email: "bossexim@bossgrp.com",
     address: "BOSS Towers, Street No. 2, Patrika Nagar, Madhapur, Hyderabad – 500081, Telangana, India",
   },
 };
 
 export const seedGroupCompanies: Omit<GroupCompany, "logo">[] = [
   {
-    name: "BOSS Global EXIM",
+    name: "BOSS EXIM Global",
     description:
       "The Group’s international trading arm — connecting Indian products with global buyers, and sourcing selected industrial products and recyclable materials for Indian customers.",
     icon: "globe",
@@ -97,6 +81,12 @@ export const seedGroupCompanies: Omit<GroupCompany, "logo">[] = [
     icon: "hotel",
   },
   {
+    name: "BOSS Laundromats",
+    description:
+      "Self-service laundry with modern washers and dryers, practical facilities and reliable service — for individuals, families, students and working professionals.",
+    icon: "washing-machine",
+  },
+  {
     name: "BOSS IT",
     description:
       "The Group’s technology capability — digital solutions, business systems and IT-enabled services, delivered with 100+ professionals across the Group’s IT and BPO teams.",
@@ -112,15 +102,51 @@ export const seedGroupCompanies: Omit<GroupCompany, "logo">[] = [
 
 export const seedGalleries: { title: string; icon: IconName; photos?: { file: string; alt: string }[] }[] = [
   { title: "Leadership", icon: "user-round" },
-  { title: "Business Meetings", icon: "briefcase" },
+  {
+    title: "Business Meetings",
+    icon: "briefcase",
+    // BOSS Container Line leadership with shipping-line and logistics partners.
+    photos: [
+      { file: "media/meetings-img_6802.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
+      { file: "media/meetings-img_6831.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
+      { file: "media/meetings-img_6838.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
+      { file: "media/meetings-img_8507.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
+      { file: "media/meetings-img_9555.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
+      { file: "media/meetings-img_9585.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
+      { file: "media/meetings-img_9586.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
+      { file: "media/meetings-img_9596.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
+      { file: "media/meetings-img_9629.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
+      { file: "media/meetings-img_9632.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
+    ],
+  },
   { title: "Supplier Visits", icon: "factory" },
   { title: "Trade Events", icon: "presentation" },
-  { title: "International Business", icon: "globe" },
+  {
+    title: "International Business",
+    icon: "globe",
+    // BOSS Container Line teams at container yards and ports.
+    photos: [
+      { file: "media/yards-img_5862.jpg", alt: "BOSS Container Line team at a container yard" },
+      { file: "media/yards-img_6149.jpg", alt: "BOSS Container Line team at a container yard" },
+      { file: "media/yards-img_7813.jpg", alt: "BOSS Container Line team at a container yard" },
+      { file: "media/yards-img_7819.jpg", alt: "BOSS Container Line team at a container yard" },
+      { file: "media/yards-img_9490.jpg", alt: "BOSS Container Line team at a container yard" },
+    ],
+  },
   {
     title: "Group Activities",
     icon: "party-popper",
-    // From the BOSS Australia website: first EV site (April 2024) and the McGrath Foundation partnership.
+    // Team gatherings, plus the first EV site (April 2024) and the McGrath Foundation partnership.
     photos: [
+      { file: "media/gatherings-as__9413.jpg", alt: "BOSS Group team gathering" },
+      { file: "media/gatherings-as__9589.jpg", alt: "BOSS Group team gathering" },
+      { file: "media/gatherings-dsc_0400.jpg", alt: "BOSS Group team gathering" },
+      { file: "media/gatherings-dsc_0639.jpg", alt: "BOSS Group team gathering" },
+      { file: "media/gatherings-img_0445.jpg", alt: "BOSS Group team gathering" },
+      { file: "media/gatherings-img_0924.jpg", alt: "BOSS Group team gathering" },
+      { file: "media/gatherings-img_1304.jpg", alt: "BOSS Group team gathering" },
+      { file: "media/gatherings-img_20211018_211309.jpg", alt: "BOSS Group team gathering" },
+      { file: "media/gatherings-img_5324.jpg", alt: "BOSS Group team gathering" },
       { file: "ev-site-launch-team.jpg", alt: "BOSS team at the opening of BP Brackenridge, the Group’s first EV site, April 2024" },
       { file: "ev-site-launch-charger.jpg", alt: "Electric vehicle charging at BP Brackenridge on opening day" },
       { file: "ev-site-launch-ceremony.jpg", alt: "Ribbon-cutting at the BP Brackenridge EV site opening" },
@@ -134,38 +160,29 @@ export const seedGalleries: { title: string; icon: IconName; photos?: { file: st
 
 export const seedResources: Omit<Resource, "href">[] = [
   {
-    title: "BGEXIM Corporate Brochure",
+    title: "BOSS EXIM Corporate Brochure",
     description:
-      "A concise introduction to BOSS Global EXIM — our business model, products, markets, trade process and capabilities.",
+      "A concise introduction to BOSS EXIM Global — our business model, products, markets, trade process and capabilities — for buyers, suppliers, banks, strategic partners and other stakeholders.",
     format: "PDF",
     icon: "book-open",
-  },
-  {
-    title: "BOSS Group Brochure",
-    description:
-      "A short overview of the wider business ecosystem — logistics, retail, construction, hospitality, IT, BPO and related activities.",
-    format: "PDF",
-    icon: "building",
   },
 ];
 
 const CATEGORY = FAQ_CATEGORY;
-const exportNames = formatList(seedProducts.filter((p) => p.direction === "export").map((p) => p.name.toLowerCase()));
-const importNames = formatList(seedProducts.filter((p) => p.direction === "import").map((p) => p.name));
 const coreMarkets = "India, Singapore, Malaysia, Australia, UAE, Thailand, Saudi Arabia and Indonesia";
 
 export const seedFaqs: FaqItem[] = [
   {
     category: CATEGORY.company,
-    question: "What is BOSS Global EXIM?",
+    question: "What is BOSS EXIM Global?",
     answer:
-      "BOSS Global EXIM Pvt. Ltd. is an international trading company engaged in Merchant Exports, Merchant Imports, Global Sourcing, International Trading and Supply Chain Solutions. It is part of the wider BOSS Group.",
+      "BOSS EXIM (Global) Pvt. Ltd. is an international trading company engaged in Merchant Exports, Merchant Imports, Global Sourcing, International Trading and Supply Chain Solutions. It is part of the wider BOSS Group.",
     keywords: ["about", "company", "who", "bgexim", "merchant", "trading"],
     action: { label: "About us", href: routes.about },
   },
   {
     category: CATEGORY.company,
-    question: "What does BOSS Global EXIM do?",
+    question: "What does BOSS EXIM Global do?",
     answer:
       "We connect international buyers with Indian products through sourcing, merchant exports, international trading and supply-chain coordination — and source selected industrial products and recyclable materials from international markets for Indian customers.",
     keywords: ["do", "business", "services", "work", "role"],
@@ -173,9 +190,9 @@ export const seedFaqs: FaqItem[] = [
   },
   {
     category: CATEGORY.company,
-    question: "How is BOSS Global EXIM connected to the BOSS Group?",
+    question: "How is BOSS EXIM Global connected to the BOSS Group?",
     answer:
-      "BGEXIM is the international trading arm of the BOSS Group, founded in 2000 — a diversified business group with activities across Australia, Singapore, Malaysia and India in shipping, retail, construction, hospitality, real estate, IT and BPO. Its shipping arm, BOSS Container Line, supports our logistics.",
+      "BOSS EXIM is the international trading arm of the BOSS Group, founded in 2000 — a diversified business group with activities across Australia, Singapore, Malaysia and India in shipping, retail, construction, hospitality, real estate, IT and BPO. Its shipping arm, BOSS Container Line, supports our logistics.",
     keywords: ["group", "parent", "sister", "companies", "owner", "behind"],
     action: { label: "Explore the BOSS Group", href: routes.group },
   },
@@ -198,14 +215,14 @@ export const seedFaqs: FaqItem[] = [
   {
     category: CATEGORY.catalogue,
     question: "Which products do you export?",
-    answer: `Our current export portfolio includes ${exportNames}. These are targeted mainly at the Middle East, South-East Asia and selected international markets.`,
+    answer: "Our export categories include rice and grains, spices, pulses, fresh vegetables, fruits, dehydrated products, seafood, manufactured products, jaggery, peanuts and other food commodities — for buyers in the Middle East, Southeast Asia, Australia and other international markets.",
     keywords: ["export", "sell", "agri", "agriculture", "food", "rice", "spices", "chilli", "turmeric", "pulses"],
     action: { label: "See export products", href: productsViewHref("export") },
   },
   {
     category: CATEGORY.catalogue,
     question: "What do you import into India?",
-    answer: `Our import focus includes ${importNames} — polymers and selected ferrous and non-ferrous recyclable metals for Indian buyers.`,
+    answer: "Our import categories include polymers, recyclable metal scrap such as copper, aluminium, used beverage cans, iron and steel, along with aluminium foil rolls, clear medical bottles and recycled plastic flakes — for Indian buyers.",
     keywords: ["import", "polymer", "scrap", "metal", "raw", "materials", "industrial", "aluminium", "copper"],
     action: { label: "See import products", href: productsViewHref("import") },
   },
@@ -295,8 +312,8 @@ export const seedFaqs: FaqItem[] = [
   },
   {
     category: CATEGORY.trading,
-    question: "How can I contact BOSS Global EXIM?",
-    answer: `Email bgexim@bossgrp.com, or send an enquiry from the Contact page — choose ${formatList(enquiryTypes.map((type) => type.shortLabel))}. Our corporate office is at BOSS Towers, Madhapur, Hyderabad, India.`,
+    question: "How can I contact BOSS EXIM Global?",
+    answer: `Email bossexim@bossgrp.com, or send an enquiry from the Contact page — choose ${formatList(enquiryTypes.map((type) => type.shortLabel))}. Our corporate office is at BOSS Towers, Madhapur, Hyderabad, India.`,
     keywords: ["contact", "email", "phone", "call", "reach", "address", "office", "hyderabad"],
     action: { label: "Send an enquiry", href: contactHref() },
   },

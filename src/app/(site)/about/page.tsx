@@ -8,9 +8,7 @@ import { CtaSection } from "@/components/sections/shared/cta-section";
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
 import { SplitLayout } from "@/components/ui/split-layout";
-import { VideoSlot } from "@/components/ui/video-slot";
-import { compliance, corporateVideo, leadership, pageContent, routes, sectionIds } from "@/config";
-import { getCompanyDetails } from "@/lib/content/queries";
+import { compliance, leadership, pageContent, routes, sectionIds } from "@/config";
 import { createPageMetadata } from "@/lib/metadata";
 import { getLocalNavItems } from "@/lib/navigation";
 
@@ -24,8 +22,6 @@ export const metadata = createPageMetadata({
 });
 
 export default async function AboutPage() {
-  const { video } = await getCompanyDetails();
-
   return (
     <>
       <PageHero content={content} />
@@ -33,7 +29,6 @@ export default async function AboutPage() {
 
       <Section id={ids.overview}>
         <AboutOverview />
-        {video && <VideoSlot video={video} playLabel={corporateVideo.playLabel} className="mx-auto mt-12 max-w-5xl" />}
       </Section>
 
       <Section id={ids.vision} tone="mist">

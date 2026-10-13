@@ -281,9 +281,13 @@ export interface Product {
     | 'compass'
     | 'container'
     | 'cpu'
+    | 'cylinder'
+    | 'droplets'
     | 'factory'
     | 'file-text'
+    | 'fish'
     | 'flame'
+    | 'flask-conical'
     | 'globe'
     | 'hammer'
     | 'handshake'
@@ -295,6 +299,7 @@ export interface Product {
     | 'messages-square'
     | 'mic'
     | 'microscope'
+    | 'milk'
     | 'network'
     | 'nut'
     | 'package'
@@ -318,7 +323,9 @@ export interface Product {
     | 'target'
     | 'user-round'
     | 'users'
+    | 'utensils'
     | 'warehouse'
+    | 'washing-machine'
     | 'wheat';
   /**
    * One sentence for product cards (160 characters max).
@@ -371,7 +378,7 @@ export interface Product {
       }[]
     | null;
   /**
-   * Leave empty until confirmed.
+   * Shown on the product page, e.g. 10063020.
    */
   hsCode?: string | null;
   updatedAt: string;
@@ -547,9 +554,13 @@ export interface Gallery {
     | 'compass'
     | 'container'
     | 'cpu'
+    | 'cylinder'
+    | 'droplets'
     | 'factory'
     | 'file-text'
+    | 'fish'
     | 'flame'
+    | 'flask-conical'
     | 'globe'
     | 'hammer'
     | 'handshake'
@@ -561,6 +572,7 @@ export interface Gallery {
     | 'messages-square'
     | 'mic'
     | 'microscope'
+    | 'milk'
     | 'network'
     | 'nut'
     | 'package'
@@ -584,7 +596,9 @@ export interface Gallery {
     | 'target'
     | 'user-round'
     | 'users'
+    | 'utensils'
     | 'warehouse'
+    | 'washing-machine'
     | 'wheat';
   /**
    * The first photo is used as the gallery's cover.
@@ -628,9 +642,13 @@ export interface Resource {
     | 'compass'
     | 'container'
     | 'cpu'
+    | 'cylinder'
+    | 'droplets'
     | 'factory'
     | 'file-text'
+    | 'fish'
     | 'flame'
+    | 'flask-conical'
     | 'globe'
     | 'hammer'
     | 'handshake'
@@ -642,6 +660,7 @@ export interface Resource {
     | 'messages-square'
     | 'mic'
     | 'microscope'
+    | 'milk'
     | 'network'
     | 'nut'
     | 'package'
@@ -665,7 +684,9 @@ export interface Resource {
     | 'target'
     | 'user-round'
     | 'users'
+    | 'utensils'
     | 'warehouse'
+    | 'washing-machine'
     | 'wheat';
   file?: (number | null) | Document;
   updatedAt: string;
@@ -731,9 +752,13 @@ export interface GroupCompany {
     | 'compass'
     | 'container'
     | 'cpu'
+    | 'cylinder'
+    | 'droplets'
     | 'factory'
     | 'file-text'
+    | 'fish'
     | 'flame'
+    | 'flask-conical'
     | 'globe'
     | 'hammer'
     | 'handshake'
@@ -745,6 +770,7 @@ export interface GroupCompany {
     | 'messages-square'
     | 'mic'
     | 'microscope'
+    | 'milk'
     | 'network'
     | 'nut'
     | 'package'
@@ -768,7 +794,9 @@ export interface GroupCompany {
     | 'target'
     | 'user-round'
     | 'users'
+    | 'utensils'
     | 'warehouse'
+    | 'washing-machine'
     | 'wheat';
   /**
    * Optional link to the company's own site.

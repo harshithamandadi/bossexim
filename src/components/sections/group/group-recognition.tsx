@@ -36,8 +36,8 @@ export function GroupRecognition() {
         items={pictured.map((item) => (
             <figure key={item.title} className="flex h-full flex-col rounded-card bg-canvas p-3 ring-1 ring-inset ring-border">
               {item.image && (
-                <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-surface">
-                  <Image src={item.image.src} alt={item.image.alt} fill sizes="(min-width: 1024px) 200px, 45vw" className="object-cover" />
+                <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-white">
+                  <Image src={item.image.src} alt={item.image.alt} fill sizes="(min-width: 1024px) 200px, 45vw" className="object-contain p-2" />
                 </div>
               )}
               <figcaption className="mt-3 px-1 pb-1">
@@ -48,7 +48,18 @@ export function GroupRecognition() {
         ))}
       />
 
-      <RevealGroup as="ul" className="mt-8 grid gap-3 sm:grid-cols-2">
+      <RevealGroup as="ul" className="mt-8 grid gap-3 sm:grid-cols-3">
+        {content.media.map((item) => (
+          <RevealItem as="li" key={item.title} className="overflow-hidden rounded-card bg-canvas ring-1 ring-inset ring-border">
+            <div className="relative aspect-[4/3] bg-white">
+              <Image src={item.image.src} alt={item.image.alt} fill sizes="(min-width: 640px) 30vw, 90vw" className="object-cover object-top" />
+            </div>
+            <p className="p-4 text-[14px] leading-snug font-medium">{item.title}</p>
+          </RevealItem>
+        ))}
+      </RevealGroup>
+
+      <RevealGroup as="ul" className="mt-3 grid gap-3 sm:grid-cols-2">
         {listed.map((item) => (
           <RevealItem as="li" key={item.title} className="flex items-start gap-3 rounded-card bg-canvas p-5 ring-1 ring-inset ring-border">
             <Award aria-hidden className="mt-0.5 size-5 shrink-0 text-brand" />
@@ -59,6 +70,7 @@ export function GroupRecognition() {
           </RevealItem>
         ))}
       </RevealGroup>
+      <p className="mt-10 max-w-3xl text-[15px] leading-relaxed text-pretty text-fg-mute">{content.note}</p>
     </>
   );
 }

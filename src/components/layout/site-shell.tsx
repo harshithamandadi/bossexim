@@ -7,7 +7,7 @@ import { THEME_INIT_SCRIPT } from "@/components/layout/header/theme-toggle";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { LogoMark } from "@/components/ui/logo";
 import { MotionProvider } from "@/components/motion/motion-provider";
-import { uiLabels } from "@/config";
+import { assistantProductSlugs, uiLabels } from "@/config";
 import { cn } from "@/lib/cn";
 import { getCatalogue, getCompanyDetails, getFaqs } from "@/lib/content/queries";
 import { createFormToken } from "@/lib/enquiry/form-token";
@@ -23,8 +23,9 @@ const interTight = Inter_Tight({ subsets: ["latin"], variable: "--font-inter-tig
 export async function SiteShell({ children }: { children: ReactNode }) {
   const [faqs, company, catalogue] = await Promise.all([getFaqs(), getCompanyDetails(), getCatalogue()]);
   // Aira talks about the products we export: she helps overseas buyers source from India.
-  const assistantProducts = catalogue.products
-    .filter((product) => product.direction === "export")
+  // The buttons follow the client's chatbot workflow (assistantProductSlugs), in that order.
+  const assistantProducts = assistantProductSlugs
+    .flatMap((slug) => catalogue.products.filter((product) => product.slug === slug && product.direction === "export"))
     .map(({ slug, name, variants, variantsLabel, packaging, documentation, specifications }) => ({
       slug,
       name,

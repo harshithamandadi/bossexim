@@ -69,7 +69,7 @@ export const CompanyDetails: GlobalConfig = {
                     !value || VIDEO_URL.test(value) || "Paste a YouTube or Vimeo link, e.g. https://www.youtube.com/watch?v=…",
                   admin: { placeholder: "https://www.youtube.com/watch?v=…" },
                 },
-                { name: "title", type: "text", admin: { placeholder: "BOSS Global EXIM — corporate film" } },
+                { name: "title", type: "text", admin: { placeholder: "BOSS EXIM Global — corporate film" } },
                 {
                   name: "poster",
                   label: "Cover image",

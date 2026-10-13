@@ -45,9 +45,9 @@ export const mainNavigation: NavGroup[] = [
         description: "How we conduct every transaction.",
       },
       {
-        label: "Our Team / Leadership",
+        label: "Our Team",
         href: anchorHref(routes.about, about.leadership),
-        description: "The people who lead BOSS EXIM.",
+        description: "The people behind BOSS EXIM.",
       },
       {
         label: "Registrations & Compliance",
@@ -131,13 +131,17 @@ export const mainNavigation: NavGroup[] = [
   {
     label: "BOSS Group",
     href: routes.group,
+    // Following the client's final structure: Our Businesses, each vertical, Founders, Our Journey, Recognition.
     items: [
-      // Each vertical has its own page (client feedback, Oct 2026).
+      { label: "Our Businesses", href: anchorHref(routes.group, sectionIds.group.companies), description: "The BOSS Group at a glance." },
       ...groupVerticals.map((vertical) => ({
         label: vertical.name,
         href: groupVerticalHref(vertical.slug),
         description: vertical.menuDescription,
       })),
+      { label: "Founders", href: anchorHref(routes.group, sectionIds.group.founders), description: "The friends who built BOSS Group." },
+      { label: "Our Journey", href: anchorHref(routes.group, sectionIds.group.journey), description: "From 2000 to BOSS EXIM in 2026." },
+      { label: "Recognition", href: anchorHref(routes.group, sectionIds.group.recognition), description: "Awards and media features." },
     ],
   },
   {
@@ -153,14 +157,14 @@ export const mainNavigation: NavGroup[] = [
     href: routes.resources,
     items: [
       {
-        label: "BGEXIM Corporate Brochure",
-        href: anchorHref(routes.resources, resources.downloads),
-        description: "Company, products, markets and capabilities.",
+        label: "BOSS Group Video",
+        href: anchorHref(routes.resources, resources.video),
+        description: "From friendship to a global business ecosystem.",
       },
       {
-        label: "BOSS Group Brochure",
+        label: "BOSS EXIM Corporate Brochure",
         href: anchorHref(routes.resources, resources.downloads),
-        description: "An overview of the BOSS Group.",
+        description: "Company, products, markets and capabilities.",
       },
       {
         label: "Product Specifications",

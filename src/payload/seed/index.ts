@@ -94,10 +94,14 @@ async function uploadPhotos(payload: Payload, photos: { file: string; alt: strin
   return ids;
 }
 
+/** The general email before the company's final documents (Oct 2026) — replaced by the new one. */
+const RETIRED_EMAILS = ["bgexim@bossgrp.com"];
+
 /** Fills in contact details from the brief, without overwriting anything entered in the admin. */
 async function fillCompanyDetails(payload: Payload) {
   const current = await payload.findGlobal({ slug: "company-details", depth: 0 });
-  const contact = { ...seedCompanyDetails.contact, ...Object.fromEntries(Object.entries(current.contact ?? {}).filter(([, value]) => value)) };
+  const kept = Object.entries(current.contact ?? {}).filter(([, value]) => value && !RETIRED_EMAILS.includes(String(value)));
+  const contact = { ...seedCompanyDetails.contact, ...Object.fromEntries(kept) };
   await payload.updateGlobal({ slug: "company-details", data: { contact }, context: seedContext() });
 }
 
@@ -127,8 +131,10 @@ async function seed() {
     await ensure(payload, "products", { slug: { equals: product.slug } }, { ...product, markets, images });
   }
 
-  for (const member of seedTeam) {
-    await ensure(payload, "team-members", { name: { equals: member.name } }, member);
+  for (const { photo, ...member } of seedTeam) {
+    const exists = await payload.count({ collection: "team-members", where: { name: { equals: member.name } } });
+    const [photoId] = exists.totalDocs > 0 || !photo ? [] : await uploadPhotos(payload, [photo]);
+    await ensure(payload, "team-members", { name: { equals: member.name } }, { ...member, photo: photoId });
   }
 
   for (const faq of seedFaqs) {

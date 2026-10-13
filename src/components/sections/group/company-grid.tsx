@@ -34,15 +34,15 @@ export async function CompanyGrid({ className }: { className?: string }) {
   const companies = await getGroupCompanies();
 
   return (
-    // Four columns with the BGEXIM card spanning two: seven cards fill two rows with no gap.
-    <RevealGroup as="ul" className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-4", className)}>
+    // Four columns with the BOSS EXIM card spanning two: seven cards fill two rows with no gap.
+    <RevealGroup as="ul" className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}>
       {companies.map((company) => {
         const vertical = getVerticalForCompany(company.name);
         const href = vertical ? groupVerticalHref(vertical.slug) : company.isCurrent ? routes.about : company.href;
         const isExternal = !vertical && !company.isCurrent && Boolean(company.href);
         const Wrapper = href ? Link : "article";
         return (
-          <RevealItem as="li" key={company.name} className={cn(company.isCurrent && "sm:col-span-2")}>
+          <RevealItem as="li" key={company.name} className={cn(company.isCurrent && "lg:col-span-2")}>
             <Wrapper
               href={href ?? ""}
               {...(isExternal ? { target: "_blank", rel: "noreferrer" } : {})}

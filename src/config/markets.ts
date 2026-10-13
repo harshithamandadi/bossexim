@@ -43,7 +43,7 @@ export const networkPoints: NetworkPoint[] = [
 
 /**
  * Illustrative hubs beyond the current focus, drawn as dashed "on request" lanes
- * on the world map: BGEXIM evaluates new markets case by case.
+ * on the world map: BOSS EXIM evaluates new markets case by case.
  */
 export const worldwideHubs: NetworkPoint[] = [
   { name: "Europe", coordinates: { lat: 51.92, lon: 4.48 } },

@@ -45,10 +45,12 @@ export const sectionIds = {
     containerLine: "services",
     network: "network",
     companies: "group-companies",
+    founders: "founders",
     journey: "our-journey",
     recognition: "recognition",
   },
   resources: {
+    video: "boss-group-video",
     downloads: "downloads",
     specifications: "product-specifications",
   },

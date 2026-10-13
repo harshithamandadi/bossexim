@@ -9,6 +9,7 @@ import { CtaSection } from "@/components/sections/shared/cta-section";
 import { FeatureGrid } from "@/components/sections/shared/feature-grid";
 import { ProseSplit } from "@/components/sections/shared/prose";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { PhotoGallery } from "@/components/ui/photo-gallery";
 import { Section } from "@/components/ui/section";
 import {
   getGroupVertical,
@@ -81,10 +82,19 @@ function ContainerLineBody() {
   );
 }
 
+/** A layout that fills every row: a feature photo when the count allows (multiples of three), else even columns. */
+function galleryLayout(count: number): { columns: 2 | 3 | 4; featureFirst: boolean } {
+  if (count % 3 === 0) return { columns: 3, featureFirst: true };
+  if (count % 4 === 0) return { columns: 4, featureFirst: false };
+  if (count <= 2) return { columns: 2, featureFirst: false };
+  return { columns: 3, featureFirst: false };
+}
+
 function VerticalBody({ vertical }: { vertical: GroupVertical }) {
   return (
     <Section spacing="compact">
       <ProseSplit content={vertical.intro} accent="mark" />
+      {vertical.photos && vertical.photos.length > 0 && <PhotoGallery {...galleryLayout(vertical.photos.length)} photos={vertical.photos} className="mt-12" />}
       {vertical.capabilities.map((group) => (
         <div key={group.title ?? vertical.slug} className="mt-10">
           <h2 className="type-h3">{group.title ?? groupVerticalLabels.services}</h2>

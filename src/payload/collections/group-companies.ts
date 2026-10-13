@@ -28,7 +28,7 @@ export const GroupCompanies: CollectionConfig = {
     urlField("href", "Website", "Optional link to the company's own site."),
     {
       name: "isCurrent",
-      label: "This is BOSS Global EXIM",
+      label: "This is BOSS EXIM Global",
       type: "checkbox",
       admin: { description: "Highlights the card as “You are here”." },
     },

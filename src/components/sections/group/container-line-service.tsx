@@ -4,38 +4,31 @@ import { PhotoWatermark } from "@/components/ui/photo-watermark";
 import Link from "next/link";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Carousel } from "@/components/ui/carousel";
-import { GradientGlow } from "@/components/ui/gradient-glow";
-import { Icon, IconTile } from "@/components/ui/icon";
-import { LogoMark } from "@/components/ui/logo";
+import { IconTile } from "@/components/ui/icon";
+import { PhotoGallery } from "@/components/ui/photo-gallery";
 import { containerLineServiceHref, containerLineServices, groupVerticalLabels, uiLabels, type ContainerLineService } from "@/config";
 import { cn } from "@/lib/cn";
 
-/** The hero visual: the brochure cut-out on a navy panel, or the service icon when there is no photo yet. */
+/** The hero visual: the client's main photo for the service (illustrations shown whole on white). */
 export function ServiceMedia({ service }: { service: ContainerLineService }) {
+  const contain = service.imageFit === "contain";
   return (
     <Reveal delay={0.1}>
       <div
-        data-tone="dark"
-        className="deep-gradient relative isolate grid aspect-[16/10] place-items-center overflow-hidden rounded-panel p-6 shadow-[0_30px_60px_-35px_rgb(8_33_79/0.6)]"
-      >
-        <GradientGlow className="-z-10 opacity-80" />
-        <div aria-hidden className="dot-grid absolute inset-0 -z-10 opacity-25 [mask-image:radial-gradient(ellipse_at_top_right,#000,transparent_70%)]" />
-        {service.image ? (
-          <Image
-            src={service.image.src}
-            alt={service.image.alt}
-            width={service.image.width}
-            height={service.image.height}
-            sizes="(min-width: 1024px) 40vw, 90vw"
-            priority
-            className="h-auto max-h-full w-full object-contain drop-shadow-[0_30px_40px_rgb(0_0_0/0.4)]"
-          />
-        ) : (
-          <span className="grid size-36 place-items-center rounded-[2rem] bg-white/10 ring-1 ring-inset ring-white/15 backdrop-blur">
-            <Icon name={service.icon} strokeWidth={1.25} className="size-16 text-white" />
-          </span>
+        className={cn(
+          "relative aspect-[16/10] overflow-hidden rounded-panel shadow-[0_30px_60px_-35px_rgb(8_33_79/0.6)] ring-1 ring-inset ring-border",
+          contain ? "bg-white" : "bg-surface",
         )}
-        {service.image && <PhotoWatermark size="lg" />}
+      >
+        <Image
+          src={service.image.src}
+          alt={service.image.alt}
+          fill
+          sizes="(min-width: 1024px) 40vw, 90vw"
+          priority
+          className={contain ? "object-contain p-4" : "object-cover"}
+        />
+        <PhotoWatermark size="lg" className={cn(contain && "text-navy/50 drop-shadow-none")} />
       </div>
     </Reveal>
   );
@@ -74,28 +67,9 @@ export function ServiceOverview({ service }: { service: ContainerLineService }) 
   );
 }
 
-/** "How it supports BGEXIM" — only for services the client's documents describe that way. */
-export function ServiceForExim({ paragraphs }: { paragraphs: string[] }) {
-  return (
-    <Reveal>
-      <div data-tone="dark" className="deep-gradient relative isolate overflow-hidden rounded-panel p-8 sm:p-12">
-        <GradientGlow className="-z-10 opacity-70" />
-        <div className="grid gap-8 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-12">
-          <LogoMark className="h-14 w-auto text-white/90 drop-shadow-[0_10px_30px_rgb(79_168_232/0.5)]" />
-          <div>
-            <h2 className="type-h3">{groupVerticalLabels.forExim}</h2>
-            <div className="mt-4 max-w-3xl space-y-4">
-              {paragraphs.map((paragraph) => (
-                <p key={paragraph} className="type-body text-pretty text-fg-mute">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </Reveal>
-  );
+/** More of the client's photos for the service. */
+export function ServiceGallery({ service }: { service: ContainerLineService }) {
+  return <PhotoGallery photos={service.gallery} columns={2} />;
 }
 
 /** Card link to a service page, used on the Container Line page and under each service. */

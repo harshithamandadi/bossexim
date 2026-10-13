@@ -199,7 +199,7 @@ interface ProductBase {
   /** Grades, forms or varieties, e.g. HDPE / LDPE / LLDPE. */
   variants?: string[];
   variantsLabel?: string;
-  /** Indicative HS heading — shown only once confirmed. */
+  /** HSN code, e.g. 10063020 (from the client’s product brochure). */
   hsCode?: string;
 }
 
@@ -219,6 +219,7 @@ export type Product = ExportProduct | ImportProduct;
 export interface Statement {
   label: string;
   text: string;
+  image?: ImageAsset;
 }
 
 export interface ImageAsset {
@@ -341,10 +342,13 @@ export interface PartnerTrack {
   id: string;
   title: string;
   description: string;
+  /** The benefits paragraph from the client's registration documents. */
+  benefits?: string;
   pointsLabel: string;
   points: string[];
   cta: { label: string; enquiryType: EnquiryTypeId };
   featured?: boolean;
+  image?: ImageAsset;
 }
 
 export type FaqCategory = (typeof FAQ_CATEGORY)[keyof typeof FAQ_CATEGORY];

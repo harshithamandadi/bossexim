@@ -8,82 +8,76 @@ import type { ComponentType } from "react";
 import { Icon } from "@/components/ui/icon";
 import { PhotoWatermark } from "@/components/ui/photo-watermark";
 import { FootprintMap } from "@/components/ui/footprint-map";
-import { containerLine, containerLineServiceHref, productHref } from "@/config";
-import { cn } from "@/lib/cn";
+import { containerLine, containerLineServiceHref, productCategories, productCategoryHref, productLabels } from "@/config";
 import { groupByCategory, type Catalogue } from "@/lib/catalogue";
-import type { ServiceVisual } from "@/types/content";
-import { toAlpha3 } from "@/lib/country-codes";
+import type { Product, ServiceVisual, TradeDirection } from "@/types/content";
 
 interface VisualProps {
   catalogue: Catalogue;
 }
 
+/** A product category as a photo tile (its first product's photo), linking to its section of the Products page. */
+function CategoryTile({ category, direction, items }: { category: string; direction: TradeDirection; items: Product[] }) {
+  const photo = items.find((item) => item.images?.[0])?.images?.[0];
+  const icon = items[0]?.icon ?? "package";
+  return (
+    <Link
+      href={productCategoryHref(direction, category)}
+      className="group relative isolate flex h-full min-h-28 flex-col justify-end overflow-hidden rounded-2xl bg-surface p-3 ring-1 ring-inset ring-border"
+    >
+      {photo ? (
+        <Image
+          src={photo.src}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 14vw, 45vw"
+          className="-z-10 object-cover transition-transform duration-500 ease-smooth group-hover:scale-105"
+        />
+      ) : (
+        <span aria-hidden className="brand-gradient absolute inset-0 -z-10 grid place-items-center">
+          <Icon name={icon} className="size-8 text-white/80" />
+        </span>
+      )}
+      <span aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-black/80 via-black/25 to-transparent" />
+      <span className="text-sm leading-tight font-semibold text-white">{category}</span>
+      <span className="mt-0.5 text-xs text-white/75">
+        {items.length} {items.length === 1 ? productLabels.product : productLabels.products}
+      </span>
+      {photo && <PhotoWatermark size="sm" className="top-2 bottom-auto" />}
+    </Link>
+  );
+}
+
+/** Categories in the menu's order (productCategories), then any others. */
+function categoriesFor(direction: TradeDirection, items: Product[]) {
+  const order = productCategories.filter((category) => category.direction === direction).map((category) => category.name);
+  const rank = (name: string) => (order.includes(name) ? order.indexOf(name) : order.length);
+  return groupByCategory(items).sort((a, b) => rank(a.category) - rank(b.category));
+}
+
+/** Export categories as a 3-column grid of photo tiles. */
 function ExportsVisual({ catalogue }: VisualProps) {
   return (
-    <ul className="grid gap-2 sm:grid-cols-2">
-      {catalogue.exportProducts.map((product) => (
-        <li key={product.slug}>
-          <Link
-            href={productHref(product.slug)}
-            className="flex items-center gap-3 rounded-2xl bg-canvas/60 p-3 ring-1 ring-inset ring-border transition-colors duration-300 hover:bg-canvas"
-          >
-            <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-fg/5">
-              <Icon name={product.icon} className="size-4" />
-            </span>
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-medium">{product.name}</span>
-              <span className="block text-xs tracking-wide text-fg-mute">{product.markets.map(toAlpha3).join(" · ")}</span>
-            </span>
-          </Link>
+    <ul className="grid flex-1 auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3">
+      {categoriesFor("export", catalogue.exportProducts).map(({ category, items }) => (
+        <li key={category}>
+          <CategoryTile category={category} direction="export" items={items} />
         </li>
       ))}
     </ul>
   );
 }
 
-/**
- * Import lines as photo tiles, grouped by category. The tiles stretch to fill the
- * card, so it matches the height of the export list beside it.
- */
+/** Import categories as tall photo tiles that fill the card beside the export grid. */
 function ImportsVisual({ catalogue }: VisualProps) {
   return (
-    <div className="flex flex-1 flex-col gap-5">
-      {groupByCategory(catalogue.importProducts).map(({ category, items }) => (
-        <div key={category} className="flex flex-1 flex-col">
-          <p className="type-eyebrow text-fg-mute">{category}</p>
-          <ul className={cn("mt-2.5 grid flex-1 auto-rows-fr gap-2", items.length >= 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3")}>
-            {items.map((product) => {
-              const photo = product.images?.[0];
-              return (
-                <li key={product.slug}>
-                  <Link
-                    href={productHref(product.slug)}
-                    className="group relative isolate flex h-full min-h-28 flex-col justify-end overflow-hidden rounded-2xl bg-surface p-3 ring-1 ring-inset ring-border"
-                  >
-                    {photo ? (
-                      <Image
-                        src={photo.src}
-                        alt=""
-                        fill
-                        sizes="(min-width: 1024px) 12vw, 45vw"
-                        className="-z-10 object-cover transition-transform duration-500 ease-smooth group-hover:scale-105"
-                      />
-                    ) : (
-                      <span aria-hidden className="brand-gradient absolute inset-0 -z-10 grid place-items-center">
-                        <Icon name={product.icon} className="size-8 text-white/80" />
-                      </span>
-                    )}
-                    <span aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-black/75 via-black/20 to-transparent" />
-                    <span className="text-sm leading-tight font-semibold text-white">{product.name}</span>
-                    {photo && <PhotoWatermark size="sm" className="top-2 bottom-auto" />}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+    <ul className="grid flex-1 auto-rows-fr gap-2 sm:grid-cols-3">
+      {categoriesFor("import", catalogue.importProducts).map(({ category, items }) => (
+        <li key={category}>
+          <CategoryTile category={category} direction="import" items={items} />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 

@@ -33,7 +33,7 @@ export function HeroSection({ products }: { products: Product[] }) {
 
       <Container className="relative grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
         <div className="text-center lg:text-left">
-          {/* The BOSS Group badge and BGEXIM's two roles, above the headline (client request). */}
+          {/* The BOSS Group badge and BOSS EXIM's two roles, above the headline (client request). */}
           <motion.div
             {...enterOnLoad(0)}
             className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 lg:justify-start"

@@ -20,6 +20,8 @@ export const productLabels = {
   showing: "Showing",
   line: "line",
   lines: "lines",
+  product: "product",
+  products: "products",
   shipsTo: "Ships to",
   enquire: "Enquire about this product",
   supply: "Supply this product",
@@ -28,12 +30,14 @@ export const productLabels = {
   facts: {
     direction: "Trade direction",
     category: "Category",
-    hsCode: "HS heading",
+    hsCode: "HSN code",
     markets: "Key markets",
     origin: "Sourced from",
     originValue: "International suppliers",
     specifications: "Specifications",
     specificationsValue: "Available on request",
+    /** When typical specifications are shown on the page. */
+    specificationsLatest: "Typical values below — latest on request",
   },
   marketsTitle: "Key Destination Markets",
   marketsNote: "Current focus markets. We also supply buyers worldwide — tell us your destination.",
@@ -50,21 +54,10 @@ export const productLabels = {
 };
 
 /**
- * Credits for product photos whose licence requires one (Wikimedia Commons,
- * CC BY-SA 4.0), shown under the photo on the product page. The other stock
- * product photos are public domain (CC0) and need no credit. Remove an entry
- * once the client supplies their own photo for that product.
+ * Credits for product photos whose licence requires one, shown under the photo on
+ * the product page (slug → credit). Empty now: every product photo is the client's own.
  */
-export const photoCredits: Record<string, { text: string; href: string }> = {
-  jaggery: {
-    text: "Photo: Mangosapiens, CC BY-SA 4.0, via Wikimedia Commons",
-    href: "https://commons.wikimedia.org/wiki/File:Jaggery_cubes.jpg",
-  },
-  polyethylene: {
-    text: "Photo: ISIPLAST S.A. de C.V., CC BY-SA 4.0, via Wikimedia Commons",
-    href: "https://commons.wikimedia.org/wiki/File:Pellet_azul.jpg",
-  },
-};
+export const photoCredits: Record<string, { text: string; href: string }> = {};
 
 /**
  * Product categories, in the order they appear in the menu and on the Products
@@ -72,14 +65,16 @@ export const photoCredits: Record<string, { text: string; href: string }> = {
  * not listed here still appear on the page, after these.
  */
 export const productCategories: { name: string; direction: TradeDirection; description: string }[] = [
-  { name: "Rice & Grains", direction: "export", description: "Basmati and non-basmati rice." },
-  { name: "Spices", direction: "export", description: "Turmeric, cardamom, pepper, chillies & blends." },
-  { name: "Pulses", direction: "export", description: "Toor, moong, chana, masoor and urad dal." },
-  { name: "Fresh Fruits & Vegetables", direction: "export", description: "Pomegranate, onions and mangoes." },
-  { name: "Dehydrated & Herbal", direction: "export", description: "Onion, garlic, fruits, ginger, moringa, amla." },
-  { name: "Seafood", direction: "export", description: "Frozen Indian shrimp." },
-  { name: "Nuts & Oilseeds", direction: "export", description: "Groundnuts and peanut kernels." },
-  { name: "Natural Sweeteners", direction: "export", description: "Traditional Indian jaggery." },
+  { name: "Rice & Grains", direction: "export", description: "Basmati, non-Basmati and broken rice." },
+  { name: "Spices", direction: "export", description: "Chillies, turmeric, cardamom, pepper & whole spices." },
+  { name: "Pulses", direction: "export", description: "Toor dal, red lentils, mung beans, chana dal." },
+  { name: "Vegetables", direction: "export", description: "Fresh onions, okra and green beans." },
+  { name: "Fresh Fruits", direction: "export", description: "Pomegranates, mangoes and chikoo." },
+  { name: "Dehydrated Products", direction: "export", description: "Dehydrated fruits and vegetables." },
+  { name: "Seafood", direction: "export", description: "Vannamei shrimp, tiger prawns, catla fish." },
+  { name: "Manufactured Products", direction: "export", description: "Areca & bagasse disposables, feed-grade soda." },
+  { name: "Other Export Products", direction: "export", description: "A2 ghee, jaggery and groundnuts." },
   { name: "Polymers", direction: "import", description: "PP, PE and polyester chips." },
-  { name: "Metal Scrap", direction: "import", description: "Aluminium, copper, iron and stainless steel." },
+  { name: "Metal Scrap", direction: "import", description: "Copper, aluminium, UBC, iron and steel." },
+  { name: "Other Import Products", direction: "import", description: "Foil rolls, medical bottles, plastic flakes." },
 ];

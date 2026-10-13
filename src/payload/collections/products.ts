@@ -148,9 +148,9 @@ export const Products: CollectionConfig = {
     },
     {
       name: "hsCode",
-      label: "HS heading",
+      label: "HSN code",
       type: "text",
-      admin: { position: "sidebar", description: "Leave empty until confirmed." },
+      admin: { position: "sidebar", description: "Shown on the product page, e.g. 10063020." },
     },
   ],
 };

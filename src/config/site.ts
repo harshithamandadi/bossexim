@@ -17,18 +17,19 @@ import { anchorHref, groupVerticalHref, routes, sectionIds } from "./routes";
 
 export const siteConfig: SiteConfig = {
   company: {
-    legalName: "BOSS Global EXIM Pvt. Ltd.",
-    name: "BOSS Global EXIM",
-    shortName: "BGEXIM",
+    // Name per the client's final documents (Oct 2026): "BOSS EXIM (Global) Pvt. Ltd.", "BOSS EXIM" for short.
+    legalName: "BOSS EXIM (Global) Pvt. Ltd.",
+    name: "BOSS EXIM Global",
+    shortName: "BOSS EXIM",
     descriptor: "Global Trading Company",
     tagline: "Trade Beyond Boundaries",
-    focus: "Global Sourcing | International Trading | Supply Chain Solutions",
-    roles: ["Merchant Exporter", "Merchant Importer"],
+    focus: "Global Sourcing & International Trading",
+    roles: ["Merchant Exporter", "Merchant Importer", "Supply Chain Solutions"],
     parentGroup: "BOSS Group",
     summary:
-      "BOSS Global EXIM Pvt. Ltd. (BGEXIM) connects reliable suppliers, genuine buyers and international markets through structured sourcing, trading and supply-chain coordination.",
+      "BOSS EXIM (Global) Pvt. Ltd. (BOSS EXIM) connects reliable suppliers, genuine buyers and international markets through structured sourcing, trading and supply-chain coordination.",
     motto: "Connecting Products. Markets. Opportunities.",
-    wordmark: { primary: "BOSS", secondary: "Global EXIM" },
+    wordmark: { primary: "BOSS", secondary: "EXIM Global" },
   },
 
   url: "https://www.bgexim.com",
@@ -39,9 +40,10 @@ export const siteConfig: SiteConfig = {
 
   seo: {
     description:
-      "BOSS Global EXIM Pvt. Ltd. (BGEXIM) connects reliable suppliers, genuine buyers and international markets through structured sourcing, trading and supply-chain coordination. Part of the BOSS Group.",
+      "BOSS EXIM (Global) Pvt. Ltd. (BOSS EXIM) connects reliable suppliers, genuine buyers and international markets through structured sourcing, trading and supply-chain coordination. Part of the BOSS Group.",
     keywords: [
-      "BOSS Global EXIM",
+      "BOSS EXIM",
+      "BOSS EXIM Global",
       "BGEXIM",
       "merchant exporter India",
       "merchant importer India",
@@ -61,10 +63,10 @@ export const siteConfig: SiteConfig = {
       title: "Merchant Export",
       icon: "ship",
       summary:
-        "Selected agricultural products sourced from India for international buyers — planned around the product, variety, quantity, packaging, destination and documentation you need.",
+        "Selected products sourced from India for international buyers through a buyer-driven approach — planned around the product, quality, quantity, packaging, destination and documentation you need.",
       points: [
-        "Rice, spices, pulses, dehydrated foods & more",
-        "Buyers worldwide — the Middle East, South-East Asia & beyond",
+        "Rice, spices, pulses, fresh produce & seafood",
+        "Dehydrated, manufactured & other food products",
         "Quality reports, certificates & inspection coordinated",
       ],
       visual: "exports",
@@ -78,8 +80,8 @@ export const siteConfig: SiteConfig = {
         "Polymers and industrial raw materials sourced internationally for Indian buyers, based on confirmed grades, technical specifications and commercial requirements.",
       points: [
         "Polymers — PP, PE & polyester chips",
-        "Ferrous & non-ferrous recyclable metals",
-        "Technical documents confirmed before execution",
+        "Copper, aluminium, UBC, iron & steel scrap",
+        "Foil rolls, medical bottles & recycled plastic flakes",
       ],
       visual: "imports",
       href: anchorHref(routes.business, sectionIds.business.model),

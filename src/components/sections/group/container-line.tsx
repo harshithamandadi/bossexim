@@ -20,9 +20,9 @@ export function ContainerLineSpotlight() {
               width={containerLine.image.width}
               height={containerLine.image.height}
               sizes="(min-width: 1024px) 40vw, 90vw"
-              className="h-auto w-full drop-shadow-[0_30px_40px_rgb(0_0_0/0.35)]"
+              className="h-auto w-full rounded-2xl shadow-[0_30px_40px_-20px_rgb(0_0_0/0.45)]"
             />
-            <PhotoWatermark size="lg" className="bottom-0" />
+            <PhotoWatermark size="lg" />
           </Reveal>
         </div>
         <Reveal className="space-y-4 lg:pt-10">

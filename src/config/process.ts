@@ -7,7 +7,7 @@ export const howWeWork: ProcessContent & { note: string } = {
     eyebrow: "How We Work",
     title: "Six Steps from Enquiry to Completion",
     description:
-      "Every BGEXIM transaction begins with a clear understanding of the customer’s requirements. This process helps us maintain clarity, accountability and commercial discipline throughout the transaction.",
+      "Every BOSS EXIM transaction begins with a clear understanding of the customer’s requirements. This process helps us maintain clarity, accountability and commercial discipline throughout the transaction.",
   },
   steps: [
     {
@@ -36,7 +36,7 @@ export const howWeWork: ProcessContent & { note: string } = {
     {
       title: "Execute",
       description:
-        "BGEXIM coordinates procurement, quality checks, documentation, banking arrangements, logistics and shipment.",
+        "BOSS EXIM coordinates procurement, quality checks, documentation, banking arrangements, logistics and shipment.",
       icon: "ship",
     },
     {
@@ -108,8 +108,9 @@ export const globalPresence: ProseContent & {
     title: "From Our Base in India to an International Network",
   },
   paragraphs: [
-    "BGEXIM’s current core trade markets include India, Singapore, Malaysia, Australia, UAE, Thailand, Saudi Arabia and Indonesia. India is our corporate base and a key sourcing and destination market.",
-    "We do not present every country as a BGEXIM office. Instead, we distinguish between our own corporate base, BOSS Group logistics presence, core trade markets and extended network capability — which allows us to support opportunities even where BGEXIM does not maintain a dedicated office.",
+    "BOSS EXIM’s current core trade markets include India, Singapore, Malaysia, Australia, UAE, Thailand, Saudi Arabia and Indonesia. India is our corporate base and a key sourcing and destination market. India, Singapore and Malaysia also benefit from the wider BOSS Container Line presence and logistics capabilities.",
+    "Our wider network extends beyond these locations through the BOSS Group, shipping relationships, logistics partners and agent networks across the Indian Subcontinent, Southeast Asia, Middle East and Gulf, Red Sea and Africa, CIS markets and other international destinations.",
+    "We do not present every country as a BOSS EXIM office. Instead, we distinguish between our own corporate base, BOSS Group logistics presence, core trade markets and extended network capability. This structure allows us to support international business opportunities even in markets where BOSS EXIM does not maintain a dedicated office.",
   ],
   tiers: [
     {
