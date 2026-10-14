@@ -34,6 +34,7 @@ export const sectionIds = {
     howWeWork: "how-we-work",
     quality: "quality-verification",
     presence: "global-presence",
+    partner: "partner-with-us",
   },
   partner: {
     buyer: "buyer",

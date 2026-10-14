@@ -8,7 +8,6 @@ import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { WaveDivider } from "@/components/ui/wave-divider";
 import { WorldDotsMap } from "@/components/ui/world-dots-map";
-import { tradeOrigin } from "@/config/markets";
 import { homeContent, siteConfig } from "@/config";
 import { enterOnLoad } from "@/lib/motion";
 import type { Product } from "@/types/content";
@@ -22,14 +21,13 @@ export function HeroSection({ products }: { products: Product[] }) {
       <div aria-hidden className="sky-wash absolute inset-0" />
       {/*
         A flat dotted world map behind the hero — the whole world at a smaller size
-        (client request), with an aeroplane flying from India to London. It fades
+        (client request), It fades
         away behind the text column so the headline stays easy to read.
       */}
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-24 bottom-16 mx-auto max-w-6xl px-6">
         <WorldDotsMap
           variant="backdrop"
           fit="meet"
-          flight={{ from: tradeOrigin.coordinates, to: { lat: 51.5, lon: -0.13 } }}
           className="[mask-image:linear-gradient(to_bottom,rgb(0_0_0/0.1)_0%,rgb(0_0_0/0.1)_55%,#000_80%)] lg:[mask-image:linear-gradient(to_right,rgb(0_0_0/0.1)_0%,rgb(0_0_0/0.14)_40%,rgb(0_0_0/0.7)_55%,#000_66%)]"
         />
       </div>
@@ -37,14 +35,11 @@ export function HeroSection({ products }: { products: Product[] }) {
 
       <Container className="relative grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
         <div className="text-center lg:text-left">
-          {/* The BOSS Group badge and BOSS EXIM's two roles, above the headline (client request). */}
+          {/* BOSS EXIM's roles, above the headline. */}
           <motion.div
             {...enterOnLoad(0)}
             className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 lg:justify-start"
           >
-            <span className="inline-flex items-center rounded-full bg-elevated/85 px-4 py-1.5 shadow-[0_8px_24px_-12px_rgb(8_33_79/0.35)] ring-1 ring-border backdrop-blur">
-              <span className="text-sm font-bold text-fg">{company.parentGroup}</span>
-            </span>
             <ul className="flex items-center gap-3 text-sm font-semibold text-fg/85">
               {company.roles.map((role, index) => (
                 <li key={role} className="flex items-center gap-3">

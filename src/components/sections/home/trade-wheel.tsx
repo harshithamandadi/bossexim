@@ -9,9 +9,10 @@ import {
   useReducedMotion,
   useTransform,
 } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { DottedGlobe } from "@/components/ui/dotted-globe";
 import { Icon } from "@/components/ui/icon";
 import { productLabels, productsViewHref, tradeDirections } from "@/config";
@@ -41,6 +42,8 @@ interface Segment {
   icon: IconName;
   href: string;
   caption: string;
+  /** A product photo for the category, shown inside the globe. */
+  photo?: { src: string; alt: string };
 }
 
 /** One segment per product category — the wheel grows with the catalogue. */
@@ -55,6 +58,7 @@ function buildSegments(products: Product[]): Segment[] {
         icon: lead.icon,
         href: productsViewHref(lead.direction),
         caption: `${items.length} ${direction.singular.toLowerCase()} ${pluralize(items.length, productLabels.line, productLabels.lines)}`,
+        photo: items.find((item) => item.images?.[0])?.images?.[0],
       },
     ];
   });
@@ -202,7 +206,7 @@ export function TradeWheel({ products, className }: { products: Product[]; class
       </motion.div>
 
       <Globe gradientId={`${id}-globe`} paused={!isOnScreen} />
-      <GlobeCaption segment={activeSegment} />
+      <GlobePhotos segments={segments} activeIndex={activeIndex} paused={reduceMotion === true || !isOnScreen} />
     </motion.div>
   );
 }
@@ -259,26 +263,44 @@ function Globe({ gradientId, paused }: { gradientId: string; paused: boolean }) 
   );
 }
 
-/** Names the segment being pointed at, written across the globe. */
-function GlobeCaption({ segment }: { segment?: Segment }) {
+/** Time each category's photo stays in the globe while the wheel turns on its own. */
+const PHOTO_INTERVAL_MS = 2800;
+
+/**
+ * Product photos inside the globe (client request): they cycle through the categories
+ * as the wheel turns, and show the category being pointed at, with its name.
+ */
+function GlobePhotos({ segments, activeIndex, paused }: { segments: Segment[]; activeIndex: number | null; paused: boolean }) {
+  const withPhotos = segments.map((segment, index) => ({ segment, index })).filter(({ segment }) => segment.photo);
+  const [cycle, setCycle] = useState(0);
+
+  useEffect(() => {
+    if (paused || activeIndex !== null || withPhotos.length < 2) return;
+    const timer = window.setInterval(() => setCycle((value) => value + 1), PHOTO_INTERVAL_MS);
+    return () => window.clearInterval(timer);
+  }, [paused, activeIndex, withPhotos.length]);
+
+  const shown =
+    activeIndex !== null ? segments[activeIndex] : withPhotos.length > 0 ? withPhotos[cycle % withPhotos.length]?.segment : undefined;
+  const inset = percent(CENTER - GLOBE_RADIUS * 0.86);
+
   return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 grid place-items-center"
-      style={{ padding: percent(CENTER - GLOBE_RADIUS * 0.8) }}
-    >
-      <AnimatePresence mode="popLayout" initial={false}>
-        {segment && (
+    <div aria-hidden className="pointer-events-none absolute" style={{ inset }}>
+      <AnimatePresence initial={false}>
+        {shown?.photo && (
           <motion.div
-            key={segment.category}
-            initial={{ opacity: 0, y: 6, filter: "blur(4px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -6, filter: "blur(4px)", transition: { duration: DURATION.fast } }}
-            transition={{ duration: 0.24, ease: EASE_SMOOTH }}
-            className="rounded-2xl bg-navy-deep/45 px-3 py-2 text-center text-white backdrop-blur-sm"
+            key={shown.category}
+            initial={{ opacity: 0, scale: 0.92, rotate: -8 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            exit={{ opacity: 0, scale: 1.04, rotate: 8 }}
+            transition={{ duration: 0.6, ease: EASE_SMOOTH }}
+            className="absolute inset-0 overflow-hidden rounded-full bg-white shadow-[inset_0_0_30px_rgb(10_50_112/0.35)] ring-4 ring-white/70"
           >
-            <p className="font-display text-sm leading-tight font-bold sm:text-base">{segment.category}</p>
-            <p className="mt-0.5 text-[11px] font-medium text-white/80 sm:text-xs">{segment.caption}</p>
+            <Image src={shown.photo.src} alt="" fill sizes="220px" className="scale-110 object-cover" />
+            <span className="absolute inset-x-0 bottom-0 bg-linear-to-t from-navy-deep/80 via-navy-deep/40 to-transparent px-4 pt-6 pb-[14%] text-center text-white">
+              <span className="block font-display text-[13px] leading-tight font-bold sm:text-sm">{shown.category}</span>
+              <span className="mt-0.5 block text-[10px] text-white/80 sm:text-[11px]">{shown.caption}</span>
+            </span>
           </motion.div>
         )}
       </AnimatePresence>

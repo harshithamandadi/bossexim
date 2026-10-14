@@ -364,3 +364,15 @@ Source: `requirements/3rd resources/` — New Website Structure.docx (site map),
 - [x] R6.9 Contact: Incoterm — remove "Other", keep "Not sure".
 - [x] R6.10 Presence map: the client's "BOSS Group Presense" map replaces the footprint map everywhere (Global Sourcing card, BOSS Group intro).
 - [ ] Confirm with the client: extra lanes to EGY, KEN, BRA and NGA were added to balance the western side of the map (Container Line network / on request) — keep or drop; "LON" is used for the UK per their list.
+
+### R7. Client changes (requirements/5th/5th.docx, 14 Oct 2026) — done
+- [x] Hero: "BOSS Group" pill removed; clipped "s" in "Boundaries" fixed; flight removed.
+- [x] Trade wheel globe shows product photos that change as the wheel turns (and the pointed category).
+- [x] Footer social links on one line.
+- [x] Values sentence moved under the Values image, in bold.
+- [x] Team heading "Meet Our Team" (they're employees, not founders); team and founder cards equal height; "Read full profile" toggle sits at the end of the expanded profile.
+- [x] "THE BOSS GROUP" under the logo on the mark panels.
+- [x] Product photos trimmed to a 4:3 white frame and shown whole (A2 ghee no longer cut); watermark is now blue.
+- [x] BOSS Group vertical and Container Line service photos are sliders.
+- [x] Trade Process: new "Partner With Us" section and tab (client's Partner With Us document + buyer/supplier/partner cards).
+- [ ] Pradeep K and Nagaraju P: role summaries are DRAFT (their documents have only name and title) — need the client's profiles and photos.

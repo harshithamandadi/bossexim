@@ -8,14 +8,14 @@ const sizes = {
 } as const;
 
 /**
- * A small, faded BOSS mark in the corner of a photo (client request: brand the
- * photos). Place inside a `relative` photo container, after the image.
+ * A small BOSS mark in brand blue in the corner of a photo (client request: brand the
+ * photos; blue, Oct 2026). Place inside a `relative` photo container, after the image.
  */
 export function PhotoWatermark({ size = "md", className }: { size?: keyof typeof sizes; className?: string }) {
   return (
     <LogoMark
       className={cn(
-        "pointer-events-none absolute w-auto text-white/70 drop-shadow-[0_1px_3px_rgb(0_0_0/0.55)] select-none",
+        "pointer-events-none absolute w-auto text-brand/75 drop-shadow-[0_0_2px_rgb(255_255_255/0.9)] select-none",
         sizes[size],
         className,
       )}

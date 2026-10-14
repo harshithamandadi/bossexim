@@ -68,15 +68,16 @@ export const visionMissionValues: {
 };
 
 /** Leadership profiles are managed in the admin (Website content → Team / Leadership). */
-export const leadership: { heading: SectionContent; emptyState: string; readProfile: string } = {
+export const leadership: { heading: SectionContent; emptyState: string; readProfile: string; showLess: string } = {
   heading: {
     eyebrow: "Our Team",
-    title: "The People Behind BOSS EXIM",
+    title: "Meet Our Team",
     description:
       "BOSS EXIM’s operations team brings practical experience in international trade, sourcing, supplier coordination, commercial negotiation, quality verification, documentation, logistics and customer support. The team follows structured processes, clear communication and disciplined transaction control to manage opportunities efficiently, reduce operational risk and support reliable execution from enquiry through delivery.",
   },
   emptyState: "Leadership profiles will be published here soon.",
   readProfile: "Read full profile",
+  showLess: "Show less",
 };
 
 /** The registrations we list; their numbers are entered in the admin (Settings → Company details). */

@@ -4,6 +4,9 @@ import { sectionIds } from "./routes";
 
 export const partnerContent: {
   heading: SectionContent;
+  /** The client's "Partner With Us" document, for its section on Trade Process. */
+  tradeProcessIntro: string;
+  tradeProcessCta: string;
   form: SectionContent & { notes: string[] };
   tracks: PartnerTrack[];
 } = {
@@ -13,6 +16,9 @@ export const partnerContent: {
     description:
       "Our objective is to build a trusted international network supporting sourcing, trading, inspection, logistics, warehousing, finance and market development. Every enquiry is reviewed before further discussion and does not automatically create a commercial commitment.",
   },
+  tradeProcessIntro:
+    "BOSS EXIM welcomes long-term relationships with genuine buyers, reliable suppliers and experienced strategic partners. Buyers can share product requirements, specifications, quantities, destinations and preferred commercial terms. Suppliers can introduce their products, capacity, certifications, loading ports and business terms. Logistics providers, warehouses, inspection agencies, financial institutions, overseas representatives and trade-service partners are also welcome to connect. Every enquiry is reviewed before further discussion and does not automatically create a commercial commitment. Buy, Sell or Partner with BOSS EXIM.",
+  tradeProcessCta: "Register with us",
   form: {
     eyebrow: "Register",
     title: "Tell Us About Your Business",

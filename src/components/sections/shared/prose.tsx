@@ -50,8 +50,9 @@ export function AccentPanel({ variant = "map", caption = siteConfig.company.mott
           </div>
         )}
         {variant === "mark" && (
-          <div className="grid aspect-[16/9] place-items-center">
+          <div className="grid aspect-[16/9] place-content-center justify-items-center gap-4">
             <LogoMark className="h-24 w-auto text-white/90 drop-shadow-[0_10px_30px_rgb(79_168_232/0.5)]" />
+            <p className="font-display text-lg font-extrabold tracking-[0.18em] text-white/90">THE BOSS GROUP</p>
           </div>
         )}
         <p className="mt-5 font-display text-[15px] font-semibold text-fg">{caption}</p>

@@ -1,7 +1,7 @@
-import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { toParagraphs } from "@/components/sections/shared/prose";
+import { ExpandableBio } from "@/components/ui/expandable-bio";
 import { IconTile } from "@/components/ui/icon";
 import { LogoMark } from "@/components/ui/logo";
 import { leadership } from "@/config";
@@ -31,40 +31,18 @@ export async function TeamGrid({ className }: { className?: string }) {
   }
 
   return (
-    <RevealGroup as="ul" className={cn("grid items-start gap-5 md:grid-cols-2 lg:grid-cols-3", className)}>
+    <RevealGroup as="ul" className={cn("grid gap-5 md:grid-cols-2 lg:grid-cols-3", className)}>
       {members.map((member) => (
-        <RevealItem as="li" key={member.name} className="card-gradient overflow-hidden rounded-card bg-surface ring-1 ring-inset ring-border">
+        <RevealItem as="li" key={member.name} className="card-gradient flex flex-col overflow-hidden rounded-card bg-surface ring-1 ring-inset ring-border">
           <Portrait member={member} />
-          <div className="p-6 sm:p-7">
+          <div className="flex flex-1 flex-col p-6 sm:p-7">
             <h3 className="type-h3">{member.name}</h3>
             <p className="mt-1 text-[15px] font-semibold text-brand">{member.role}</p>
-            {member.bio && <Bio text={member.bio} />}
+            {member.bio && <ExpandableBio paragraphs={toParagraphs(member.bio)} moreLabel={leadership.readProfile} lessLabel={leadership.showLess} className="mt-4" />}
           </div>
         </RevealItem>
       ))}
     </RevealGroup>
-  );
-}
-
-function Bio({ text }: { text: string }) {
-  const [lead, ...rest] = toParagraphs(text);
-  return (
-    <div className="mt-4 text-[15px] leading-relaxed text-pretty text-fg-mute">
-      <p>{lead}</p>
-      {rest.length > 0 && (
-        <details className="group mt-3">
-          <summary className="inline-flex cursor-pointer list-none items-center gap-1.5 text-sm font-semibold text-brand [&::-webkit-details-marker]:hidden">
-            {leadership.readProfile}
-            <ChevronDown aria-hidden className="size-4 transition-transform duration-300 group-open:rotate-180" />
-          </summary>
-          <div className="mt-3 space-y-3">
-            {rest.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
-        </details>
-      )}
-    </div>
   );
 }
 

@@ -36,18 +36,15 @@ export function VisionMission() {
         ))}
       </RevealGroup>
 
-      <div className="mt-12 grid items-center gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-14">
+      <div className="mt-12 grid items-start gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-14">
         <Reveal>
           <div className="relative aspect-square overflow-hidden rounded-panel bg-white ring-1 ring-inset ring-border">
             <Image src={valuesImage.src} alt={valuesImage.alt} fill sizes="(min-width: 1024px) 30vw, 90vw" className="object-contain" />
           </div>
+          {/* The values sentence sits under the image, in bold (client request). */}
+          <p className="mt-6 text-[17px] leading-relaxed font-bold text-pretty text-fg">{intro}</p>
         </Reveal>
-        <div>
-          <Reveal>
-            <p className="type-body max-w-2xl text-pretty text-fg-mute">{intro}</p>
-          </Reveal>
-          <FeatureGrid items={values} columns={2} variant="plain" className="mt-8" />
-        </div>
+        <FeatureGrid items={values} columns={2} variant="plain" />
       </div>
     </>
   );

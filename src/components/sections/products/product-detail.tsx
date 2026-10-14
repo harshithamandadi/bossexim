@@ -51,8 +51,8 @@ export function ProductHero({ product }: { product: Product }) {
       media={
         photo && (
           <Reveal>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-panel bg-surface shadow-[0_40px_80px_-40px_rgb(8_33_79/0.45)]">
-              <Image src={photo.src} alt={photo.alt} fill priority sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
+            <div className="relative aspect-[4/3] overflow-hidden rounded-panel bg-white shadow-[0_40px_80px_-40px_rgb(8_33_79/0.45)]">
+              <Image src={photo.src} alt={photo.alt} fill priority sizes="(min-width: 1024px) 40vw, 100vw" className="object-contain" />
               <PhotoWatermark size="lg" />
             </div>
             {credit && (
@@ -144,8 +144,8 @@ export function ProductOverview({ product, catalogue }: { product: Product; cata
           {product.images && product.images.length > 1 && (
             <ul className="mt-4 grid grid-cols-2 gap-3">
               {product.images.slice(1).map((image) => (
-                <li key={image.src} className="relative aspect-[4/3] overflow-hidden card-gradient rounded-card bg-surface">
-                  <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 20vw, 50vw" className="object-cover" />
+                <li key={image.src} className="relative aspect-[4/3] overflow-hidden rounded-card bg-white">
+                  <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 20vw, 50vw" className="object-contain" />
                   <PhotoWatermark size="sm" />
                 </li>
               ))}
@@ -169,8 +169,8 @@ export function ProductSpecifications({ product }: { product: Product }) {
       <div className={cn("mt-6 grid items-start gap-6", photo && "lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]")}>
         {photo && (
           <Reveal className="lg:sticky lg:top-36">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-surface ring-1 ring-inset ring-border lg:aspect-square">
-              <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 1024px) 30vw, 100vw" className="object-cover" />
+            <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-white ring-1 ring-inset ring-border">
+              <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 1024px) 30vw, 100vw" className="object-contain" />
               <PhotoWatermark />
             </div>
           </Reveal>

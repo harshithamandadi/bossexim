@@ -47,7 +47,7 @@ export const mainNavigation: NavGroup[] = [
       {
         label: "Our Team",
         href: anchorHref(routes.about, about.leadership),
-        description: "The people behind BOSS EXIM.",
+        description: "The team that runs BOSS EXIM.",
       },
       {
         label: "Registrations & Compliance",
@@ -110,6 +110,11 @@ export const mainNavigation: NavGroup[] = [
         label: "Our Global Presence",
         href: anchorHref(routes.tradeProcess, tradeProcess.presence),
         description: "Our base, core markets and wider network.",
+      },
+      {
+        label: "Partner With Us",
+        href: anchorHref(routes.tradeProcess, tradeProcess.partner),
+        description: "Buy, sell or partner with BOSS EXIM.",
       },
       {
         label: "Register as a Buyer",

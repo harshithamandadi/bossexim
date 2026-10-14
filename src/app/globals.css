@@ -272,6 +272,11 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  /* Tight display tracking pushes the last glyph past the box, where the clipped gradient
+     would cut it off (the "s" of "Boundaries"); pad the box and pull the space back. */
+  padding-inline-end: 0.1em;
+  margin-inline-end: -0.1em;
+  padding-block-end: 0.06em;
 }
 
 @utility glass {

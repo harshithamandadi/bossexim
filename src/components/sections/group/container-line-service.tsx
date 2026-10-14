@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Carousel } from "@/components/ui/carousel";
 import { IconTile } from "@/components/ui/icon";
-import { PhotoGallery } from "@/components/ui/photo-gallery";
+import { PhotoSlider } from "@/components/ui/photo-slider";
 import { containerLineServiceHref, containerLineServices, groupVerticalLabels, uiLabels, type ContainerLineService } from "@/config";
 import { cn } from "@/lib/cn";
 
@@ -28,7 +28,7 @@ export function ServiceMedia({ service }: { service: ContainerLineService }) {
           priority
           className={contain ? "object-contain p-4" : "object-cover"}
         />
-        <PhotoWatermark size="lg" className={cn(contain && "text-navy/50 drop-shadow-none")} />
+        <PhotoWatermark size="lg" />
       </div>
     </Reveal>
   );
@@ -69,7 +69,7 @@ export function ServiceOverview({ service }: { service: ContainerLineService }) 
 
 /** More of the client's photos for the service. */
 export function ServiceGallery({ service }: { service: ContainerLineService }) {
-  return <PhotoGallery photos={service.gallery} columns={2} />;
+  return <PhotoSlider photos={[service.image, ...service.gallery]} label={`${service.title} photos`} />;
 }
 
 /** Card link to a service page, used on the Container Line page and under each service. */

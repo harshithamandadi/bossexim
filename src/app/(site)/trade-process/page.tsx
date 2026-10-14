@@ -3,6 +3,7 @@ import { PageHero } from "@/components/layout/page-hero";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { CtaSection } from "@/components/sections/shared/cta-section";
 import { FeatureGrid } from "@/components/sections/shared/feature-grid";
+import { PartnerTracks } from "@/components/sections/shared/partner-tracks";
 import { ProcessScroller } from "@/components/sections/shared/process-scroller";
 import { Motto, ProseSplit } from "@/components/sections/shared/prose";
 import { WorldTradeMap } from "@/components/sections/trade/world-trade-map";
@@ -10,7 +11,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
-import { globalPresence, homeContent, howWeWork, pageContent, qualityVerification, routes, sectionIds } from "@/config";
+import { globalPresence, homeContent, howWeWork, pageContent, partnerContent, qualityVerification, routes, sectionIds } from "@/config";
 import { getCatalogue, getCompanyDetails } from "@/lib/content/queries";
 import { createPageMetadata } from "@/lib/metadata";
 import { getLocalNavItems } from "@/lib/navigation";
@@ -71,16 +72,18 @@ export default async function TradeProcessPage() {
         </Reveal>
       </Section>
 
-      <Section tone="mist" spacing="compact">
+      {/* Partner With Us — its own section of Trade Process, per the client's website structure. */}
+      <Section id={sectionIds.tradeProcess.partner} tone="mist" spacing="compact">
         <SectionHeader
-          eyebrow={pageContent.partner.eyebrow}
+          eyebrow={partnerContent.heading.eyebrow}
           title={pageContent.partner.title}
-          description={pageContent.partner.description}
+          description={partnerContent.tradeProcessIntro}
         >
           <ButtonLink href={routes.partner} variant="brand" withArrow>
-            {pageContent.partner.eyebrow}
+            {partnerContent.tradeProcessCta}
           </ButtonLink>
         </SectionHeader>
+        <PartnerTracks detailed className="mt-10" />
       </Section>
 
       <CtaSection />

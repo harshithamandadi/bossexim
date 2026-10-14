@@ -408,7 +408,7 @@ export const groupJourney: {
 };
 
 /** The founders of BOSS Group (Founders documents, Oct 2026). */
-export const groupFounders: { heading: SectionContent; readProfile: string; founders: Founder[] } = {
+export const groupFounders: { heading: SectionContent; readProfile: string; showLess: string; founders: Founder[] } = {
   heading: {
     eyebrow: "Founders",
     title: "Built on Friendship, Trust and Shared Responsibility",
@@ -416,6 +416,7 @@ export const groupFounders: { heading: SectionContent; readProfile: string; foun
       "BOSS Group was founded by a group of friends who shared a common vision to stay connected, support one another and build meaningful businesses together. Coming from different professional and entrepreneurial backgrounds, the founders brought diverse experience, ideas and capabilities into one common platform. Over time, this foundation helped the Group expand across multiple industries and international markets — and the founders continue to shape its culture through their commitment to integrity, innovation, teamwork, disciplined execution and sustainable growth.",
   },
   readProfile: "Read full profile",
+  showLess: "Show less",
   founders: [
     {
       name: "Prasad Kalla",

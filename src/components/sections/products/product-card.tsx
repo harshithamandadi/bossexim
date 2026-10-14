@@ -33,14 +33,14 @@ export function ProductCard({ product, markets, className }: ProductCardProps) {
       className={cardStyles({ interactive: true, className: cn("group flex h-full flex-col", className) })}
     >
       {/* Every card has the same picture area, so cards line up whether or not a photo exists. */}
-      <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-surface">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-white">
         {photo ? (
           <Image
             src={photo.src}
             alt={photo.alt}
             fill
             sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
-            className="object-cover transition-transform duration-500 ease-smooth group-hover:scale-[1.04]"
+            className="object-contain transition-transform duration-500 ease-smooth group-hover:scale-[1.04]"
           />
         ) : (
           <div aria-hidden className="brand-gradient absolute inset-0 grid place-items-center">
@@ -97,7 +97,7 @@ export function ProductMiniCard({ product, className }: { product: Product; clas
         className,
       )}
     >
-      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-surface">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-white">
         {photo ? (
           <>
             <Image
@@ -105,7 +105,7 @@ export function ProductMiniCard({ product, className }: { product: Product; clas
               alt={photo.alt}
               fill
               sizes="220px"
-              className="object-cover transition-transform duration-500 ease-smooth group-hover:scale-[1.05]"
+              className="object-contain transition-transform duration-500 ease-smooth group-hover:scale-[1.05]"
             />
             <PhotoWatermark size="sm" />
           </>
