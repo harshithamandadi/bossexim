@@ -12,7 +12,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import { useMemo, useRef, useState, type PointerEvent } from "react";
 import { DottedGlobe } from "@/components/ui/dotted-globe";
 import { Icon } from "@/components/ui/icon";
 import { productLabels, productsViewHref, tradeDirections } from "@/config";
@@ -42,7 +42,7 @@ interface Segment {
   icon: IconName;
   href: string;
   caption: string;
-  /** A product photo for the category, shown inside the globe. */
+  /** A product photo for the category, shown in its pod around the wheel. */
   photo?: { src: string; alt: string };
 }
 
@@ -206,7 +206,7 @@ export function TradeWheel({ products, className }: { products: Product[]; class
       </motion.div>
 
       <Globe gradientId={`${id}-globe`} paused={!isOnScreen} />
-      <GlobePhotos segments={segments} activeIndex={activeIndex} paused={reduceMotion === true || !isOnScreen} />
+      <GlobeCaption segment={activeSegment} />
     </motion.div>
   );
 }
@@ -228,12 +228,16 @@ function SegmentPod({ segment, isActive, ...props }: SegmentPodProps) {
         animate={{ scale: isActive ? 1.4 : 1 }}
         transition={SPRING_SNAPPY}
         className={cn(
-          "relative grid size-11 place-items-center overflow-hidden rounded-full bg-white ring-1 ring-brand/15 transition-shadow duration-200 sm:size-14",
+          "relative grid size-12 place-items-center overflow-hidden rounded-full bg-white ring-2 ring-white transition-shadow duration-200 sm:size-16",
           "group-focus-visible:ring-2 group-focus-visible:ring-brand",
           isActive ? "shadow-xl shadow-navy/35" : "shadow-lg shadow-navy/25",
         )}
       >
-        <Icon name={segment.icon} className="size-5 text-brand sm:size-6" />
+        {segment.photo ? (
+          <Image src={segment.photo.src} alt="" fill sizes="80px" className="object-cover" />
+        ) : (
+          <Icon name={segment.icon} className="size-5 text-brand sm:size-6" />
+        )}
       </motion.span>
       <span className="sr-only">{segment.category}</span>
     </Link>
@@ -263,44 +267,26 @@ function Globe({ gradientId, paused }: { gradientId: string; paused: boolean }) 
   );
 }
 
-/** Time each category's photo stays in the globe while the wheel turns on its own. */
-const PHOTO_INTERVAL_MS = 2800;
-
-/**
- * Product photos inside the globe (client request): they cycle through the categories
- * as the wheel turns, and show the category being pointed at, with its name.
- */
-function GlobePhotos({ segments, activeIndex, paused }: { segments: Segment[]; activeIndex: number | null; paused: boolean }) {
-  const withPhotos = segments.map((segment, index) => ({ segment, index })).filter(({ segment }) => segment.photo);
-  const [cycle, setCycle] = useState(0);
-
-  useEffect(() => {
-    if (paused || activeIndex !== null || withPhotos.length < 2) return;
-    const timer = window.setInterval(() => setCycle((value) => value + 1), PHOTO_INTERVAL_MS);
-    return () => window.clearInterval(timer);
-  }, [paused, activeIndex, withPhotos.length]);
-
-  const shown =
-    activeIndex !== null ? segments[activeIndex] : withPhotos.length > 0 ? withPhotos[cycle % withPhotos.length]?.segment : undefined;
-  const inset = percent(CENTER - GLOBE_RADIUS * 0.86);
-
+/** Names the segment being pointed at, written across the globe. */
+function GlobeCaption({ segment }: { segment?: Segment }) {
   return (
-    <div aria-hidden className="pointer-events-none absolute" style={{ inset }}>
-      <AnimatePresence initial={false}>
-        {shown?.photo && (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 grid place-items-center"
+      style={{ padding: percent(CENTER - GLOBE_RADIUS * 0.8) }}
+    >
+      <AnimatePresence mode="popLayout" initial={false}>
+        {segment && (
           <motion.div
-            key={shown.category}
-            initial={{ opacity: 0, scale: 0.92, rotate: -8 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            exit={{ opacity: 0, scale: 1.04, rotate: 8 }}
-            transition={{ duration: 0.6, ease: EASE_SMOOTH }}
-            className="absolute inset-0 overflow-hidden rounded-full bg-white shadow-[inset_0_0_30px_rgb(10_50_112/0.35)] ring-4 ring-white/70"
+            key={segment.category}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6, transition: { duration: DURATION.fast } }}
+            transition={{ duration: 0.24, ease: EASE_SMOOTH }}
+            className="rounded-2xl bg-navy-deep/60 px-3 py-2 text-center text-white"
           >
-            <Image src={shown.photo.src} alt="" fill sizes="220px" className="scale-110 object-cover" />
-            <span className="absolute inset-x-0 bottom-0 bg-linear-to-t from-navy-deep/80 via-navy-deep/40 to-transparent px-4 pt-6 pb-[14%] text-center text-white">
-              <span className="block font-display text-[13px] leading-tight font-bold sm:text-sm">{shown.category}</span>
-              <span className="mt-0.5 block text-[10px] text-white/80 sm:text-[11px]">{shown.caption}</span>
-            </span>
+            <p className="font-display text-sm leading-tight font-bold sm:text-base">{segment.category}</p>
+            <p className="mt-0.5 text-[11px] font-medium text-white/85 sm:text-xs">{segment.caption}</p>
           </motion.div>
         )}
       </AnimatePresence>

@@ -111,6 +111,16 @@ export const buyingSteps: BuyingStep[] = [
     placeholder: "Grade or specification",
     examples: [NEED_ASSISTANCE],
   },
+  // Q4 and Q5 are the buyer's name and phone (client request, Oct 2026), so the team can
+  // follow up even if the rest of the enquiry isn't finished.
+  { id: "name", label: "Name", question: "Thank you. May I have your name?", input: "text", placeholder: "Full name" },
+  {
+    id: "phone",
+    label: "WhatsApp / phone",
+    question: "And your phone / WhatsApp number? Please include the country code.",
+    input: "tel",
+    placeholder: "+971 …",
+  },
   {
     id: "packaging",
     label: "Packaging",
@@ -168,7 +178,7 @@ export const buyingSteps: BuyingStep[] = [
   {
     id: "company",
     label: "Company",
-    question: "Thanks! A few details about your company. What is your company name?",
+    question: "A few details about your company. What is your company name?",
     input: "text",
     placeholder: "Company name",
   },
@@ -203,20 +213,12 @@ export const buyingSteps: BuyingStep[] = [
       "Other",
     ],
   },
-  { id: "name", label: "Name", question: "What is your full name?", input: "text", placeholder: "Full name" },
   {
     id: "email",
     label: "Email",
     question: "What is your business email address?",
     input: "email",
     placeholder: "you@company.com",
-  },
-  {
-    id: "phone",
-    label: "WhatsApp / phone",
-    question: "What is your WhatsApp / telephone number? Please include the country code.",
-    input: "tel",
-    placeholder: "+971 …",
   },
   {
     id: "documentation",
@@ -279,15 +281,15 @@ export const chatbotContent = {
   callback: {
     intro: "Happy to arrange that — our team will get back to you personally. Just a few quick details.",
     steps: [
-      { id: "name", label: "Name", question: "What is your name?", input: "text", placeholder: "Full name" },
-      { id: "email", label: "Email", question: "What is your email address?", input: "email", placeholder: "you@company.com" },
+      { id: "name", label: "Name", question: "May I have your name?", input: "text", placeholder: "Full name" },
       {
         id: "phone",
         label: "Phone / WhatsApp",
-        question: "Your phone or WhatsApp number, with the country code?",
+        question: "And your phone / WhatsApp number? Please include the country code.",
         input: "tel",
         placeholder: "+971 …",
       },
+      { id: "email", label: "Email", question: "What is your email address?", input: "email", placeholder: "you@company.com" },
       {
         id: "message",
         label: "Topic",
@@ -303,11 +305,14 @@ export const chatbotContent = {
   },
 
   /** After a couple of questions, Aira offers to have the team follow up (client request). */
+  /**
+   * On the Products and Company Information paths, Aira asks for the visitor's name and
+   * phone as questions 4 and 5 (client request, Oct 2026), then their email, so the team
+   * can follow up. Saved as a call-back request.
+   */
   contactAsk: {
-    afterQuestions: 2,
-    text: "Would you like our trade team to follow up with you directly? Share your email and phone number and we’ll get in touch.",
-    yes: "📞 Share my contact details",
-    no: "Not now",
+    afterAnswers: 3,
+    intro: "Thank you! So our trade team can follow up with you on this —",
   },
 
   /** A small greeting bubble beside the launcher on larger screens (never on phones). */

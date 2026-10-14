@@ -120,7 +120,18 @@ export const seedGroupCompanies: Omit<GroupCompany, "logo">[] = [
 ];
 
 export const seedGalleries: { title: string; icon: IconName; photos?: { file: string; alt: string }[] }[] = [
-  { title: "Leadership", icon: "user-round" },
+  {
+    title: "Leadership",
+    icon: "user-round",
+    // Placeholders (client's sample images) until real photos are uploaded in the admin.
+    photos: [
+      { file: "media/sample-1.jpg", alt: "Sample image 1 — replace in the admin" },
+      { file: "media/sample-2.jpg", alt: "Sample image 2 — replace in the admin" },
+      { file: "media/sample-3.jpg", alt: "Sample image 3 — replace in the admin" },
+      { file: "media/sample-4.jpg", alt: "Sample image 4 — replace in the admin" },
+      { file: "media/sample-5.jpg", alt: "Sample image 5 — replace in the admin" },
+    ],
+  },
   {
     title: "Business Meetings",
     icon: "briefcase",
@@ -138,8 +149,30 @@ export const seedGalleries: { title: string; icon: IconName; photos?: { file: st
       { file: "media/meetings-img_9632.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
     ],
   },
-  { title: "Supplier Visits", icon: "factory" },
-  { title: "Trade Events", icon: "presentation" },
+  {
+    title: "Supplier Visits",
+    icon: "factory",
+    // Placeholders (client's sample images) until real photos are uploaded in the admin.
+    photos: [
+      { file: "media/sample-1.jpg", alt: "Sample image 1 — replace in the admin" },
+      { file: "media/sample-2.jpg", alt: "Sample image 2 — replace in the admin" },
+      { file: "media/sample-3.jpg", alt: "Sample image 3 — replace in the admin" },
+      { file: "media/sample-4.jpg", alt: "Sample image 4 — replace in the admin" },
+      { file: "media/sample-5.jpg", alt: "Sample image 5 — replace in the admin" },
+    ],
+  },
+  {
+    title: "Trade Events",
+    icon: "presentation",
+    // Placeholders (client's sample images) until real photos are uploaded in the admin.
+    photos: [
+      { file: "media/sample-1.jpg", alt: "Sample image 1 — replace in the admin" },
+      { file: "media/sample-2.jpg", alt: "Sample image 2 — replace in the admin" },
+      { file: "media/sample-3.jpg", alt: "Sample image 3 — replace in the admin" },
+      { file: "media/sample-4.jpg", alt: "Sample image 4 — replace in the admin" },
+      { file: "media/sample-5.jpg", alt: "Sample image 5 — replace in the admin" },
+    ],
+  },
   {
     title: "International Business",
     icon: "globe",

@@ -726,8 +726,14 @@ export const groupVerticals: GroupVertical[] = [
       },
     ],
     photos: [
-      { src: "/images/group/laundromats/beenleigh.webp", alt: "Laundrette @ Beenleigh — the shopfront and washers and dryers", width: 1400, height: 1025 },
-      { src: "/images/group/laundromats/redbank.webp", alt: "Laundrette @ Redbank — the shopfront and washers and dryers", width: 1400, height: 1086 },
+      { src: "/images/group/laundromats/beenleigh-1.webp", alt: "Laundrette @ Beenleigh shopfront", width: 1170, height: 724 },
+      { src: "/images/group/laundromats/beenleigh-2.webp", alt: "Washers at Laundrette @ Beenleigh", width: 996, height: 724 },
+      { src: "/images/group/laundromats/beenleigh-3.webp", alt: "Dryers and folding area at Laundrette @ Beenleigh", width: 1170, height: 724 },
+      { src: "/images/group/laundromats/beenleigh-4.webp", alt: "Seating and washers at Laundrette @ Beenleigh", width: 996, height: 724 },
+      { src: "/images/group/laundromats/redbank-1.webp", alt: "Laundrette @ Redbank shopfront", width: 914, height: 824 },
+      { src: "/images/group/laundromats/redbank-2.webp", alt: "Washers, dryers and folding table at Laundrette @ Redbank", width: 1214, height: 824 },
+      { src: "/images/group/laundromats/redbank-3.webp", alt: "Dryers and seating at Laundrette @ Redbank", width: 858, height: 692 },
+      { src: "/images/group/laundromats/redbank-4.webp", alt: "Large-capacity washers at Laundrette @ Redbank", width: 1276, height: 692 },
     ],
   },
   {

@@ -23,6 +23,7 @@ import type { FaqItem } from "@/types/content";
 import {
   INITIAL_FLOW,
   callbackReply,
+  startContactCapture,
   composerHints,
   greetingMessage,
   respond,
@@ -99,37 +100,32 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
   }
 
   /** Echoes the visitor's message and queues Aira's replies (delivering any still "typing" first). */
-  // Questions answered so far, and whether Aira has already offered a follow-up.
-  const [questionCount, setQuestionCount] = useState(0);
+  // Answers given while browsing (Products / Company Information), and whether Aira has asked for contact details.
+  const [answerCount, setAnswerCount] = useState(0);
   const [askedForContact, setAskedForContact] = useState(false);
 
   function send(input: VisitorInput, echo: string) {
     if (isSubmitting) return;
-    const response = respond(flow, input, { faqs, products, search });
+    let response = respond(flow, input, { faqs, products, search });
     const startsCapture = response.flow.kind === "callback" || response.flow.kind === "buying";
     if (startsCapture) setAskedForContact(true);
 
-    // A question answered outside the buying and call-back flows counts towards the follow-up offer.
-    const isQuestion = (input.kind === "text" || input.kind === "faq") && response.flow.kind === "browse";
     // Only questions asked while browsing — never answers to the buying or call-back steps (contact details).
+    const isQuestion = (input.kind === "text" || input.kind === "faq") && response.flow.kind === "browse";
     if (isQuestion && flow.kind === "browse") recordQuestion(input, response.replies[0]?.text);
-    const answered = isQuestion ? questionCount + 1 : questionCount;
-    setQuestionCount(answered);
-    const offerFollowUp = !askedForContact && !startsCapture && isQuestion && answered >= content.contactAsk.afterQuestions;
-    if (offerFollowUp) setAskedForContact(true);
-    const replies: AssistantMessage[] = offerFollowUp
-      ? [
-          ...response.replies,
-          {
-            from: "assistant",
-            text: content.contactAsk.text,
-            choices: [
-              { id: "callback", label: content.contactAsk.yes },
-              { id: "menu", label: content.contactAsk.no },
-            ],
-          },
-        ]
-      : response.replies;
+
+    // Every answer on the Products / Company paths counts (not the menu buttons themselves). After the
+    // third, Aira asks for name and phone as questions 4 and 5, then email (client request).
+    const isMenuChoice = input.kind === "choice" && (input.choice.id === "menu" || input.choice.id.startsWith("menu:"));
+    const isBrowsing = (flow.kind === "browse" || flow.kind === "product-other") && (response.flow.kind === "browse" || response.flow.kind === "product-other");
+    const answered = isBrowsing && !isMenuChoice ? answerCount + 1 : answerCount;
+    setAnswerCount(answered);
+    if (!askedForContact && !startsCapture && isBrowsing && answered >= content.contactAsk.afterAnswers) {
+      setAskedForContact(true);
+      const capture = startContactCapture();
+      response = { ...response, flow: capture.flow, replies: [...response.replies, ...capture.replies] };
+    }
+    const replies: AssistantMessage[] = response.replies;
 
     setMessages((current) => [...current, ...pendingReplies, { from: "visitor", text: echo }]);
     setPendingReplies(replies);

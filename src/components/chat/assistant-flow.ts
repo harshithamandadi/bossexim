@@ -450,6 +450,11 @@ export function submissionReply(result: { ok: true; reference?: string } | { ok:
 }
 
 /** Aira's reply once a call-back request has been saved (or couldn't be). */
+/** Starts the contact questions (name, phone, email…) part-way through browsing — questions 4 and 5. */
+export function startContactCapture(): { flow: Flow; replies: AssistantMessage[] } {
+  return { flow: { kind: "callback", step: 0, answers: {} }, replies: [say(content.contactAsk.intro), askCallbackStep(0)] };
+}
+
 export function callbackReply(result: { ok: true; reference?: string } | { ok: false; fallbackEmail?: string }): AssistantMessage {
   const { callback } = content;
   if (result.ok) {
