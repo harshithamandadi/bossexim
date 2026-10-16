@@ -2,13 +2,13 @@ import { LogoMark } from "@/components/ui/logo";
 import { cn } from "@/lib/cn";
 
 const sizes = {
-  sm: "h-3.5 bottom-2 right-2",
-  md: "h-5 bottom-3 right-3",
-  lg: "h-7 bottom-4 right-4",
+  sm: "h-3.5 top-2 right-2",
+  md: "h-5 top-3 right-3",
+  lg: "h-7 top-4 right-4",
 } as const;
 
 /**
- * A small BOSS mark in brand blue in the corner of a photo (client request: brand the
+ * A small BOSS mark in brand blue in the top-right corner of a photo (client request: brand the
  * photos; blue, Oct 2026). Place inside a `relative` photo container, after the image.
  */
 export function PhotoWatermark({ size = "md", className }: { size?: keyof typeof sizes; className?: string }) {

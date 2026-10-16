@@ -19,6 +19,8 @@ interface WorldDotsMapProps {
   variant?: "inline" | "backdrop";
   /** Fill the box, cropping the edges ("slice"), or show the whole world ("meet"). */
   fit?: "slice" | "meet";
+  /** Overrides the land-dot colour, e.g. "text-navy/60" for a darker map. */
+  dotClassName?: string;
   /** An aeroplane flying a looping route from `flight.from` to `flight.to`. */
   flight?: { from: GeoPoint; to: GeoPoint };
   className?: string;
@@ -29,7 +31,7 @@ const PLANE_PATH =
   "M2 -0.8 L-0.6 -0.8 L-3.4 -5 L-4.6 -5 L-3 -0.8 L-6 -0.8 L-7 -2.2 L-7.8 -2.2 L-7.2 0 L-7.8 2.2 L-7 2.2 L-6 0.8 L-3 0.8 L-4.6 5 L-3.4 5 L-0.6 0.8 L2 0.8 Q3.6 0.8 3.6 0 Q3.6 -0.8 2 -0.8 Z";
 
 /** A static dotted world map (no JavaScript), with optional lanes from an origin. */
-export function WorldDotsMap({ origin, points = [], variant = "inline", fit, flight, className }: WorldDotsMapProps) {
+export function WorldDotsMap({ origin, points = [], variant = "inline", fit, dotClassName, flight, className }: WorldDotsMapProps) {
   const start = origin && project(origin, BOUNDS, SIZE);
   const isBackdrop = variant === "backdrop";
   const flightPath = flight && arcPath(project(flight.from, BOUNDS, SIZE), project(flight.to, BOUNDS, SIZE), 0.35);
@@ -46,7 +48,7 @@ export function WorldDotsMap({ origin, points = [], variant = "inline", fit, fli
         stroke="currentColor"
         strokeWidth={isBackdrop ? 2.1 : 2.6}
         strokeLinecap="round"
-        className={isBackdrop ? "text-brand/45" : "text-fg/20"}
+        className={dotClassName ?? (isBackdrop ? "text-brand/45" : "text-fg/20")}
       />
       {start &&
         points.map((point, index) => {

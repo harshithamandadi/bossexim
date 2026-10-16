@@ -21,7 +21,7 @@ export function GroupFounders() {
                   alt={founder.photo.alt}
                   fill
                   sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
-                  className="object-cover object-[50%_20%]"
+                  className="object-cover object-top"
                 />
               </div>
               <div className="flex flex-1 flex-col p-6 sm:p-7">

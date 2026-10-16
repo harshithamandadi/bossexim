@@ -41,7 +41,7 @@ const OTHER_IMPORTS_DETAIL =
 const importProducts: SeedProduct[] = [
   {
     slug: "polypropylene",
-    photos: [{ file: "products/polypropylene.jpg", alt: "Polypropylene pellets in a grid of colours and shapes" }, { file: "products/polypropylene-2.jpg", alt: "Translucent polypropylene pellets" }],
+    photos: [{ file: "products/polypropylene.jpg", alt: "Polypropylene pellets in a grid of colours and shapes" }],
     name: "Polypropylene (PP)",
     direction: "import",
     category: "Polymers",
@@ -99,7 +99,7 @@ const importProducts: SeedProduct[] = [
   },
   {
     slug: "polyester-chips",
-    photos: [{ file: "polyester-chips.jpg", alt: "Used PET bottles collected for recycling" }],
+    photos: [{ file: "products/polyester-chips.jpg", alt: "Translucent polyester chips (PET resin pellets)" }],
     name: "Polyester Chips",
     direction: "import",
     category: "Polymers",

@@ -50,7 +50,7 @@ export function RisingTimeline({ periods, className }: { periods: JourneyPeriod[
   return (
     <div ref={ref} className={cn("relative", className)} onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <div className="relative" style={{ aspectRatio: `${WIDTH} / ${HEIGHT + 70}` }}>
-        <WorldDotsMap fit="meet" className="pointer-events-none absolute inset-x-[12%] top-0 h-full w-[76%] opacity-60" />
+        <WorldDotsMap fit="meet" dotClassName="text-fg/40" className="pointer-events-none absolute inset-x-0 -top-6 h-[calc(100%+3rem)] w-full" />
         <svg viewBox={`0 -70 ${WIDTH} ${HEIGHT + 70}`} aria-hidden className="absolute inset-0 size-full overflow-visible">
           <defs>
             <linearGradient id={gradientId} x1="0" x2="1" y1="0" y2="0">

@@ -1,32 +1,26 @@
-import { ArrowUpRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import Image from "next/image";
 import { PhotoWatermark } from "@/components/ui/photo-watermark";
-import Link from "next/link";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Carousel } from "@/components/ui/carousel";
 import { IconTile } from "@/components/ui/icon";
 import { PhotoSlider } from "@/components/ui/photo-slider";
+import { PhotoTitleCard } from "@/components/ui/photo-title-card";
 import { containerLineServiceHref, containerLineServices, groupVerticalLabels, uiLabels, type ContainerLineService } from "@/config";
-import { cn } from "@/lib/cn";
 
-/** The hero visual: the client's main photo for the service (illustrations shown whole on white). */
+/** The hero visual: the client's main photo for the service, shown whole at its own shape (client request). */
 export function ServiceMedia({ service }: { service: ContainerLineService }) {
-  const contain = service.imageFit === "contain";
   return (
     <Reveal delay={0.1}>
-      <div
-        className={cn(
-          "relative aspect-[16/10] overflow-hidden rounded-panel shadow-[0_30px_60px_-35px_rgb(8_33_79/0.6)] ring-1 ring-inset ring-border",
-          contain ? "bg-white" : "bg-surface",
-        )}
-      >
+      <div className="relative overflow-hidden rounded-panel bg-white shadow-[0_30px_60px_-35px_rgb(8_33_79/0.6)] ring-1 ring-inset ring-border">
         <Image
           src={service.image.src}
           alt={service.image.alt}
-          fill
+          width={service.image.width}
+          height={service.image.height}
           sizes="(min-width: 1024px) 40vw, 90vw"
           priority
-          className={contain ? "object-contain p-4" : "object-cover"}
+          className="h-auto max-h-[26rem] w-full object-contain"
         />
         <PhotoWatermark size="lg" />
       </div>
@@ -72,25 +66,10 @@ export function ServiceGallery({ service }: { service: ContainerLineService }) {
   return <PhotoSlider photos={[service.image, ...service.gallery]} label={`${service.title} photos`} />;
 }
 
-/** Card link to a service page, used on the Container Line page and under each service. */
+/** Card link to a service page — photo and heading only (client request). */
 export function ServiceCardLink({ service, className }: { service: ContainerLineService; className?: string }) {
   return (
-    <Link
-      href={containerLineServiceHref(service.slug)}
-      className={cn(
-        "group flex h-full flex-col card-gradient rounded-card bg-surface/80 p-6 ring-1 ring-inset ring-border backdrop-blur",
-        "transition-[transform,box-shadow] duration-500 ease-smooth hover:-translate-y-1 hover:shadow-[0_24px_50px_-28px_rgb(8_33_79/0.35)]",
-        className,
-      )}
-    >
-      <span className="flex items-start justify-between gap-4">
-        <IconTile icon={service.icon} size="sm" variant="soft" />
-        <ArrowUpRight aria-hidden className="size-4 text-fg-mute transition-colors group-hover:text-brand" />
-      </span>
-      <span className="type-h4 mt-5">{service.title}</span>
-      <span className="mt-1.5 text-sm leading-relaxed text-fg-mute">{service.description}</span>
-      <span className="mt-auto pt-4 text-sm font-semibold text-brand">{uiLabels.learnMore}</span>
-    </Link>
+    <PhotoTitleCard href={containerLineServiceHref(service.slug)} title={service.title} photo={service.image} icon={service.icon} className={className} />
   );
 }
 
@@ -105,7 +84,7 @@ export function MoreServices({ current }: { current: string }) {
         label={title}
         previousLabel={uiLabels.previous}
         nextLabel={uiLabels.next}
-        slideWidth="18rem"
+        slideWidth="16rem"
         items={containerLineServices
           .filter((service) => service.slug !== current)
           .map((service) => (

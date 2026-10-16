@@ -65,6 +65,12 @@ export const seedCompanyDetails = {
     email: "bossexim@bossgrp.com",
     address: "BOSS Towers, Street No. 2, Patrika Nagar, Madhapur, Hyderabad – 500081, Telangana, India",
   },
+  /** The client's social profiles (15 Oct 2026); X and YouTube have no accounts yet. */
+  social: {
+    linkedin: "https://www.linkedin.com/in/admin-exim-1830a7444",
+    facebook: "https://www.facebook.com/profile.php?id=61595075745047",
+    instagram: "https://www.instagram.com/boss.exim.global",
+  },
 };
 
 export const seedGroupCompanies: Omit<GroupCompany, "logo">[] = [
@@ -125,11 +131,11 @@ export const seedGalleries: { title: string; icon: IconName; photos?: { file: st
     icon: "user-round",
     // Placeholders (client's sample images) until real photos are uploaded in the admin.
     photos: [
-      { file: "media/sample-1.jpg", alt: "Sample image 1 — replace in the admin" },
-      { file: "media/sample-2.jpg", alt: "Sample image 2 — replace in the admin" },
-      { file: "media/sample-3.jpg", alt: "Sample image 3 — replace in the admin" },
-      { file: "media/sample-4.jpg", alt: "Sample image 4 — replace in the admin" },
-      { file: "media/sample-5.jpg", alt: "Sample image 5 — replace in the admin" },
+      { file: "media/sample-1.jpg", alt: "Sample image 1" },
+      { file: "media/sample-2.jpg", alt: "Sample image 2" },
+      { file: "media/sample-3.jpg", alt: "Sample image 3" },
+      { file: "media/sample-4.jpg", alt: "Sample image 4" },
+      { file: "media/sample-5.jpg", alt: "Sample image 5" },
     ],
   },
   {
@@ -154,11 +160,11 @@ export const seedGalleries: { title: string; icon: IconName; photos?: { file: st
     icon: "factory",
     // Placeholders (client's sample images) until real photos are uploaded in the admin.
     photos: [
-      { file: "media/sample-1.jpg", alt: "Sample image 1 — replace in the admin" },
-      { file: "media/sample-2.jpg", alt: "Sample image 2 — replace in the admin" },
-      { file: "media/sample-3.jpg", alt: "Sample image 3 — replace in the admin" },
-      { file: "media/sample-4.jpg", alt: "Sample image 4 — replace in the admin" },
-      { file: "media/sample-5.jpg", alt: "Sample image 5 — replace in the admin" },
+      { file: "media/sample-1.jpg", alt: "Sample image 1" },
+      { file: "media/sample-2.jpg", alt: "Sample image 2" },
+      { file: "media/sample-3.jpg", alt: "Sample image 3" },
+      { file: "media/sample-4.jpg", alt: "Sample image 4" },
+      { file: "media/sample-5.jpg", alt: "Sample image 5" },
     ],
   },
   {
@@ -166,11 +172,11 @@ export const seedGalleries: { title: string; icon: IconName; photos?: { file: st
     icon: "presentation",
     // Placeholders (client's sample images) until real photos are uploaded in the admin.
     photos: [
-      { file: "media/sample-1.jpg", alt: "Sample image 1 — replace in the admin" },
-      { file: "media/sample-2.jpg", alt: "Sample image 2 — replace in the admin" },
-      { file: "media/sample-3.jpg", alt: "Sample image 3 — replace in the admin" },
-      { file: "media/sample-4.jpg", alt: "Sample image 4 — replace in the admin" },
-      { file: "media/sample-5.jpg", alt: "Sample image 5 — replace in the admin" },
+      { file: "media/sample-1.jpg", alt: "Sample image 1" },
+      { file: "media/sample-2.jpg", alt: "Sample image 2" },
+      { file: "media/sample-3.jpg", alt: "Sample image 3" },
+      { file: "media/sample-4.jpg", alt: "Sample image 4" },
+      { file: "media/sample-5.jpg", alt: "Sample image 5" },
     ],
   },
   {

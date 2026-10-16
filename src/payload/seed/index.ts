@@ -102,7 +102,10 @@ async function fillCompanyDetails(payload: Payload) {
   const current = await payload.findGlobal({ slug: "company-details", depth: 0 });
   const kept = Object.entries(current.contact ?? {}).filter(([, value]) => value && !RETIRED_EMAILS.includes(String(value)));
   const contact = { ...seedCompanyDetails.contact, ...Object.fromEntries(kept) };
-  await payload.updateGlobal({ slug: "company-details", data: { contact }, context: seedContext() });
+  // Social links: fill the ones still empty, keeping any entered in the admin.
+  const currentSocial: Record<string, string | null | undefined> = current.social ?? {};
+  const social = { ...seedCompanyDetails.social, ...Object.fromEntries(Object.entries(currentSocial).filter(([, value]) => value)) };
+  await payload.updateGlobal({ slug: "company-details", data: { contact, social }, context: seedContext() });
 }
 
 async function seed() {

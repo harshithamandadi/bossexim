@@ -17,6 +17,8 @@ export const uiLabels = {
   darkMode: "Switch to dark mode",
   lightMode: "Switch to light mode",
   next: "Next",
+  zoom: "View full size",
+  close: "Close",
   notFound: {
     eyebrow: "404",
     title: "This Page Has Sailed",

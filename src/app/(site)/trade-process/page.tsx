@@ -78,6 +78,7 @@ export default async function TradeProcessPage() {
           eyebrow={partnerContent.heading.eyebrow}
           title={pageContent.partner.title}
           description={partnerContent.tradeProcessIntro}
+          layout="split"
         >
           <ButtonLink href={routes.partner} variant="brand" withArrow>
             {partnerContent.tradeProcessCta}

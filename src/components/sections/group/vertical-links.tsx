@@ -1,10 +1,23 @@
-import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
 import { Carousel } from "@/components/ui/carousel";
-import { groupVerticalHref, groupVerticals, uiLabels, type GroupVerticalSlug } from "@/config";
-import { cn } from "@/lib/cn";
+import { PhotoTitleCard } from "@/components/ui/photo-title-card";
+import { containerLine, groupVerticalHref, groupVerticals, uiLabels, type GroupVertical, type GroupVerticalSlug } from "@/config";
+import type { IconName } from "@/lib/icons";
 
-/** Links to the other BOSS Group verticals, shown at the foot of each vertical page. */
+/** Icons for verticals that have no photographs yet. */
+const VERTICAL_ICONS: Record<GroupVerticalSlug, IconName> = {
+  "container-line": "ship",
+  retail: "store",
+  constructions: "building",
+  hospitality: "hotel",
+  laundromats: "washing-machine",
+  it: "cpu",
+  bpo: "headset",
+};
+
+const verticalPhoto = (vertical: GroupVertical) =>
+  vertical.slug === "container-line" ? containerLine.image : vertical.photos?.[0];
+
+/** Links to the other BOSS Group verticals — standard-size cards with a photo and the vertical's name. */
 export function VerticalLinks({ current, title, className }: { current?: GroupVerticalSlug; title: string; className?: string }) {
   const others = groupVerticals.filter((vertical) => vertical.slug !== current);
 
@@ -16,22 +29,15 @@ export function VerticalLinks({ current, title, className }: { current?: GroupVe
         label={title}
         previousLabel={uiLabels.previous}
         nextLabel={uiLabels.next}
-        slideWidth="15rem"
+        slideWidth="16rem"
         items={others.map((vertical) => (
-          <Link
+          <PhotoTitleCard
             key={vertical.slug}
             href={groupVerticalHref(vertical.slug)}
-            className={cn(
-              "group flex h-full flex-col justify-between gap-6 card-gradient rounded-card bg-surface p-5 ring-1 ring-inset ring-border",
-              "transition-[transform,box-shadow] duration-500 ease-smooth hover:-translate-y-1 hover:shadow-[0_24px_50px_-28px_rgb(8_33_79/0.35)]",
-            )}
-          >
-            <ArrowUpRight aria-hidden className="size-4 self-end text-fg-mute transition-colors group-hover:text-brand" />
-            <span>
-              <span className="block font-display text-lg font-bold">{vertical.name}</span>
-              <span className="mt-1 block text-[13px] leading-snug text-fg-mute">{vertical.menuDescription}</span>
-            </span>
-          </Link>
+            title={vertical.name}
+            photo={verticalPhoto(vertical)}
+            icon={VERTICAL_ICONS[vertical.slug]}
+          />
         ))}
       />
     </div>

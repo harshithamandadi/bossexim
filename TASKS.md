@@ -376,3 +376,19 @@ Source: `requirements/3rd resources/` — New Website Structure.docx (site map),
 - [x] BOSS Group vertical and Container Line service photos are sliders.
 - [x] Trade Process: new "Partner With Us" section and tab (client's Partner With Us document + buyer/supplier/partner cards).
 - [ ] Pradeep K and Nagaraju P: role summaries are DRAFT (their documents have only name and title) — need the client's profiles and photos.
+
+### R8. Client inputs 15 Oct 2026 (requirements/BGEXIM Inputs 15th Oct, 24 screenshots) — done
+- [x] Hero and journey world maps bigger and darker.
+- [x] Container Line service cards and "More from BOSS Group" cards: standard size, photo + name only.
+- [x] Photo sliders: standard size, name under each photo, click to zoom (full-size view with previous/next) — BOSS Group verticals, services, Media & Events.
+- [x] Values: the sentence inside the Values image card; each value's icon beside its title.
+- [x] Social links: LinkedIn, Facebook, Instagram (@boss.exim.global); X and YouTube hidden until accounts exist.
+- [x] Polyester Chips: new photo (client's translucent pellets). Watermark moved to the top-right corner.
+- [x] Footer "BOSS EXIM Global" text no longer cut off. Mark panels use the official BOSS Group logo.
+- [x] Products: categories with more than 3 products slide; spec tables without the photo, 4 × 3 grid.
+- [x] Team and Partner With Us headings in two columns; BOSS Group intro with the presence map under the text.
+- [x] Founder photos re-cropped to the same framing. Recognition: 6 more award photos.
+- [x] Media & Events: cover-tile grid removed; six scrolling rows.
+- [x] Service header photos shown whole (NVOCC). Container Line offices: phone numbers and emails from the brochure.
+- [x] AIRA: the client's new opening message; name shown as "AIRA".
+- [ ] Still waiting on the client: Pradeep K and Nagaraju P profiles and photos; office phone, WhatsApp, hours and map for Contact; X and YouTube accounts.

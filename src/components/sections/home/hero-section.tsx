@@ -20,15 +20,15 @@ export function HeroSection({ products }: { products: Product[] }) {
     <section data-tone="light" className="relative overflow-hidden bg-canvas pt-28 pb-20 sm:pt-32 sm:pb-24">
       <div aria-hidden className="sky-wash absolute inset-0" />
       {/*
-        A flat dotted world map behind the hero — the whole world at a smaller size
-        (client request), It fades
-        away behind the text column so the headline stays easy to read.
+        A big, dark dotted world map across the hero (client request, 15 Oct 2026). It
+        fades behind the text column so the headline stays easy to read.
       */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-24 bottom-16 mx-auto max-w-6xl px-6">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-16 bottom-4">
         <WorldDotsMap
           variant="backdrop"
-          fit="meet"
-          className="[mask-image:linear-gradient(to_bottom,rgb(0_0_0/0.1)_0%,rgb(0_0_0/0.1)_55%,#000_80%)] lg:[mask-image:linear-gradient(to_right,rgb(0_0_0/0.1)_0%,rgb(0_0_0/0.14)_40%,rgb(0_0_0/0.7)_55%,#000_66%)]"
+          fit="slice"
+          dotClassName="text-fg/50"
+          className="[mask-image:linear-gradient(to_bottom,rgb(0_0_0/0.2)_0%,rgb(0_0_0/0.2)_55%,#000_80%)] lg:[mask-image:linear-gradient(to_right,rgb(0_0_0/0.2)_0%,rgb(0_0_0/0.25)_40%,rgb(0_0_0/0.85)_55%,#000_66%)]"
         />
       </div>
       <WaveDivider />

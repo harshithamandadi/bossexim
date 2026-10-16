@@ -49,7 +49,7 @@ export function ProductCard({ product, markets, className }: ProductCardProps) {
           </div>
         )}
         {photo && <PhotoWatermark />}
-        <span className="absolute top-3 right-3 grid size-9 place-items-center rounded-full bg-elevated/90 shadow-sm">{arrow}</span>
+        <span className="absolute right-3 bottom-3 grid size-9 place-items-center rounded-full bg-elevated/90 shadow-sm">{arrow}</span>
       </div>
       <p className="type-eyebrow mt-5 text-fg-mute">{product.category}</p>
       <h3 className="type-h4 mt-2">{product.name}</h3>

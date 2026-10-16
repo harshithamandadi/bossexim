@@ -32,6 +32,9 @@ export interface Office {
   entity: string;
   city: string;
   address: string;
+  /** From the BOSS Container Line brochure (contact page). */
+  phone?: string;
+  email?: string;
 }
 
 /**
@@ -306,31 +309,43 @@ export const containerLineNetwork: {
       entity: "BOSS Container Line Pte. Ltd.",
       city: "Singapore",
       address: "133 New Bridge Road, #08-01, China Town Point, Singapore 059413",
+      phone: "+91 966 641 9979",
+      email: "vvnrao@bossgrp.com",
     },
     {
       entity: "BOSS Container Line Sdn. Bhd.",
       city: "Klang, Malaysia",
       address: "903, 9th Floor, South Tower (A), BBT One, Bandar Bukit Tinggi, Klang 41200",
+      phone: "+60 142 175 851",
+      email: "rh.malaysia@bossgrp.com",
     },
     {
       entity: "BOSS Container Line LLP",
       city: "Hyderabad",
       address: "BOSS Towers, Street 2, Patrika Nagar, Madhapur, Hyderabad 500081",
+      phone: "+91 966 641 9979",
+      email: "vvnrao@bossgrp.com",
     },
     {
       entity: "BOSS Container Line LLP",
       city: "Navi Mumbai",
       address: "F-06, Nano Wing, Haware Fantasia Business Park, Vashi, Navi Mumbai 400705",
+      phone: "+91 897 703 0047",
+      email: "deepu.divakaran@bossgrp.com",
     },
     {
       entity: "BOSS Container Line LLP",
       city: "Gandhidham",
       address: "F-05, Plot No. 576, Ward 12/C, Adinath Arcade 2, Kachchh, Gandhidham 370201",
+      phone: "+91 915 482 9363",
+      email: "prakhar.patidar@bossgrp.com",
     },
     {
       entity: "BOSS Container Line LLP",
       city: "Chennai",
       address: "3rd Floor, No. 317/1 (Old 153/1), Thambu Chetty Street, George Town, Chennai 600001",
+      phone: "+91 906 312 5762",
+      email: "sales.chennai@bossgrp.com",
     },
   ],
   website: { label: "www.bosscontainerline.com", href: "https://www.bosscontainerline.com" },
@@ -421,7 +436,7 @@ export const groupFounders: { heading: SectionContent; readProfile: string; show
     {
       name: "Prasad Kalla",
       role: "Chairman, BOSS Group",
-      photo: { src: "/images/group/founders/prasad-kalla.webp", alt: "Prasad Kalla", width: 640, height: 800 },
+      photo: { src: "/images/group/founders/prasad-kalla.webp", alt: "Prasad Kalla", width: 800, height: 1000 },
       bio: [
         "Mr. Prasad Kalla pursued his Master of Business Administration (MBA) at Victoria University of Technology, Melbourne, Australia — part of his motivation for coming to Australia was the opportunity to experience a different culture and environment first-hand. He migrated from Khammam in Andhra Pradesh, India, and has had the good fortune to work in many multicultural environments, in academic, business and social settings.",
         "Brought up in Andhra Pradesh, he studied in Karnataka for his engineering degree in Computer Science from Bangalore University, alongside people of many cultural backgrounds. Much of his experience has been in teams. Under his leadership, BOSS (Aust) Consulting Pty Ltd today operates 26 petrol and convenience stores under the BP banner, both freehold and leasehold, where he values cultural diversity in the workplace and works closely with people of different cultural and linguistic backgrounds.",
@@ -433,7 +448,7 @@ export const groupFounders: { heading: SectionContent; readProfile: string; show
     {
       name: "Krishna Prasad (Kris) Bodla",
       role: "CEO, BOSS Group (Australia)",
-      photo: { src: "/images/group/founders/krishna-bodla.webp", alt: "Krishna Prasad (Kris) Bodla", width: 534, height: 800 },
+      photo: { src: "/images/group/founders/krishna-bodla.webp", alt: "Krishna Prasad (Kris) Bodla", width: 800, height: 1000 },
       bio: [
         "Kris Bodla serves as CEO of BOSS Group (Australia), bringing over two decades of visionary leadership to the organisation’s diverse operations across retail, property, construction, hospitality and more. His journey began in India, where he designed and implemented a comprehensive Management Information System at Srinivasa Hatcheries Group — an early demonstration of his ability to blend technology with business process improvement.",
         "In 2002, Kris co-founded BOSS Group Australia and has since played a critical role across every function, from operations and systems development to strategic growth. His hands-on leadership and adaptability have been instrumental in transforming BOSS Group into a resilient, multi-sector enterprise recognised in Forbes Australia and Convenience World magazine.",
@@ -444,7 +459,7 @@ export const groupFounders: { heading: SectionContent; readProfile: string; show
     {
       name: "Sudhakar Chaluvadi",
       role: "Director, BOSS Group",
-      photo: { src: "/images/group/founders/sudhakar-chaluvadi.webp", alt: "Sudhakar Chaluvadi", width: 640, height: 800 },
+      photo: { src: "/images/group/founders/sudhakar-chaluvadi.webp", alt: "Sudhakar Chaluvadi", width: 800, height: 1000 },
       bio: [
         "Mr. Sudhakar Chaluvadi is a seasoned business leader with extensive exposure across multiple sectors, including Information Technology, Shipping and Logistics, Construction, Hospitality, Retail and Fuel Stations. His diverse industry background enables him to combine strong corporate management experience with a practical understanding of business operations across different markets.",
         "He spent more than 18 years with Wipro, where he held senior executive responsibilities and gained significant global experience in Business Operations, Delivery Management, People Supply Management and large-scale team leadership — managing and coordinating a workforce of nearly 8,000 professionals.",
@@ -480,6 +495,12 @@ export const groupRecognition: {
     { title: "Andhra Pradesh Tourism — Best Hotel in Category Two", year: "2012", image: { src: "/images/group/awards/ap-tourism-best-hotel-2012.webp", alt: "Andhra Pradesh Tourism award trophy, World Tourism Day 2012", width: 467, height: 700 } },
     { title: "CIB Mayor’s Multicultural Youth Stipend — Son of the Year", year: "2014", image: { src: "/images/group/awards/multicultural-youth-2014.webp", alt: "Mayor’s Multicultural Youth Stipend frosted glass trophy", width: 560, height: 700 } },
     { title: "PMTDR Dealer Recognition Award", year: "2021", image: { src: "/images/group/awards/pmtdr-dealer-recognition-2021.webp", alt: "PMTDR Dealer Recognition Award presented to Shell Hatton Vale, 2021", width: 560, height: 700 } },
+    { title: "Queensland Telugu Association — Platinum Sponsor", year: "2023", image: { src: "/images/group/awards/qld-telugu-association-2023.webp", alt: "Queensland Telugu Association trophy presented to BOSS Group, Platinum Sponsor 2022–2023", width: 675, height: 900 } },
+    { title: "Department of Tourism, Andhra Pradesh — World Tourism Day", year: "2012", image: { src: "/images/group/awards/world-tourism-day-souvenir-2012.webp", alt: "Silver Charminar souvenir from the World Tourism Day celebrations, 27 September 2012", width: 675, height: 900 } },
+    { title: "Khammam Kala Parishat — Recognition", year: "2012", image: { src: "/images/group/awards/khammam-kala-parishat-2012.webp", alt: "Bronze-framed recognition plaque from Khammam Kala Parishat, 2012", width: 900, height: 675 } },
+    { title: "Vana Samaradhana — Community Recognition", year: "2011", image: { src: "/images/group/awards/vana-samaradhana-2011.webp", alt: "Community recognition trophy, 2011", width: 720, height: 900 } },
+    { title: "Best Hotel Award — press coverage", year: "2012", image: { src: "/images/group/awards/best-hotel-press-2012.webp", alt: "Newspaper coverage of the Best Hotel award at the World Tourism Day celebrations, 2012", width: 745, height: 677 } },
+    { title: "Finalist — Australian Fuel & Convenience Awards (Small Retailer)", year: "2023", image: { src: "/images/group/awards/afca-finalist-2023.webp", alt: "Letter shortlisting BOSS Australia as a finalist in the 2023 Australian Fuel and Convenience Awards", width: 475, height: 528 } },
     { title: "Shell Hatton Vale — Outstanding Performance Recognition", year: "2022" },
   ],
   media: [

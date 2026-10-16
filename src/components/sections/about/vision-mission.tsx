@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
-import { FeatureGrid } from "@/components/sections/shared/feature-grid";
+import { IconTile } from "@/components/ui/icon";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { SectionHeader } from "@/components/ui/section-header";
 import { visionMissionValues } from "@/config";
@@ -36,15 +36,27 @@ export function VisionMission() {
         ))}
       </RevealGroup>
 
-      <div className="mt-12 grid items-start gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-14">
+      {/* Values: the image and its sentence in one card, and each value with its icon beside the title (client mock-up). */}
+      <div className="mt-12 grid items-start gap-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-12">
         <Reveal>
-          <div className="relative aspect-square overflow-hidden rounded-panel bg-white ring-1 ring-inset ring-border">
-            <Image src={valuesImage.src} alt={valuesImage.alt} fill sizes="(min-width: 1024px) 30vw, 90vw" className="object-contain" />
+          <div className="overflow-hidden rounded-panel bg-white ring-1 ring-inset ring-border">
+            <div className="relative aspect-square">
+              <Image src={valuesImage.src} alt={valuesImage.alt} fill sizes="(min-width: 1024px) 30vw, 90vw" className="object-contain" />
+            </div>
+            <p className="px-7 pb-7 font-display text-[19px] leading-snug font-bold text-pretty text-navy">{intro}</p>
           </div>
-          {/* The values sentence sits under the image, in bold (client request). */}
-          <p className="mt-6 text-[17px] leading-relaxed font-bold text-pretty text-fg">{intro}</p>
         </Reveal>
-        <FeatureGrid items={values} columns={2} variant="plain" />
+        <RevealGroup as="ul" className="grid gap-x-10 gap-y-2 sm:grid-cols-2">
+          {values.map((value) => (
+            <RevealItem as="li" key={value.title} className="border-t border-border py-6">
+              <div className="flex items-center gap-3">
+                <IconTile icon={value.icon} variant="soft" size="sm" />
+                <h3 className="type-h4">{value.title}</h3>
+              </div>
+              <p className="mt-3 text-[15px] leading-relaxed text-pretty text-fg-mute">{value.description}</p>
+            </RevealItem>
+          ))}
+        </RevealGroup>
       </div>
     </>
   );

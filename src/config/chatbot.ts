@@ -259,17 +259,18 @@ export const buyingSteps: BuyingStep[] = [
 ];
 
 export const chatbotContent = {
-  name: "Aira",
-  dialogLabel: "Aira, the BOSS EXIM Global assistant",
+  name: "AIRA",
+  dialogLabel: "AIRA, the BOSS EXIM Global assistant",
   launcher: {
-    label: "Chat with Aira",
+    label: "Chat with AIRA",
     open: "Open the website assistant",
     close: "Close the website assistant",
   },
-  title: "Aira",
-  subtitle: "BOSS EXIM Global trade assistant",
+  title: "AIRA",
+  subtitle: "BOSS EXIM Global virtual assistant",
+  // The client's opening message (15 Oct 2026).
   greeting:
-    "👋 Welcome to BOSS EXIM Global. We help international buyers source quality products from India.\n\nHow can we assist you today?",
+    "👋 Welcome to BOSS Exim Global!\n\nI’m AIRA, your virtual assistant. We connect businesses worldwide through reliable import and export solutions.\n\nHow may I assist you today?",
   menu: {
     products: "🌾 Products",
     buying: "📦 Buying Enquiry",
@@ -317,7 +318,7 @@ export const chatbotContent = {
 
   /** A small greeting bubble beside the launcher on larger screens (never on phones). */
   teaser: {
-    text: "👋 Hi, I'm Aira. Looking for Indian products or a quote?",
+    text: "👋 Welcome to BOSS Exim Global! I’m AIRA, your virtual assistant. How may I assist you today?",
     dismiss: "Dismiss",
     /** After arriving on a page. */
     delaySeconds: 3,

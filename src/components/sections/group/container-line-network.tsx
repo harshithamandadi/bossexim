@@ -1,4 +1,4 @@
-import { ArrowUpRight, MapPin, Quote } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, Phone, Quote } from "lucide-react";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Chip } from "@/components/ui/chip";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -57,6 +57,18 @@ export function ContainerLineNetwork() {
               <p className="font-semibold">{office.city}</p>
               <p className="mt-0.5 text-xs text-fg-mute">{office.entity}</p>
               <p className="mt-1.5 text-sm leading-relaxed text-fg-mute">{office.address}</p>
+              {office.phone && (
+                <a href={`tel:${office.phone.replace(/\s/g, "")}`} className="mt-2 flex items-center gap-1.5 text-sm font-medium hover:text-brand">
+                  <Phone aria-hidden className="size-3.5 text-brand" />
+                  {office.phone}
+                </a>
+              )}
+              {office.email && (
+                <a href={`mailto:${office.email}`} className="mt-1 flex items-center gap-1.5 text-sm font-medium break-all hover:text-brand">
+                  <Mail aria-hidden className="size-3.5 shrink-0 text-brand" />
+                  {office.email}
+                </a>
+              )}
             </div>
           </RevealItem>
         ))}

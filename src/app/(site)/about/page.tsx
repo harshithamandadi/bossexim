@@ -36,7 +36,7 @@ export default async function AboutPage() {
       </Section>
 
       <Section id={ids.leadership}>
-        <SectionHeader {...leadership.heading} />
+        <SectionHeader {...leadership.heading} layout="split" />
         <TeamGrid className="mt-10" />
       </Section>
 

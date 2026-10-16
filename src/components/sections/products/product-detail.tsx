@@ -25,7 +25,6 @@ import {
   uiLabels,
 } from "@/config";
 import type { Catalogue } from "@/lib/catalogue";
-import { cn } from "@/lib/cn";
 import { toAlpha3 } from "@/lib/country-codes";
 import type { Product, SpecificationTable } from "@/types/content";
 import { ProductMiniCard } from "./product-card";
@@ -159,35 +158,23 @@ export function ProductOverview({ product, catalogue }: { product: Product; cata
 
 export function ProductSpecifications({ product }: { product: Product }) {
   if (!product.specifications) return null;
-  const photo = product.images?.[0];
 
   return (
     <Section tone="mist" spacing="compact">
       <h2 className="type-h3">{productLabels.specificationsTitle}</h2>
       <p className="mt-2 text-[15px] text-fg-mute">{productLabels.specificationsNote}</p>
-      {/* The product photo beside its specification table (client request). */}
-      <div className={cn("mt-6 grid items-start gap-6", photo && "lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]")}>
-        {photo && (
-          <Reveal className="lg:sticky lg:top-36">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-white ring-1 ring-inset ring-border">
-              <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 1024px) 30vw, 100vw" className="object-contain" />
-              <PhotoWatermark />
-            </div>
-          </Reveal>
-        )}
-        <RevealGroup as="ul" className="grid gap-4">
-          {product.specifications.map((table) => (
-            <RevealItem as="li" key={table.title}>
-              <SpecificationCard table={table} />
-            </RevealItem>
-          ))}
-        </RevealGroup>
-      </div>
+      <RevealGroup as="ul" className="mt-6 grid gap-4">
+        {product.specifications.map((table) => (
+          <RevealItem as="li" key={table.title}>
+            <SpecificationCard table={table} />
+          </RevealItem>
+        ))}
+      </RevealGroup>
     </Section>
   );
 }
 
-/** One spec table as a grid of equal tiles (every box the same size — client request): 3 across beside the photo, 2 on phones. */
+/** One spec table as equal tiles: 4 across on desktop (a 12-row table is 4 × 3 — client request), 3 on tablets, 2 on phones. */
 function SpecificationCard({ table }: { table: SpecificationTable }) {
   return (
     <article className="rounded-card bg-elevated p-5 shadow-[0_20px_50px_-35px_rgb(8_33_79/0.35)] ring-1 ring-inset ring-border sm:p-6">
@@ -196,7 +183,7 @@ function SpecificationCard({ table }: { table: SpecificationTable }) {
         <h3 className="type-h4">{table.title}</h3>
         {table.subtitle && <p className="text-[13px] text-fg-mute">{table.subtitle}</p>}
       </div>
-      <dl className="mt-4 grid auto-rows-fr grid-cols-2 gap-px overflow-hidden rounded-xl bg-border ring-1 ring-border sm:grid-cols-3">
+      <dl className="mt-4 grid auto-rows-fr grid-cols-2 gap-px overflow-hidden rounded-xl bg-border ring-1 ring-border sm:grid-cols-3 lg:grid-cols-4">
         {table.rows.map((row) => (
           <div key={row.label} className="bg-canvas px-3.5 py-3">
             <dt className="text-xs font-semibold text-fg-mute">{row.label}</dt>
