@@ -3,11 +3,9 @@
  *
  * Safe to run again — anything that already exists (matched by slug, code,
  * question, name or title) is left untouched, so editors' changes are kept.
- * Start over with:   SEED_RESET=true npm run seed   (deletes content, keeps users and enquiries)
+ * Start over with:   SEED_RESET=true npm run seed   (deletes content, keeps users, enquiries and uploads)
  */
 import config from "@payload-config";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import {
   getPayload,
   type CollectionSlug,
@@ -26,7 +24,6 @@ import {
   seedTeam,
 } from "./data";
 
-const IMAGES_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), "images");
 
 /**
  * Seeding runs outside Next.js, so there are no pages to refresh. Each call gets its own
@@ -43,10 +40,19 @@ const CONTENT: CollectionSlug[] = [
   "galleries",
   "resources",
   "group-companies",
-  "media",
 ];
 
 const created: Partial<Record<CollectionSlug, number>> = {};
+
+/** Seed photos ship with the site (public/images/cms), so they are not stored in the CMS. */
+type WithoutPhotos<T> = T extends unknown ? Omit<T, "photos" | "photo"> : never;
+
+function withoutPhotos<T extends { photos?: unknown; photo?: unknown }>(item: T): WithoutPhotos<T> {
+  const copy = { ...item };
+  delete copy.photos;
+  delete copy.photo;
+  return copy as unknown as WithoutPhotos<T>;
+}
 
 /** Finds a document matching `where`, creating it from `data` if there is none. */
 async function ensure<T extends CollectionSlug>(
@@ -80,19 +86,6 @@ async function seedAdmin(payload: Payload) {
   payload.logger.info(`Created admin account ${email}.`);
 }
 
-async function uploadPhotos(payload: Payload, photos: { file: string; alt: string }[]): Promise<number[]> {
-  const ids: number[] = [];
-  for (const photo of photos) {
-    const doc = await payload.create({
-      collection: "media",
-      data: { alt: photo.alt },
-      filePath: path.join(IMAGES_DIR, photo.file),
-      context: seedContext(),
-    });
-    ids.push(doc.id);
-  }
-  return ids;
-}
 
 /** The general email before the company's final documents (Oct 2026) — replaced by the new one. */
 const RETIRED_EMAILS = ["bgexim@bossgrp.com"];
@@ -127,17 +120,15 @@ async function seed() {
     marketIds.set(market.code, doc.id);
   }
 
-  for (const { photos = [], ...product } of seedProducts) {
+  // `photos` ship with the site (public/images/cms) and are used when nothing is uploaded,
+  // so seeding makes no storage uploads (see src/lib/content/static-photos.ts).
+  for (const product of seedProducts.map(withoutPhotos)) {
     const markets = product.direction === "export" ? product.markets.flatMap((code) => marketIds.get(code) ?? []) : [];
-    const exists = await payload.count({ collection: "products", where: { slug: { equals: product.slug } } });
-    const images = exists.totalDocs > 0 ? [] : await uploadPhotos(payload, photos);
-    await ensure(payload, "products", { slug: { equals: product.slug } }, { ...product, markets, images });
+    await ensure(payload, "products", { slug: { equals: product.slug } }, { ...product, markets, images: [] });
   }
 
-  for (const { photo, ...member } of seedTeam) {
-    const exists = await payload.count({ collection: "team-members", where: { name: { equals: member.name } } });
-    const [photoId] = exists.totalDocs > 0 || !photo ? [] : await uploadPhotos(payload, [photo]);
-    await ensure(payload, "team-members", { name: { equals: member.name } }, { ...member, photo: photoId });
+  for (const member of seedTeam.map(withoutPhotos)) {
+    await ensure(payload, "team-members", { name: { equals: member.name } }, member);
   }
 
   for (const faq of seedFaqs) {
@@ -146,10 +137,8 @@ async function seed() {
   for (const company of seedGroupCompanies) {
     await ensure(payload, "group-companies", { name: { equals: company.name } }, company);
   }
-  for (const { photos = [], ...gallery } of seedGalleries) {
-    const exists = await payload.count({ collection: "galleries", where: { title: { equals: gallery.title } } });
-    const images = exists.totalDocs > 0 ? [] : await uploadPhotos(payload, photos);
-    await ensure(payload, "galleries", { title: { equals: gallery.title } }, { ...gallery, images });
+  for (const gallery of seedGalleries.map(withoutPhotos)) {
+    await ensure(payload, "galleries", { title: { equals: gallery.title } }, { ...gallery, images: [] });
   }
   for (const resource of seedResources) {
     await ensure(payload, "resources", { title: { equals: resource.title } }, resource);

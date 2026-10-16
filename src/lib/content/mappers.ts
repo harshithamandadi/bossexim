@@ -6,6 +6,7 @@ import { compliance } from "@/config/about";
 import { siteConfig } from "@/config/site";
 import type * as Cms from "@/payload-types";
 import { socialFieldName } from "@/payload/globals/company-details";
+import { staticGalleryPhotos, staticProductPhotos, staticTeamPhoto } from "./static-photos";
 import type {
   CompanyDetails,
   EnquiryTypeId,
@@ -23,6 +24,7 @@ type ImageSize = keyof NonNullable<Cms.Media["sizes"]>;
 
 const optional = <T>(value: T | null | undefined): T | undefined => value ?? undefined;
 const nonEmpty = <T>(items: T[] | null | undefined): T[] | undefined => (items?.length ? items : undefined);
+const withFallback = <T>(items: T[], fallback: T[]): T[] => (items.length > 0 ? items : fallback);
 
 export function toImage(media: number | Cms.Media | null | undefined, size?: ImageSize): ImageAsset | undefined {
   if (!media || typeof media === "number" || !media.url) return undefined;
@@ -59,7 +61,8 @@ export function toProduct(doc: Cms.Product, marketCodes: Map<number, string>): P
     variants: nonEmpty(doc.variants),
     variantsLabel: optional(doc.variantsLabel),
     hsCode: optional(doc.hsCode),
-    images: nonEmpty((doc.images ?? []).flatMap((image) => toImage(image, "card") ?? [])),
+    // Uploaded photos first; otherwise the photos shipped with the site.
+    images: nonEmpty(withFallback((doc.images ?? []).flatMap((image) => toImage(image, "card") ?? []), staticProductPhotos(doc.slug))),
     packaging: optional(doc.packaging),
     documentation: nonEmpty(doc.documentation),
     specifications: nonEmpty(
@@ -92,14 +95,14 @@ export function toFaq(doc: Cms.Faq): FaqItem {
 }
 
 export function toTeamMember(doc: Cms.TeamMember): TeamMember {
-  return { name: doc.name, role: doc.role, bio: optional(doc.bio), photo: toImage(doc.photo, "card") };
+  return { name: doc.name, role: doc.role, bio: optional(doc.bio), photo: toImage(doc.photo, "card") ?? staticTeamPhoto(doc.name) };
 }
 
 export function toGallery(doc: Cms.Gallery): Gallery {
   return {
     title: doc.title,
     icon: doc.icon,
-    images: (doc.images ?? []).flatMap((image) => toImage(image, "card") ?? []),
+    images: withFallback((doc.images ?? []).flatMap((image) => toImage(image, "card") ?? []), staticGalleryPhotos(doc.title)),
   };
 }
 
