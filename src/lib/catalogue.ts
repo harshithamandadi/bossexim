@@ -3,6 +3,7 @@
  * products and markets managed in the admin, so adding either never requires
  * touching the UI. Pure functions: safe on the server and in the browser.
  */
+import { productCategories } from "@/config/products";
 import type {
   ExportProduct,
   ImportProduct,
@@ -60,9 +61,21 @@ export function createCatalogue(products: Product[], markets: Market[]): Catalog
   };
 }
 
-/** Groups products by category, e.g. { Polymers: [...], "Metal scrap": [...] }, keeping first-seen order. */
+const categoryKey = (name: string) => name.trim().replace(/\s+/g, " ").toLowerCase();
+const KNOWN_CATEGORIES = new Map(productCategories.map((category) => [categoryKey(category.name), category.name]));
+
+/**
+ * Groups products by category, keeping first-seen order. Categories typed in the admin
+ * are matched ignoring case and spacing ("seafood " joins "Seafood"), so a product added
+ * later always lands in its existing section.
+ */
 export function groupByCategory<T extends Product>(items: T[]): { category: string; items: T[] }[] {
-  const groups = new Map<string, T[]>();
-  for (const item of items) groups.set(item.category, [...(groups.get(item.category) ?? []), item]);
-  return [...groups].map(([category, grouped]) => ({ category, items: grouped }));
+  const groups = new Map<string, { category: string; items: T[] }>();
+  for (const item of items) {
+    const key = categoryKey(item.category);
+    const group = groups.get(key) ?? { category: KNOWN_CATEGORIES.get(key) ?? item.category.trim(), items: [] };
+    group.items.push(item);
+    groups.set(key, group);
+  }
+  return [...groups.values()];
 }

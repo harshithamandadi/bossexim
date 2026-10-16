@@ -436,7 +436,7 @@ export const groupFounders: { heading: SectionContent; readProfile: string; show
     {
       name: "Prasad Kalla",
       role: "Chairman, BOSS Group",
-      photo: { src: "/images/group/founders/prasad-kalla.webp", alt: "Prasad Kalla", width: 800, height: 1000 },
+      photo: { src: "/images/group/founders/prasad-kalla-portrait.webp", alt: "Prasad Kalla", width: 1000, height: 750 },
       bio: [
         "Mr. Prasad Kalla pursued his Master of Business Administration (MBA) at Victoria University of Technology, Melbourne, Australia — part of his motivation for coming to Australia was the opportunity to experience a different culture and environment first-hand. He migrated from Khammam in Andhra Pradesh, India, and has had the good fortune to work in many multicultural environments, in academic, business and social settings.",
         "Brought up in Andhra Pradesh, he studied in Karnataka for his engineering degree in Computer Science from Bangalore University, alongside people of many cultural backgrounds. Much of his experience has been in teams. Under his leadership, BOSS (Aust) Consulting Pty Ltd today operates 26 petrol and convenience stores under the BP banner, both freehold and leasehold, where he values cultural diversity in the workplace and works closely with people of different cultural and linguistic backgrounds.",
@@ -448,7 +448,7 @@ export const groupFounders: { heading: SectionContent; readProfile: string; show
     {
       name: "Krishna Prasad (Kris) Bodla",
       role: "CEO, BOSS Group (Australia)",
-      photo: { src: "/images/group/founders/krishna-bodla.webp", alt: "Krishna Prasad (Kris) Bodla", width: 800, height: 1000 },
+      photo: { src: "/images/group/founders/krishna-bodla-portrait.webp", alt: "Krishna Prasad (Kris) Bodla", width: 1000, height: 750 },
       bio: [
         "Kris Bodla serves as CEO of BOSS Group (Australia), bringing over two decades of visionary leadership to the organisation’s diverse operations across retail, property, construction, hospitality and more. His journey began in India, where he designed and implemented a comprehensive Management Information System at Srinivasa Hatcheries Group — an early demonstration of his ability to blend technology with business process improvement.",
         "In 2002, Kris co-founded BOSS Group Australia and has since played a critical role across every function, from operations and systems development to strategic growth. His hands-on leadership and adaptability have been instrumental in transforming BOSS Group into a resilient, multi-sector enterprise recognised in Forbes Australia and Convenience World magazine.",
@@ -459,7 +459,7 @@ export const groupFounders: { heading: SectionContent; readProfile: string; show
     {
       name: "Sudhakar Chaluvadi",
       role: "Director, BOSS Group",
-      photo: { src: "/images/group/founders/sudhakar-chaluvadi.webp", alt: "Sudhakar Chaluvadi", width: 800, height: 1000 },
+      photo: { src: "/images/group/founders/sudhakar-chaluvadi-portrait.webp", alt: "Sudhakar Chaluvadi", width: 1000, height: 750 },
       bio: [
         "Mr. Sudhakar Chaluvadi is a seasoned business leader with extensive exposure across multiple sectors, including Information Technology, Shipping and Logistics, Construction, Hospitality, Retail and Fuel Stations. His diverse industry background enables him to combine strong corporate management experience with a practical understanding of business operations across different markets.",
         "He spent more than 18 years with Wipro, where he held senior executive responsibilities and gained significant global experience in Business Operations, Delivery Management, People Supply Management and large-scale team leadership — managing and coordinating a workforce of nearly 8,000 professionals.",

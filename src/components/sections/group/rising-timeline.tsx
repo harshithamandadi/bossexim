@@ -89,10 +89,12 @@ export function RisingTimeline({ periods, className }: { periods: JourneyPeriod[
             const left = `${(point.x / WIDTH) * 100}%`;
             const top = `${((point.y + 70) / (HEIGHT + 70)) * 100}%`;
             return (
-              <li key={period.period} className="absolute" style={{ left, top }}>
+              // Pointing at a year (its icon or label) shows its details below; focus and tap do too.
+              <li key={period.period} className="absolute" style={{ left, top }} onPointerEnter={() => setActive(index)}>
                 <button
                   type="button"
                   onClick={() => setActive(index)}
+                  onFocus={() => setActive(index)}
                   aria-pressed={isActive}
                   aria-label={period.period}
                   className={cn(
@@ -104,7 +106,7 @@ export function RisingTimeline({ periods, className }: { periods: JourneyPeriod[
                 </button>
                 <span
                   className={cn(
-                    "absolute left-0 w-28 -translate-x-1/2 text-center font-display text-[15px] leading-tight font-extrabold tabular-nums transition-colors",
+                    "absolute left-0 w-28 -translate-x-1/2 cursor-default py-1 text-center font-display text-[15px] leading-tight font-extrabold tabular-nums transition-colors",
                     isActive ? "text-brand" : "text-fg",
                   )}
                   style={{ bottom: "3.6rem" }}

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { productCategories } from "@/config/products";
 import { productHref } from "@/config/routes";
 import { contentAccess } from "../access";
 import { ADMIN_GROUPS, iconField, slugField } from "../fields";
@@ -37,7 +38,9 @@ export const Products: CollectionConfig = {
           name: "category",
           type: "text",
           required: true,
-          admin: { description: "Products sharing a category are grouped together, e.g. Spices." },
+          admin: {
+            description: `Products in the same category are shown together; more than three slide. Use one of: ${productCategories.map((category) => category.name).join(", ")} — or a new name for a new section.`,
+          },
         },
       ],
     },
