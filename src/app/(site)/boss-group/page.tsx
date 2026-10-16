@@ -55,7 +55,7 @@ export default function BossGroupPage() {
       </Section>
 
       <Section id={ids.companies} tone="mist" spacing="compact">
-        <SectionHeader {...groupCompanies.heading} />
+        <SectionHeader {...groupCompanies.heading} layout="split" />
         <CompanyGrid className="mt-10" />
       </Section>
 

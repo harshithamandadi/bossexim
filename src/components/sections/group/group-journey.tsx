@@ -10,7 +10,7 @@ const content = groupJourney;
 export function GroupJourney() {
   return (
     <div>
-      <SectionHeader {...content.heading} />
+      <SectionHeader {...content.heading} layout="split" />
       <RisingTimeline periods={content.periods} className="mt-10 hidden lg:block" />
       <StraightTimeline periods={content.periods} className="mt-10 lg:hidden" />
       <Reveal className="mt-12 max-w-3xl">
