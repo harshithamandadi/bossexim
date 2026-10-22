@@ -84,7 +84,7 @@ export const leadership: { heading: SectionContent; emptyState: string; readProf
 export const compliance: { heading: SectionContent; note: string; items: ComplianceItem[] } = {
   heading: {
     eyebrow: "Registrations, Certifications & Compliance",
-    title: "Trade Built on Proper Registration",
+    title: "The Registrations We Trade Under",
     description:
       "BOSS EXIM believes that international trade should be supported by proper registration, documentation and regulatory compliance. The company will maintain all applicable corporate, tax, customs and trade registrations required for its operations — including CIN, PAN, GST, IEC, RCMC, ISO certification and AD Code, as and when applicable and obtained.",
   },

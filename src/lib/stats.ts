@@ -1,4 +1,7 @@
-import { networkPoints, tradeOrigin } from "@/config/markets";
+import { networkPoints } from "@/config/markets";
+
+/** Core trade markets shown in the stats (client figure; change here if it changes). */
+const CORE_TRADE_MARKETS = 12;
 import type { Stat } from "@/types/content";
 import type { Catalogue } from "./catalogue";
 
@@ -8,9 +11,8 @@ export function getHighlightStats(catalogue: Catalogue): Stat[] {
   return [
     { value: catalogue.exportProducts.length, label: "Export products" },
     { value: catalogue.importProducts.length, label: "Import products" },
-    // India, our base, is a core trade market too (Current Focus: India, Singapore, Malaysia,
-    // Australia, UAE, Thailand, Saudi Arabia and Indonesia).
-    { value: new Set([tradeOrigin.code, ...catalogue.markets.map((market) => market.code)]).size, label: "Core trade markets" },
+    // A set figure from the client (22 Oct 2026), not counted from the markets in the admin.
+    { value: CORE_TRADE_MARKETS, label: "Core trade markets" },
     { value: countries.size, label: "Countries in our trade network" },
   ];
 }
