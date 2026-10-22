@@ -140,7 +140,7 @@ export function toCompanyDetails(doc: Cms.CompanyDetail): CompanyDetails {
     },
     social: siteConfig.socialPlatforms.map((platform) => ({
       platform,
-      href: optional(social[socialFieldName(platform)]),
+      href: social[socialFieldName(platform)] || siteConfig.socialPlaceholders[platform],
     })),
     registrations: Object.fromEntries(
       compliance.items.flatMap((item) => {

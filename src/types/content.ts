@@ -138,6 +138,8 @@ export interface SiteConfig {
   website: string;
   /** Profiles offered in the admin, in display order. */
   socialPlatforms: SocialPlatform[];
+  /** Links used until a profile's own link is entered in the admin. */
+  socialPlaceholders: Partial<Record<SocialPlatform, string>>;
   seo: { description: string; keywords: string[] };
   services: Service[];
 }

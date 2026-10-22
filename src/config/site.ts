@@ -38,6 +38,9 @@ export const siteConfig: SiteConfig = {
 
   socialPlatforms: ["LinkedIn", "Facebook", "Instagram", "X", "YouTube"],
 
+  /** Shown until the profile link is entered in the admin (client, 23 Oct 2026: X account link to follow). */
+  socialPlaceholders: { X: "https://x.com" },
+
   seo: {
     description:
       "BOSS EXIM (Global) Pvt. Ltd. (BOSS EXIM) connects reliable suppliers, genuine buyers and international markets through structured sourcing, trading and supply-chain coordination. Part of the BOSS Group.",
