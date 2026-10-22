@@ -22,7 +22,8 @@ const BYTES_PER_MEGABYTE = 1024 * 1024;
 
 export const PATTERNS = {
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  tel: /^\+?[\d\s().-]{6,24}$/,
+  // A country code is required (client request, Oct 2026): starts with + and digits, e.g. +971 50 123 4567.
+  tel: /^\+\d[\d\s().-]{6,22}$/,
   url: /^(https?:\/\/)?([\w-]+\.)+[a-z]{2,}(\/\S*)?$/i,
   date: /^\d{4}-\d{2}-\d{2}$/,
 };

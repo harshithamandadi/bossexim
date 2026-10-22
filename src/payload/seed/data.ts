@@ -62,14 +62,17 @@ export const seedTeam: (Omit<TeamMember, "photo"> & { photo?: { file: string; al
 
 export const seedCompanyDetails = {
   contact: {
-    email: "bossexim@bossgrp.com",
+    // Client inputs, 17 Oct 2026.
+    email: "sales.exim@bossgrp.com",
+    phone: "+91 99493 44428",
     address: "BOSS Towers, Street No. 2, Patrika Nagar, Madhapur, Hyderabad – 500081, Telangana, India",
   },
-  /** The client's social profiles (15 Oct 2026); X and YouTube have no accounts yet. */
+  /** The client's social profiles (15 and 17 Oct 2026); X has no account link yet. */
   social: {
     linkedin: "https://www.linkedin.com/in/admin-exim-1830a7444",
     facebook: "https://www.facebook.com/profile.php?id=61595075745047",
     instagram: "https://www.instagram.com/boss.exim.global",
+    youtube: "https://www.youtube.com/@BOSSEXIM",
   },
 };
 
@@ -371,7 +374,7 @@ export const seedFaqs: FaqItem[] = [
   {
     category: CATEGORY.trading,
     question: "How can I contact BOSS EXIM Global?",
-    answer: `Email bossexim@bossgrp.com, or send an enquiry from the Contact page — choose ${formatList(enquiryTypes.map((type) => type.shortLabel))}. Our corporate office is at BOSS Towers, Madhapur, Hyderabad, India.`,
+    answer: `Email sales.exim@bossgrp.com or call +91 99493 44428, or send an enquiry from the Contact page — choose ${formatList(enquiryTypes.map((type) => type.shortLabel))}. Our corporate office is at BOSS Towers, Madhapur, Hyderabad, India.`,
     keywords: ["contact", "email", "phone", "call", "reach", "address", "office", "hyderabad"],
     action: { label: "Send an enquiry", href: contactHref() },
   },

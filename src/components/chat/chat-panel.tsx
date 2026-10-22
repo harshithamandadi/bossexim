@@ -58,6 +58,12 @@ const JUMP_THRESHOLD_PX = 120;
 const SHEET_CLOSE_VELOCITY = 500;
 const content = chatbotContent;
 
+/** The conversation as plain text for the team's email ("Visitor: …" / "AIRA: …"), most recent part if long. */
+function toTranscript(messages: ChatMessage[]): string {
+  const lines = messages.map((message) => `${message.from === "visitor" ? "Visitor" : content.name}: ${message.text.replace(/\s+/g, " ").trim()}`);
+  return lines.join("\n").slice(-6000);
+}
+
 interface ChatPanelProps {
   faqs: FaqItem[];
   /** Products Aira can talk about and take enquiries for. */
@@ -83,17 +89,17 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
   const [isSubmitting, startSubmitting] = useTransition();
   const [handledRequestId, setHandledRequestId] = useState<number>();
 
-  function submit(answers: BuyingAnswers) {
+  function submit(answers: BuyingAnswers, transcript: string) {
     startSubmitting(async () => {
-      const result = await submitAssistantEnquiry(answers, formToken).catch(() => ({ ok: false as const }));
+      const result = await submitAssistantEnquiry(answers, formToken, transcript).catch(() => ({ ok: false as const }));
       setMessages((current) => [...current, submissionReply(result)]);
       setFlow(result.ok ? INITIAL_FLOW : { kind: "confirm", answers });
     });
   }
 
-  function requestCallback(answers: CallbackAnswers) {
+  function requestCallback(answers: CallbackAnswers, transcript: string) {
     startSubmitting(async () => {
-      const result = await submitAssistantCallback(answers, formToken).catch(() => ({ ok: false as const }));
+      const result = await submitAssistantCallback(answers, formToken, transcript).catch(() => ({ ok: false as const }));
       setMessages((current) => [...current, callbackReply(result)]);
       setFlow(INITIAL_FLOW);
     });
@@ -130,8 +136,10 @@ export function ChatPanel({ faqs, products, formToken, isOpen, onClose, request 
     setMessages((current) => [...current, ...pendingReplies, { from: "visitor", text: echo }]);
     setPendingReplies(replies);
     setFlow(response.flow);
-    if (response.submit) submit(response.submit);
-    if (response.callback) requestCallback(response.callback);
+    // The whole conversation goes with the enquiry, so the sales team gets a chat summary by email.
+    const transcript = toTranscript([...messages, ...pendingReplies, { from: "visitor", text: echo }]);
+    if (response.submit) submit(response.submit, transcript);
+    if (response.callback) requestCallback(response.callback, transcript);
   }
 
   /** Reports the question to the admin (Insights → Aira questions), with whether an FAQ answered it. */

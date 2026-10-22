@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/layout/page-hero";
-import { MoreServices, ServiceGallery, ServiceMedia, ServiceOverview } from "@/components/sections/group/container-line-service";
+import { MoreServices, ServiceForExim, ServiceMedia, ServiceOverview } from "@/components/sections/group/container-line-service";
 import { CtaSection } from "@/components/sections/shared/cta-section";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Section } from "@/components/ui/section";
@@ -68,7 +68,7 @@ export default async function ContainerLineServicePage({ params }: ServicePagePr
         <ServiceOverview service={service} />
       </Section>
       <Section spacing="compact" className="pt-0 sm:pt-0">
-        <ServiceGallery service={service} />
+        <ServiceForExim service={service} />
       </Section>
       <Section spacing="compact" tone="mist">
         <MoreServices current={service.slug} />

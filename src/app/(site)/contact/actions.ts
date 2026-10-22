@@ -14,6 +14,7 @@ import {
   readAttachments,
   readEnquiryValues,
   validateEnquiry,
+  type Enquiry,
   type EnquiryFormState,
 } from "@/lib/enquiry/schema";
 
@@ -57,7 +58,15 @@ export async function submitEnquiry(_previous: EnquiryFormState, formData: FormD
 export type AssistantSubmission = { ok: true; reference?: string } | { ok: false; fallbackEmail?: string };
 
 /** A buying enquiry put together in the chat with Aira (see config/chatbot.ts). */
-export async function submitAssistantEnquiry(answers: unknown, formToken: unknown): Promise<AssistantSubmission> {
+const MAX_TRANSCRIPT_LENGTH = 6000;
+
+/** Adds AIRA's chat to the enquiry as a "Chat summary" detail, so it reaches the sales team's email. */
+function withTranscript(enquiry: Enquiry, transcript: unknown): Enquiry {
+  if (typeof transcript !== "string" || !transcript.trim()) return enquiry;
+  return { ...enquiry, details: [...enquiry.details, { label: "Chat summary", value: transcript.trim().slice(-MAX_TRANSCRIPT_LENGTH) }] };
+}
+
+export async function submitAssistantEnquiry(answers: unknown, formToken: unknown, transcript?: unknown): Promise<AssistantSubmission> {
   const [{ products }, { contact }] = await Promise.all([getCatalogue(), getCompanyDetails()]);
   const fallbackEmail = contact.email;
 
@@ -68,17 +77,17 @@ export async function submitAssistantEnquiry(answers: unknown, formToken: unknow
   );
   if (!enquiry || isRateLimited(await clientAddress())) return { ok: false, fallbackEmail };
 
-  const { delivered, reference } = await deliverEnquiry(enquiry, { source: AIRA_SOURCE });
+  const { delivered, reference } = await deliverEnquiry(withTranscript(enquiry, transcript), { source: AIRA_SOURCE });
   return delivered ? { ok: true, reference } : { ok: false, fallbackEmail };
 }
 
 /** A call-back request from Aira: name, email and optionally phone and topic. */
-export async function submitAssistantCallback(answers: unknown, formToken: unknown): Promise<AssistantSubmission> {
+export async function submitAssistantCallback(answers: unknown, formToken: unknown, transcript?: unknown): Promise<AssistantSubmission> {
   const { contact } = await getCompanyDetails();
   const fallbackEmail = contact.email;
   if (checkFormToken(formToken) !== "valid") return { ok: false, fallbackEmail };
   const enquiry = toCallbackEnquiry(answers);
   if (!enquiry || isRateLimited(await clientAddress())) return { ok: false, fallbackEmail };
-  const { delivered, reference } = await deliverEnquiry(enquiry, { source: AIRA_SOURCE });
+  const { delivered, reference } = await deliverEnquiry(withTranscript(enquiry, transcript), { source: AIRA_SOURCE });
   return delivered ? { ok: true, reference } : { ok: false, fallbackEmail };
 }

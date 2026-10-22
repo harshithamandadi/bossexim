@@ -14,8 +14,7 @@ export async function MediaGrid({ className }: { className?: string }) {
       <div className="space-y-10">
         {galleries.map((gallery, index) => (
           <section key={gallery.title} id={toAnchorId(gallery.title)} className="scroll-mt-32">
-            <h3 className="type-h4">{gallery.title}</h3>
-            <PhotoSlider photos={gallery.images} label={gallery.title} reverse={index % 2 === 1} speed={0.9} className="mt-2" />
+            <PhotoSlider photos={gallery.images} title={gallery.title} label={gallery.title} reverse={index % 2 === 1} speed={0.9} className="mt-2" />
           </section>
         ))}
       </div>

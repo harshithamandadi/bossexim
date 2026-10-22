@@ -18,6 +18,8 @@ export const uiLabels = {
   lightMode: "Switch to light mode",
   next: "Next",
   zoom: "View full size",
+  viewAll: "View all",
+  showLess: "Show less",
   close: "Close",
   notFound: {
     eyebrow: "404",

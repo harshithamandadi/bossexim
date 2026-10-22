@@ -392,3 +392,14 @@ Source: `requirements/3rd resources/` — New Website Structure.docx (site map),
 - [x] Service header photos shown whole (NVOCC). Container Line offices: phone numbers and emails from the brochure.
 - [x] AIRA: the client's new opening message; name shown as "AIRA".
 - [ ] Still waiting on the client: Pradeep K and Nagaraju P profiles and photos; office phone, WhatsApp, hours and map for Contact; X and YouTube accounts.
+
+### R9. Client inputs 17 Oct 2026 (requirements/BGEXIM Inputs 17th Oct 26) — done
+- [x] Contact: sales.exim@bossgrp.com, +91 99493 44428 (office address unchanged). YouTube @BOSSEXIM in the footer.
+- [x] Hero map 20% smaller. Stats: "Export products", "Import products", "Core trade markets" = 8 (India included).
+- [x] How We Work: all six steps fully visible (current one highlighted).
+- [x] BOSS Group: presence map centred on a dark panel (dark version of the client's map).
+- [x] Click any photo to enlarge (site-wide). "View all" on every photo row and on product categories with more than 3 products.
+- [x] Founder/team cards grow on their own when a profile is opened.
+- [x] Container Line: illustrated images shown whole; the 6 service pages drop the photo slider and get a dark "How This Supports BOSS EXIM" box (client document).
+- [x] AIRA: phone numbers must include the country code; the chat conversation is attached to call-back and buying enquiries as "Chat summary" for the sales email.
+- [ ] Needs: the X (Twitter) link; SMTP mailbox details in Vercel so enquiry and chat-summary emails are actually sent.

@@ -11,7 +11,7 @@ export function GroupFounders() {
   return (
     <>
       <SectionHeader {...content.heading} layout="split" />
-      <RevealGroup as="ul" className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <RevealGroup as="ul" className="mt-10 grid items-start gap-5 md:grid-cols-2 lg:grid-cols-3">
         {content.founders.map((founder) => {
           return (
             <RevealItem as="li" key={founder.name} className="card-gradient flex flex-col overflow-hidden rounded-card bg-surface ring-1 ring-inset ring-border">

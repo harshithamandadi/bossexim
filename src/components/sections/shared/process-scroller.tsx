@@ -64,7 +64,8 @@ export function ProcessScroller({ content }: { content: ProcessContent }) {
             id={stepIds[index]}
             className={cn(
               "card-gradient rounded-card bg-surface p-6 transition-opacity duration-500 ease-smooth sm:p-7",
-              index !== activeIndex && "lg:opacity-35",
+              // Every step stays readable; the current one is highlighted (client: dimmed steps looked missing).
+              index === activeIndex ? "ring-2 ring-brand/40" : "ring-1 ring-inset ring-border",
             )}
           >
             <div className="flex items-center justify-between">

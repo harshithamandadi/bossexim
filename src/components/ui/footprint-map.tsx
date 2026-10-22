@@ -24,3 +24,19 @@ export function FootprintMap({ className, sizes = "(min-width: 1024px) 40vw, 100
     </div>
   );
 }
+
+/** The same map on a dark panel: highlighted countries in bright blue, centred (client request, 17 Oct 2026). */
+export function FootprintMapDark({ className }: { className?: string }) {
+  return (
+    <div data-tone="dark" className={cn("deep-gradient overflow-hidden rounded-panel p-4 sm:p-8", className)}>
+      <Image
+        src="/images/group/boss-group-presence-dark.webp"
+        width={FOOTPRINT_MAP.width}
+        height={FOOTPRINT_MAP.height}
+        alt={FOOTPRINT_MAP.alt}
+        sizes="(min-width: 1280px) 1100px, 100vw"
+        className="mx-auto h-auto w-full max-w-6xl"
+      />
+    </div>
+  );
+}

@@ -88,7 +88,7 @@ async function seedAdmin(payload: Payload) {
 
 
 /** The general email before the company's final documents (Oct 2026) — replaced by the new one. */
-const RETIRED_EMAILS = ["bgexim@bossgrp.com"];
+const RETIRED_EMAILS = ["bgexim@bossgrp.com", "bossexim@bossgrp.com"];
 
 /** Fills in contact details from the brief, without overwriting anything entered in the admin. */
 async function fillCompanyDetails(payload: Payload) {

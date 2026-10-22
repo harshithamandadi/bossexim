@@ -53,6 +53,8 @@ export interface ContainerLineService extends Feature {
   paragraphs: string[];
   highlightsTitle: string;
   highlights: string[];
+  /** How the service supports BOSS EXIM (client document "How Container Line supports EXIM", Oct 2026). */
+  forExim: string;
 }
 
 const clImage = (file: string, alt: string, width: number, height: number): ImageAsset => ({
@@ -65,6 +67,8 @@ const clImage = (file: string, alt: string, width: number, height: number): Imag
 export const containerLineServices: ContainerLineService[] = [
   {
     slug: "nvocc",
+    forExim:
+      "BOSS Container Line’s NVOCC capability gives BOSS EXIM direct access to container planning, carrier coordination, routing and shipment execution. This helps evaluate freight availability and logistics feasibility early, improve shipment visibility and connect product sourcing with dependable international container movement through an established logistics network.",
     title: "NVOCC",
     tagline: "Container line services as an NVOCC",
     description:
@@ -94,6 +98,8 @@ export const containerLineServices: ContainerLineService[] = [
   },
   {
     slug: "freight-forwarding",
+    forExim:
+      "Freight-forwarding capability helps BOSS EXIM connect sourcing with origin-to-destination logistics planning. Freight cost, transit time, port selection and inland transportation can be considered while structuring each transaction. This supports better landed-cost visibility, smoother coordination and more practical delivery planning for customers.",
     title: "Freight Forwarding",
     tagline: "Sea, road, rail & air, door to door",
     description:
@@ -124,6 +130,8 @@ export const containerLineServices: ContainerLineService[] = [
   },
   {
     slug: "container-trading",
+    forExim:
+      "Experience in container buying, selling, leasing and repositioning helps BOSS EXIM understand equipment availability, container types and market conditions. This improves shipment planning, especially when equipment availability is tight, and supports better decisions on container requirements, logistics costs and cargo movement.",
     title: "Trading",
     tagline: "Buy, sell or lease containers",
     description:
@@ -154,6 +162,8 @@ export const containerLineServices: ContainerLineService[] = [
   },
   {
     slug: "break-bulk-cargo",
+    forExim:
+      "Break bulk capability supports BOSS EXIM in handling cargo that cannot move efficiently in standard containers. Machinery, steel products, heavy vehicles and fabricated structures can be planned with suitable vessels, lifting, securing and port handling, giving greater flexibility for specialised and large-format international trade.",
     title: "Break Bulk",
     tagline: "Oversized & heavy cargo",
     description:
@@ -183,6 +193,8 @@ export const containerLineServices: ContainerLineService[] = [
   },
   {
     slug: "project-cargo",
+    forExim:
+      "Project cargo expertise allows BOSS EXIM to handle opportunities involving machinery, industrial equipment, construction materials and oversized cargo. Logistics feasibility, dimensions, weight, lifting requirements, route restrictions and port suitability can be assessed early, helping improve costing and execution for specialised trade opportunities.",
     title: "Project Cargo",
     tagline: "Heavy, oversized & specialised shipments",
     description:
@@ -212,6 +224,8 @@ export const containerLineServices: ContainerLineService[] = [
   },
   {
     slug: "3pl-and-warehousing",
+    forExim:
+      "Warehousing and 3PL capability gives BOSS EXIM flexibility in storage, consolidation, inspection, packing, labelling and distribution. By connecting warehouses with inland transport, freight forwarding, port movement and final delivery, the business can improve inventory visibility, dispatch planning and overall supply-chain coordination.",
     title: "Warehouse & 3PL",
     tagline: "Storage, handling & dispatch",
     description:
@@ -839,6 +853,7 @@ export const groupVerticals: GroupVertical[] = [
 export const groupVerticalLabels = {
   services: "Our Services",
   moreServices: "More Container Line Services",
+  forExim: "How This Supports BOSS EXIM",
   otherVerticals: "More from BOSS Group",
 };
 

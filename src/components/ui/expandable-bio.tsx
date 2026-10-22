@@ -23,7 +23,8 @@ export function ExpandableBio({ paragraphs, moreLabel, lessLabel, className }: E
 
   return (
     <div className={cn("flex flex-1 flex-col text-[15px] leading-relaxed text-pretty text-fg-mute", className)}>
-      <p>{lead}</p>
+      {/* Closed: the opening paragraph at a fixed height, so the cards line up; open: everything. */}
+      <p className={cn(!open && rest.length > 0 && "line-clamp-6 min-h-[6lh]")}>{lead}</p>
       {open && (
         <div className="mt-3 space-y-3">
           {rest.map((paragraph) => (
@@ -36,7 +37,7 @@ export function ExpandableBio({ paragraphs, moreLabel, lessLabel, className }: E
           type="button"
           aria-expanded={open}
           onClick={() => setOpen((value) => !value)}
-          className="mt-auto inline-flex items-center gap-1.5 self-start pt-4 text-sm font-semibold text-brand"
+          className="mt-3 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-brand"
         >
           {open ? lessLabel : moreLabel}
           <ChevronDown aria-hidden className={cn("size-4 transition-transform duration-300", open && "rotate-180")} />

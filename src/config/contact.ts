@@ -277,7 +277,7 @@ export const contactContent = {
   details: {
     title: "Reach Us Directly",
     labels: { website: "Web", email: "Email", phone: "Phone", address: "Office" },
-    pendingNote: "Phone, WhatsApp, office hours and map details will be added once finalised.",
+    pendingNote: "Office hours and map details will be added once finalised.",
   },
   social: { title: "Follow Us" },
   form: {

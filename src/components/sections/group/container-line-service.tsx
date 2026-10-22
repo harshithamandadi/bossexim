@@ -4,7 +4,6 @@ import { PhotoWatermark } from "@/components/ui/photo-watermark";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Carousel } from "@/components/ui/carousel";
 import { IconTile } from "@/components/ui/icon";
-import { PhotoSlider } from "@/components/ui/photo-slider";
 import { PhotoTitleCard } from "@/components/ui/photo-title-card";
 import { containerLineServiceHref, containerLineServices, groupVerticalLabels, uiLabels, type ContainerLineService } from "@/config";
 
@@ -61,15 +60,36 @@ export function ServiceOverview({ service }: { service: ContainerLineService }) 
   );
 }
 
-/** More of the client's photos for the service. */
-export function ServiceGallery({ service }: { service: ContainerLineService }) {
-  return <PhotoSlider photos={[service.image, ...service.gallery]} label={`${service.title} photos`} />;
+/** How the service supports BOSS EXIM — a dark box with white lettering (client request). */
+export function ServiceForExim({ service }: { service: ContainerLineService }) {
+  return (
+    <Reveal>
+      <div data-tone="dark" className="deep-gradient relative isolate overflow-hidden rounded-panel p-8 text-white sm:p-12">
+        <div className="grid gap-6 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-10">
+          <span className="grid size-14 place-items-center rounded-2xl bg-white/10 ring-1 ring-inset ring-white/20">
+            <IconTile icon={service.icon} variant="brand" size="sm" />
+          </span>
+          <div>
+            <h2 className="type-h3 text-white">{groupVerticalLabels.forExim}</h2>
+            <p className="mt-4 max-w-3xl text-[17px] leading-relaxed text-pretty text-white/90">{service.forExim}</p>
+          </div>
+        </div>
+      </div>
+    </Reveal>
+  );
 }
 
 /** Card link to a service page — photo and heading only (client request). */
 export function ServiceCardLink({ service, className }: { service: ContainerLineService; className?: string }) {
   return (
-    <PhotoTitleCard href={containerLineServiceHref(service.slug)} title={service.title} photo={service.image} icon={service.icon} className={className} />
+    <PhotoTitleCard
+      href={containerLineServiceHref(service.slug)}
+      title={service.title}
+      photo={service.image}
+      icon={service.icon}
+      fit={service.imageFit ?? "cover"}
+      className={className}
+    />
   );
 }
 

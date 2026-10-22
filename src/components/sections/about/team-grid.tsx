@@ -31,7 +31,7 @@ export async function TeamGrid({ className }: { className?: string }) {
   }
 
   return (
-    <RevealGroup as="ul" className={cn("grid gap-5 md:grid-cols-2 lg:grid-cols-3", className)}>
+    <RevealGroup as="ul" className={cn("grid items-start gap-5 md:grid-cols-2 lg:grid-cols-3", className)}>
       {members.map((member) => (
         <RevealItem as="li" key={member.name} className="card-gradient flex flex-col overflow-hidden rounded-card bg-surface ring-1 ring-inset ring-border">
           <Portrait member={member} />

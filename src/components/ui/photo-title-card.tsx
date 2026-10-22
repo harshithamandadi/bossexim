@@ -12,11 +12,13 @@ interface PhotoTitleCardProps {
   photo?: ImageAsset;
   /** Shown on a brand gradient when there is no photo yet. */
   icon: IconName;
+  /** "contain" shows the whole image on white (illustrations with lettering); "cover" fills the frame. */
+  fit?: "cover" | "contain";
   className?: string;
 }
 
 /** A standard-size card with just a photo and a heading (client request, 15 Oct 2026). */
-export function PhotoTitleCard({ href, title, photo, icon, className }: PhotoTitleCardProps) {
+export function PhotoTitleCard({ href, title, photo, icon, fit = "cover", className }: PhotoTitleCardProps) {
   return (
     <Link
       href={href}
@@ -34,7 +36,10 @@ export function PhotoTitleCard({ href, title, photo, icon, className }: PhotoTit
               alt={photo.alt}
               fill
               sizes="18rem"
-              className="object-cover transition-transform duration-700 ease-smooth group-hover:scale-105"
+              className={cn(
+                "transition-transform duration-700 ease-smooth group-hover:scale-105",
+                fit === "contain" ? "object-contain p-2" : "object-cover",
+              )}
             />
             <PhotoWatermark size="sm" />
           </>

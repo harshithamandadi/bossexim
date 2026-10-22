@@ -7,7 +7,7 @@ import { GroupRecognition } from "@/components/sections/group/group-recognition"
 import { CtaSection } from "@/components/sections/shared/cta-section";
 import { Reveal } from "@/components/motion/reveal";
 import { ProseSplit } from "@/components/sections/shared/prose";
-import { FootprintMap } from "@/components/ui/footprint-map";
+import { FootprintMapDark } from "@/components/ui/footprint-map";
 import { ButtonLink } from "@/components/ui/button";
 import { Section } from "@/components/ui/section";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -46,12 +46,11 @@ export default function BossGroupPage() {
               {pageContent.media.eyebrow}
             </ButtonLink>
           }
-        >
-          {/* The Group's presence map under the paragraphs, so both columns fill (client request). */}
-          <Reveal className="mt-8">
-            <FootprintMap className="shadow-[0_30px_60px_-35px_rgb(8_33_79/0.45)]" sizes="(min-width: 1024px) 55vw, 100vw" />
-          </Reveal>
-        </ProseSplit>
+        />
+        {/* The Group's presence map, centred on a dark panel under the intro (client request). */}
+        <Reveal className="mt-12">
+          <FootprintMapDark className="shadow-[0_30px_60px_-35px_rgb(8_33_79/0.55)]" />
+        </Reveal>
       </Section>
 
       <Section id={ids.companies} tone="mist" spacing="compact">

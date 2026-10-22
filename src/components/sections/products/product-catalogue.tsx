@@ -38,6 +38,15 @@ export function ProductCatalogue({ initialView, products, markets }: ProductCata
   const catalogue = useMemo(() => createCatalogue(products, markets), [products, markets]);
   const [direction, setDirection] = useState(initialView);
   const visibleProducts = catalogue.filterProducts(direction, "all");
+  // Categories opened with "View all" (shown as a full grid instead of a slider).
+  const [expanded, setExpanded] = useState<Set<string>>(() => new Set());
+  const toggleCategory = (category: string) =>
+    setExpanded((current) => {
+      const next = new Set(current);
+      if (next.has(category)) next.delete(category);
+      else next.add(category);
+      return next;
+    });
 
   function changeDirection(next: TradeDirection) {
     setDirection(next);
@@ -76,12 +85,23 @@ export function ProductCatalogue({ initialView, products, markets }: ProductCata
           <section key={category} id={toAnchorId(category)} className="scroll-mt-52">
             <div className="flex items-baseline justify-between gap-4 border-b border-border pb-3">
               <h2 className="type-h3">{category}</h2>
-              <span className="text-sm text-fg-mute">
-                {items.length} {pluralize(items.length, productLabels.line, productLabels.lines)}
+              <span className="flex items-baseline gap-4 text-sm text-fg-mute">
+                {items.length} {pluralize(items.length, productLabels.product, productLabels.products)}
+                {/* More than three: "View all" opens the full grid (client request, 17 Oct 2026). */}
+                {items.length > MAX_GRID_ITEMS && (
+                  <button
+                    type="button"
+                    onClick={() => toggleCategory(category)}
+                    aria-expanded={expanded.has(category)}
+                    className="font-semibold text-brand hover:underline"
+                  >
+                    {expanded.has(category) ? uiLabels.showLess : `${uiLabels.viewAll} (${items.length})`}
+                  </button>
+                )}
               </span>
             </div>
             {/* More than three products: a sliding row (client request); otherwise a grid. */}
-            {items.length > MAX_GRID_ITEMS ? (
+            {items.length > MAX_GRID_ITEMS && !expanded.has(category) ? (
               <Carousel
                 className="mt-3"
                 label={category}

@@ -23,7 +23,8 @@ export function HeroSection({ products }: { products: Product[] }) {
         A big, dark dotted world map across the hero (client request, 15 Oct 2026). It
         fades behind the text column so the headline stays easy to read.
       */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-16 bottom-4">
+      {/* 20% smaller than full-bleed (client request, 17 Oct 2026). */}
+      <div aria-hidden className="pointer-events-none absolute top-[calc(50%+1.5rem)] left-1/2 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2">
         <WorldDotsMap
           variant="backdrop"
           fit="slice"

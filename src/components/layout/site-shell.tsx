@@ -1,6 +1,7 @@
 import { Inter, Inter_Tight } from "next/font/google";
 import type { ReactNode } from "react";
 import { VisitBeacon } from "@/components/analytics/visit-beacon";
+import { ImageZoom } from "@/components/ui/image-zoom";
 import { ChatWidget } from "@/components/chat/chat-widget";
 import { SiteHeader } from "@/components/layout/header/site-header";
 import { THEME_INIT_SCRIPT } from "@/components/layout/header/theme-toggle";
@@ -56,6 +57,7 @@ export async function SiteShell({ children }: { children: ReactNode }) {
           <SiteFooter />
           <ChatWidget faqs={faqs} products={assistantProducts} formToken={createFormToken()} />
           <VisitBeacon />
+          <ImageZoom />
         </MotionProvider>
       </body>
     </html>
