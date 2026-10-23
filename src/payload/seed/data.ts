@@ -29,20 +29,20 @@ export const seedTeam: (Omit<TeamMember, "photo"> & { photo?: { file: string; al
   {
     name: "Sekhar C",
     role: "Chief Executive Officer",
-    photo: { file: "team/sekhar-c.jpg", alt: "Sekhar C, Chief Executive Officer" },
+    photo: { file: "team/sekhar-c-portrait.jpg", alt: "Sekhar C, Chief Executive Officer" },
     // Profiles from the client's Profile Data document (23 Oct 2026).
     bio: "Mr. Sekhar C serves as Chief Executive Officer and brings over 27 years of experience across shipping, construction, hospitality and logistics. An Engineering graduate in Computer Science from Karnataka University, he has developed strong expertise in marketing, sales, customer relationship management, business development and operational coordination. His leadership combines strategic thinking with practical execution, supported by a strong focus on transparency, responsiveness and long-term customer relationships. He continues to contribute to business growth by identifying new opportunities, strengthening customer and partner networks, improving operational effectiveness and guiding teams to maintain high standards of professionalism, accountability and consistent service delivery.",
   },
   {
     name: "Pradeep K",
     role: "Chief Operating Officer",
-    photo: { file: "team/pradeep-k.jpg", alt: "Pradeep K, Chief Operating Officer" },
+    photo: { file: "team/pradeep-k-portrait.jpg", alt: "Pradeep K, Chief Operating Officer" },
     bio: "Mr. Pradeep Kamareddy serves as Chief Operating Officer (COO) of BOSS Exim Global Pvt. Ltd., providing strategic leadership across international trade, global business development, and import-export operations. He drives market expansion, strategic sourcing, commercial negotiations, and international business partnerships, with a focus on sustainable growth, operational excellence, and long-term value creation. With over 15 years of professional and entrepreneurial experience across India and the United Kingdom, he brings a multidisciplinary perspective spanning international trading, operations management, construction, and real estate development. He holds a Master of Science (MSc) from the University of Bedfordshire, UK, and a Bachelor of Engineering (B.E.).",
   },
   {
     name: "Nagaraju P",
     role: "Chief Finance Officer",
-    photo: { file: "team/nagaraju-p-2.jpg", alt: "Nagaraju P, Chief Finance Officer" },
+    photo: { file: "team/nagaraju-p-portrait.jpg", alt: "Nagaraju P, Chief Finance Officer" },
     bio: "Mr. Nagaraju P. serves as CFO of BOSS Group India and brings over 10 years of experience across shipping, construction and logistics. He holds a Master of Commerce in Financial Management from Sri Venkateswara University. Over the years, he has developed strong expertise in financial planning, banking coordination, commercial finance and business support. His ability to build and maintain strong relationships with financial institutions has contributed to improving access to financial resources and supporting organisational growth. He brings a disciplined, practical and commercially focused approach to finance, with emphasis on financial control, banking relationships, compliance and sustainable business development.",
   },
 ];
