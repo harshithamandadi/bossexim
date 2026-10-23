@@ -251,7 +251,7 @@ export interface Product {
   name: string;
   direction: 'export' | 'import';
   /**
-   * Products sharing a category are grouped together, e.g. Spices.
+   * Products in the same category are shown together; more than three slide. Use one of: Rice & Grains, Spices, Pulses, Vegetables, Fresh Fruits, Dehydrated Products, Seafood, Manufactured Products, Other Export Products, Polymers, Metal Scrap, Other Import Products — or a new name for a new section.
    */
   category: string;
   /**

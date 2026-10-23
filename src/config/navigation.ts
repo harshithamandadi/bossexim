@@ -19,15 +19,12 @@ import {
 
 const { about, business, tradeProcess, resources } = sectionIds;
 
-/** Photo categories on the Media & Events page (see seed data). */
-const MEDIA_CATEGORIES = [
-  "Leadership",
-  "Business Meetings",
-  "Supplier Visits",
-  "Trade Events",
-  "International Business",
-  "Group Activities",
-];
+/**
+ * Photo categories on the Media & Events page (see seed data). Leadership, Business Meetings
+ * and Trade Events are left out until their photos arrive (client, 23 Oct 2026) — add them
+ * back here when they are uploaded.
+ */
+const MEDIA_CATEGORIES = ["Supplier Visits", "International Business", "Group Activities"];
 
 export const mainNavigation: NavGroup[] = [
   {

@@ -449,14 +449,11 @@ export const groupFounders: { heading: SectionContent; readProfile: string; show
   founders: [
     {
       name: "Prasad Kalla",
-      role: "Chairman, BOSS Group",
+      role: "Founder & Chairman, BOSS Group",
       photo: { src: "/images/group/founders/prasad-kalla-portrait.webp", alt: "Prasad Kalla", width: 1000, height: 750 },
+      // Profiles from the client's Profile Data document (23 Oct 2026).
       bio: [
-        "Mr. Prasad Kalla pursued his Master of Business Administration (MBA) at Victoria University of Technology, Melbourne, Australia — part of his motivation for coming to Australia was the opportunity to experience a different culture and environment first-hand. He migrated from Khammam in Andhra Pradesh, India, and has had the good fortune to work in many multicultural environments, in academic, business and social settings.",
-        "Brought up in Andhra Pradesh, he studied in Karnataka for his engineering degree in Computer Science from Bangalore University, alongside people of many cultural backgrounds. Much of his experience has been in teams. Under his leadership, BOSS (Aust) Consulting Pty Ltd today operates 26 petrol and convenience stores under the BP banner, both freehold and leasehold, where he values cultural diversity in the workplace and works closely with people of different cultural and linguistic backgrounds.",
-        "Mr. Prasad believes in building prosperity by supporting a broad range of causes through donation and sponsorship. He encourages employees to take part in social and charitable programmes, volunteers his own time, talent and resources for local community needs, employs local people, sources locally and strengthens the community — including contributions to religious organisations and to people affected by floods and other natural calamities.",
-        "He continues to develop a workplace culture that is safe, professional and positive — one that values the skills of all staff, acknowledges their achievements, provides pathways for career development and enables a good balance with the responsibilities of work — and, under his leadership, BOSS Group creates more jobs for the local community, from customer service officers and managers to IT professionals.",
-        "A gentle, down-to-earth person from a joint family of 40 members living together under one roof in India, he is regarded as respected, trustworthy and generous, and credits others for success while taking responsibility for failures. He created BOSS Group’s commercial success guidelines on a simple principle: work together, stay together — let the challenges come from anywhere, but the solutions will come from us. Nothing is more important to him than the safety of people and the environments in which the Group works.",
+        "Mr. Prasad Kalla, Founder and Chairman of BOSS Group, is an Engineering graduate in Computer Science from Bangalore University and holds an MBA from Victoria University of Technology, Melbourne. His leadership journey is shaped by multicultural experience, disciplined entrepreneurship and a strong commitment to people, ethics and community. He has guided the Group across diverse business sectors while promoting teamwork, safety, professional development and long-term relationships. Deeply committed to social responsibility, he supports charitable initiatives, community development and local employment. His leadership has also been recognised through several business, community, compliance, hospitality and performance awards over the years.",
       ],
     },
     {
@@ -464,21 +461,15 @@ export const groupFounders: { heading: SectionContent; readProfile: string; show
       role: "CEO, BOSS Group (Australia)",
       photo: { src: "/images/group/founders/krishna-bodla-portrait.webp", alt: "Krishna Prasad (Kris) Bodla", width: 1000, height: 750 },
       bio: [
-        "Kris Bodla serves as CEO of BOSS Group (Australia), bringing over two decades of visionary leadership to the organisation’s diverse operations across retail, property, construction, hospitality and more. His journey began in India, where he designed and implemented a comprehensive Management Information System at Srinivasa Hatcheries Group — an early demonstration of his ability to blend technology with business process improvement.",
-        "In 2002, Kris co-founded BOSS Group Australia and has since played a critical role across every function, from operations and systems development to strategic growth. His hands-on leadership and adaptability have been instrumental in transforming BOSS Group into a resilient, multi-sector enterprise recognised in Forbes Australia and Convenience World magazine.",
-        "Kris’s leadership philosophy is rooted in clear vision, integrity and empowerment. He fosters a culture of collaboration and continuous improvement, encouraging innovation and ownership at all levels while maintaining an unwavering focus on customer experience and ethical responsibility.",
-        "A lifelong learner, he is deeply committed to mentoring the next generation of leaders. Outside work, Kris enjoys cricket, rugby, Indian music, travel and reading — interests that enrich his global perspective and keep him connected to both business and community.",
+        "Mr. Kris Bodla serves as CEO of BOSS Group Australia, bringing more than two decades of leadership experience across retail, property, construction, hospitality and diversified business operations. His career reflects a strong ability to combine technology, systems and practical business management. Since co-founding BOSS Group Australia in 2002, he has contributed across operations, systems development and strategic growth. His leadership approach is built on integrity, collaboration, innovation and continuous improvement, with a strong focus on customer experience and ethical responsibility. He is also committed to mentoring future leaders and encouraging ownership, accountability and professional development across the organisation.",
       ],
     },
     {
       name: "Sudhakar Chaluvadi",
-      role: "Director, BOSS Group",
+      role: "CEO, BOSS Group (India)",
       photo: { src: "/images/group/founders/sudhakar-chaluvadi-portrait.webp", alt: "Sudhakar Chaluvadi", width: 1000, height: 750 },
       bio: [
-        "Mr. Sudhakar Chaluvadi is a seasoned business leader with extensive exposure across multiple sectors, including Information Technology, Shipping and Logistics, Construction, Hospitality, Retail and Fuel Stations. His diverse industry background enables him to combine strong corporate management experience with a practical understanding of business operations across different markets.",
-        "He spent more than 18 years with Wipro, where he held senior executive responsibilities and gained significant global experience in Business Operations, Delivery Management, People Supply Management and large-scale team leadership — managing and coordinating a workforce of nearly 8,000 professionals.",
-        "His technology expertise includes extensive experience in ERP platforms, Microsoft technologies and enterprise delivery frameworks, supported by a strong understanding of both onshore and offshore execution models.",
-        "Over the years, Mr. Sudhakar has applied his corporate experience to diversified business ventures, bringing a structured, process-driven and customer-focused approach to management. With a strong global outlook and cross-industry experience, he continues to contribute to the BOSS Group’s growth, diversification and long-term business development.",
+        "Mr. Sudhakar Chaluvadi serves as CEO of BOSS Group India and is a seasoned business leader with extensive experience across Information Technology, Shipping and Logistics, Construction, Hospitality, Retail and Fuel Stations. With more than 20 years of experience in the IT industry, he has held senior executive responsibilities across business operations, delivery management, people supply management and large-scale team leadership. He also brings strong expertise in onshore-offshore delivery models. Combining global corporate experience with practical business knowledge, he follows a structured, process-driven and customer-focused leadership approach, supporting BOSS Group’s growth through strategic planning, operational discipline, people leadership and business development.",
       ],
     },
   ],

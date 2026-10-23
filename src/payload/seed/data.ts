@@ -30,34 +30,21 @@ export const seedTeam: (Omit<TeamMember, "photo"> & { photo?: { file: string; al
     name: "Sekhar C",
     role: "Chief Executive Officer",
     photo: { file: "team/sekhar-c.jpg", alt: "Sekhar C, Chief Executive Officer" },
-    bio: [
-      "Mr. Sekhar Chaluvadi serves as Chief Executive Officer and brings over 27 years of professional experience across the shipping line, construction, hospitality and logistics industries. He is an Engineering graduate in Computer Science Engineering from Karnataka University and has developed strong business expertise through extensive hands-on experience in diverse operational and commercial environments.",
-      "Over the years, Mr. Sekhar has built solid knowledge in marketing, sales, customer relationship management, business development and operational coordination. His multi-faceted approach enables him to understand both organisational requirements and customer expectations, helping him develop practical and effective solutions for complex business challenges.",
-      "He is particularly focused on building long-term customer relationships through trust, transparency, responsiveness and consistent service delivery. His leadership style combines strategic thinking with a practical, results-oriented approach, encouraging teams to maintain high standards of professionalism and accountability.",
-      "Driven by a strong passion for excellence, Mr. Sekhar continues to contribute to business growth by identifying opportunities, strengthening customer and partner relationships, improving operational effectiveness and supporting the organisation’s expansion into new markets and business segments.",
-    ].join("\n\n"),
+    // Profiles from the client's Profile Data document (23 Oct 2026).
+    bio: "Mr. Sekhar C serves as Chief Executive Officer and brings over 27 years of experience across shipping, construction, hospitality and logistics. An Engineering graduate in Computer Science from Karnataka University, he has developed strong expertise in marketing, sales, customer relationship management, business development and operational coordination. His leadership combines strategic thinking with practical execution, supported by a strong focus on transparency, responsiveness and long-term customer relationships. He continues to contribute to business growth by identifying new opportunities, strengthening customer and partner networks, improving operational effectiveness and guiding teams to maintain high standards of professionalism, accountability and consistent service delivery.",
   },
-  // DRAFT role summaries — the client's documents give only name and title. They describe the
-  // role at BOSS EXIM (from the Our Team and How We Work documents), not the person; replace
-  // with the client's own profiles when they arrive.
-
-{
-  name: "Pradeep K",
-  role: "Chief Operations Officer",
-  bio: [
-    "As Chief Operations Officer, Pradeep K oversees how BOSS EXIM’s transactions are carried out — from sourcing and supplier coordination to quality verification, documentation, logistics and shipment execution.",
-    "The operations function keeps every trade on its structured process — Understand, Source, Verify, Structure, Execute, Complete — with clear communication and disciplined transaction control from enquiry through delivery.",
-  ].join("\n\n"),
-},
-{
-  name: "Nagaraju P",
-  role: "Chief Finance Officer",
-  bio: [
-    "As Chief Finance Officer, Nagaraju P leads BOSS EXIM’s finance function — commercial terms, banking arrangements, secured payment methods and transaction closure.",
-    "The finance function supports disciplined trading by reviewing payment security and commercial feasibility before execution, and by monitoring each transaction through to payment closure.",
-  ].join("\n\n"),
-},
-
+  {
+    name: "Pradeep K",
+    role: "Chief Operating Officer",
+    photo: { file: "team/pradeep-k.jpg", alt: "Pradeep K, Chief Operating Officer" },
+    bio: "Mr. Pradeep Kamareddy serves as Chief Operating Officer (COO) of BOSS Exim Global Pvt. Ltd., providing strategic leadership across international trade, global business development, and import-export operations. He drives market expansion, strategic sourcing, commercial negotiations, and international business partnerships, with a focus on sustainable growth, operational excellence, and long-term value creation. With over 15 years of professional and entrepreneurial experience across India and the United Kingdom, he brings a multidisciplinary perspective spanning international trading, operations management, construction, and real estate development. He holds a Master of Science (MSc) from the University of Bedfordshire, UK, and a Bachelor of Engineering (B.E.).",
+  },
+  {
+    name: "Nagaraju P",
+    role: "Chief Finance Officer",
+    photo: { file: "team/nagaraju-p-2.jpg", alt: "Nagaraju P, Chief Finance Officer" },
+    bio: "Mr. Nagaraju P. serves as CFO of BOSS Group India and brings over 10 years of experience across shipping, construction and logistics. He holds a Master of Commerce in Financial Management from Sri Venkateswara University. Over the years, he has developed strong expertise in financial planning, banking coordination, commercial finance and business support. His ability to build and maintain strong relationships with financial institutions has contributed to improving access to financial resources and supporting organisational growth. He brings a disciplined, practical and commercially focused approach to finance, with emphasis on financial control, banking relationships, compliance and sustainable business development.",
+  },
 ];
 
 export const seedCompanyDetails = {
@@ -129,59 +116,28 @@ export const seedGroupCompanies: Omit<GroupCompany, "logo">[] = [
 ];
 
 export const seedGalleries: { title: string; icon: IconName; photos?: { file: string; alt: string }[] }[] = [
-  {
-    title: "Leadership",
-    icon: "user-round",
-    // Placeholders (client's sample images) until real photos are uploaded in the admin.
-    photos: [
-      { file: "media/sample-1.jpg", alt: "Sample image 1" },
-      { file: "media/sample-2.jpg", alt: "Sample image 2" },
-      { file: "media/sample-3.jpg", alt: "Sample image 3" },
-      { file: "media/sample-4.jpg", alt: "Sample image 4" },
-      { file: "media/sample-5.jpg", alt: "Sample image 5" },
-    ],
-  },
-  {
-    title: "Business Meetings",
-    icon: "briefcase",
-    // BOSS Container Line leadership with shipping-line and logistics partners.
-    photos: [
-      { file: "media/meetings-img_6802.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
-      { file: "media/meetings-img_6831.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
-      { file: "media/meetings-img_6838.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
-      { file: "media/meetings-img_8507.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
-      { file: "media/meetings-img_9555.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
-      { file: "media/meetings-img_9585.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
-      { file: "media/meetings-img_9586.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
-      { file: "media/meetings-img_9596.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
-      { file: "media/meetings-img_9629.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
-      { file: "media/meetings-img_9632.jpg", alt: "BOSS Container Line leadership meeting a shipping and logistics partner" },
-    ],
-  },
+  // Leadership, Business Meetings and Trade Events have no photos for launch (client, 23 Oct 2026:
+  // no empty or sample sections; their photos follow). A gallery without photos is hidden on the
+  // site, so each one appears again as soon as photos are uploaded to it in the admin.
+  { title: "Leadership", icon: "user-round" },
+  { title: "Business Meetings", icon: "briefcase" },
   {
     title: "Supplier Visits",
     icon: "factory",
-    // Placeholders (client's sample images) until real photos are uploaded in the admin.
+    // The client's supplier visits (23 Oct 2026): rice mills, dry chilli warehouses and market yards.
     photos: [
-      { file: "media/sample-1.jpg", alt: "Sample image 1" },
-      { file: "media/sample-2.jpg", alt: "Sample image 2" },
-      { file: "media/sample-3.jpg", alt: "Sample image 3" },
-      { file: "media/sample-4.jpg", alt: "Sample image 4" },
-      { file: "media/sample-5.jpg", alt: "Sample image 5" },
+      { file: "media/supplier-visit-01.jpg", alt: "BOSS EXIM team with the supplier at a rice mill" },
+      { file: "media/supplier-visit-02.jpg", alt: "Checking rice quality at a supplier’s rice mill" },
+      { file: "media/supplier-visit-03.jpg", alt: "BOSS EXIM team with a supplier at a dry red chilli warehouse" },
+      { file: "media/supplier-visit-04.jpg", alt: "Inspecting dry red chilli stock at a supplier’s warehouse" },
+      { file: "media/supplier-visit-05.jpg", alt: "BOSS EXIM team at a dry red chilli cold-storage warehouse" },
+      { file: "media/supplier-visit-06.jpg", alt: "BOSS EXIM team with suppliers at a grain warehouse" },
+      { file: "media/supplier-visit-07.jpg", alt: "Discussion with traders at a chilli market yard" },
+      { file: "media/supplier-visit-08.jpg", alt: "Meeting traders at a chilli market yard" },
+      { file: "media/supplier-visit-09.jpg", alt: "BOSS EXIM team with a supplier at their office" },
     ],
   },
-  {
-    title: "Trade Events",
-    icon: "presentation",
-    // Placeholders (client's sample images) until real photos are uploaded in the admin.
-    photos: [
-      { file: "media/sample-1.jpg", alt: "Sample image 1" },
-      { file: "media/sample-2.jpg", alt: "Sample image 2" },
-      { file: "media/sample-3.jpg", alt: "Sample image 3" },
-      { file: "media/sample-4.jpg", alt: "Sample image 4" },
-      { file: "media/sample-5.jpg", alt: "Sample image 5" },
-    ],
-  },
+  { title: "Trade Events", icon: "presentation" },
   {
     title: "International Business",
     icon: "globe",
@@ -197,7 +153,8 @@ export const seedGalleries: { title: string; icon: IconName; photos?: { file: st
   {
     title: "Group Activities",
     icon: "party-popper",
-    // Team gatherings, plus the first EV site (April 2024) and the McGrath Foundation partnership.
+    // Team gatherings and the first EV site (April 2024). The four McGrath Foundation photos were
+    // taken out at the client's request (23 Oct 2026).
     photos: [
       { file: "media/gatherings-as__9413.jpg", alt: "BOSS Group team gathering" },
       { file: "media/gatherings-as__9589.jpg", alt: "BOSS Group team gathering" },
@@ -211,10 +168,6 @@ export const seedGalleries: { title: string; icon: IconName; photos?: { file: st
       { file: "ev-site-launch-team.jpg", alt: "BOSS team at the opening of BP Brackenridge, the Group’s first EV site, April 2024" },
       { file: "ev-site-launch-charger.jpg", alt: "Electric vehicle charging at BP Brackenridge on opening day" },
       { file: "ev-site-launch-ceremony.jpg", alt: "Ribbon-cutting at the BP Brackenridge EV site opening" },
-      { file: "mcgrath-foundation-ribbon.jpg", alt: "Pink ribbon display for the McGrath Foundation partnership" },
-      { file: "mcgrath-foundation-store.jpg", alt: "Convenience store decorated in pink for the McGrath Foundation" },
-      { file: "mcgrath-foundation-counter.jpg", alt: "Store counter with McGrath Foundation pink balloons" },
-      { file: "mcgrath-foundation-window.jpg", alt: "McGrath Foundation lettering on a store window" },
     ],
   },
 ];
