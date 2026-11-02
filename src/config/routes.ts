@@ -101,6 +101,16 @@ export function partnerFormHref(type: EnquiryTypeId): string {
   return `${routes.partner}?type=${type}#${sectionIds.partner.form}`;
 }
 
+/** The PDF brochure (src/app/brochure.pdf). Not a page, so it stays out of `routes` and the sitemap. */
+export const BROCHURE_PATH = "/brochure.pdf";
+/** Separates product slugs in the brochure link; slugs never contain one. */
+export const BROCHURE_SLUG_SEPARATOR = ",";
+
+/** The PDF brochure with these products, e.g. /brochure.pdf?products=basmati-rice,turmeric. */
+export function brochureHref(slugs: string[]): string {
+  return `${BROCHURE_PATH}?${new URLSearchParams({ products: slugs.join(BROCHURE_SLUG_SEPARATOR) })}`;
+}
+
 export function contactHref(options: { type?: EnquiryTypeId; product?: string } = {}): string {
   const params = new URLSearchParams();
   if (options.type) params.set("type", options.type);

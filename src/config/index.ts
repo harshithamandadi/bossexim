@@ -14,6 +14,7 @@ export * from "./partners";
 export * from "./contact";
 export * from "./group";
 export * from "./resources";
+export * from "./brochure";
 export * from "./faq";
 export * from "./chatbot";
 export * from "./pages";

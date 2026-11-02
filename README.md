@@ -117,6 +117,23 @@ or paid API is involved:
 Email goes through the company's mailbox over SMTP (`SMTP_*` in `.env`). With
 `SMTP_HOST` empty, email is off and enquiries are only saved in the admin.
 
+## Product brochure
+
+On **Resources → Brochures**, visitors tick the products they want (by category, or all) and
+download a PDF made for them: a cover, About BOSS EXIM, one page per selected product (photo,
+HSN code, overview, specifications, packaging, markets, documentation) and a back cover with
+the company's contact details from the admin.
+
+- The picker is `src/components/sections/resources/brochure-builder.tsx`; wording is in
+  `src/config/brochure.ts`.
+- The PDF is made on request by `src/app/brochure.pdf/route.ts`
+  (`/brochure.pdf?products=basmati-rice,turmeric`) with `@react-pdf/renderer`; the layout is
+  `src/lib/brochure/document.tsx`. It always reflects the current admin content, so there is
+  nothing to regenerate.
+- Photos are fetched from the site itself and resized with sharp; the Inter fonts (OFL) ship in
+  `src/lib/brochure/fonts/`.
+- At most 15 brochures per visitor per 10 minutes (in memory, per server instance).
+
 ## Deploying to Vercel
 
 Vercel keeps nothing written to disk, so production needs a hosted database (Turso, free

@@ -6,7 +6,7 @@ import { getCatalogue, getCompanyDetails } from "@/lib/content/queries";
 import { AIRA_SOURCE, toAssistantEnquiry, toCallbackEnquiry } from "@/lib/enquiry/assistant";
 import { deliverEnquiry } from "@/lib/enquiry/deliver";
 import { checkFormToken } from "@/lib/enquiry/form-token";
-import { isRateLimited } from "@/lib/enquiry/rate-limit";
+import { clientAddress as addressFrom, isRateLimited } from "@/lib/enquiry/rate-limit";
 import {
   FORM_TOKEN_FIELD,
   SOURCE_FIELD,
@@ -20,10 +20,8 @@ import {
 
 const { errors } = contactContent.form;
 
-/** Best-effort visitor address for rate limiting; set by the hosting platform's proxy. */
 async function clientAddress(): Promise<string> {
-  const requestHeaders = await headers();
-  return requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() || requestHeaders.get("x-real-ip") || "unknown";
+  return addressFrom(await headers());
 }
 
 export async function submitEnquiry(_previous: EnquiryFormState, formData: FormData): Promise<EnquiryFormState> {

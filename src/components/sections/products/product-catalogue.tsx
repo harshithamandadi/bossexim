@@ -5,9 +5,9 @@ import { useMemo, useState } from "react";
 import { Carousel } from "@/components/ui/carousel";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { uiLabels } from "@/config/ui";
-import { productCategories, productLabels, tradeDirections } from "@/config/products";
+import { productLabels, tradeDirections } from "@/config/products";
 import { toAnchorId } from "@/config/routes";
-import { createCatalogue, groupByCategory } from "@/lib/catalogue";
+import { createCatalogue, groupByCategory, sortByCategory } from "@/lib/catalogue";
 import { pluralize } from "@/lib/format";
 import { SPRING_SNAPPY } from "@/lib/motion";
 import type { Market, Product, TradeDirection } from "@/types/content";
@@ -16,16 +16,6 @@ import { ProductCard } from "./product-card";
 const DIRECTIONS: TradeDirection[] = ["export", "import"];
 /** Categories with more products than this slide instead of wrapping into rows. */
 const MAX_GRID_ITEMS = 3;
-const CATEGORY_ORDER = productCategories.map((category) => category.name);
-
-/** Known categories in their set order; any others (added in the admin) after them. */
-function sortByCategory<T extends { category: string }>(groups: T[]): T[] {
-  const rank = (name: string) => {
-    const index = CATEGORY_ORDER.indexOf(name);
-    return index === -1 ? CATEGORY_ORDER.length : index;
-  };
-  return [...groups].sort((a, b) => rank(a.category) - rank(b.category));
-}
 
 /** Exports / Imports segmented control and the product grid, grouped by category (no market filter — client request). */
 interface ProductCatalogueProps {

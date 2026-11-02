@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/config/site";
+import { logoMarkSvg } from "@/lib/logo-mark";
 import { SHARE_IMAGE } from "@/lib/metadata";
 
 /*
@@ -14,17 +15,7 @@ export const dynamic = "force-static";
 const { company } = siteConfig;
 
 /** The BOSS mark in white — the same shapes as components/ui/logo.tsx. */
-const LOGO_MARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 272 174" fill="#fff">
-<defs>
-<clipPath id="b"><rect x="1" y="2" width="270" height="170"/></clipPath>
-<mask id="g"><rect width="272" height="174" fill="#fff"/><g fill="#000" stroke="#000" stroke-width="16"><rect x="1" y="2" width="92.3" height="170"/><circle cx="92.3" cy="45" r="46.7"/><circle cx="92.3" cy="129" r="46.7"/></g></mask>
-<mask id="s"><rect width="272" height="174" fill="#fff"/><rect x="0" y="39" width="58" height="14" fill="#000"/><rect x="0" y="118" width="58" height="13" fill="#000"/></mask>
-</defs>
-<circle cx="185" cy="87" r="85" mask="url(#g)"/>
-<g clip-path="url(#b)" mask="url(#s)"><rect x="1" y="2" width="92.3" height="170"/><circle cx="92.3" cy="45" r="46.7"/><circle cx="92.3" cy="129" r="46.7"/></g>
-</svg>`;
-
-const LOGO_MARK_SRC = `data:image/svg+xml;base64,${Buffer.from(LOGO_MARK_SVG).toString("base64")}`;
+const LOGO_MARK_SRC = `data:image/svg+xml;base64,${Buffer.from(logoMarkSvg("#fff")).toString("base64")}`;
 
 export function GET() {
   return new ImageResponse(

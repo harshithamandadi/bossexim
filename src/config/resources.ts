@@ -1,5 +1,6 @@
 /**
- * Headings for the Resources page. The downloads are managed in the admin
+ * Headings for the Resources page. The brochure is built from the products a
+ * visitor picks (config/brochure.ts). Other downloads are managed in the admin
  * (Website content → Downloads); only those with a file attached are shown.
  */
 import type { SectionContent } from "@/types/content";
@@ -7,7 +8,6 @@ import type { SectionContent } from "@/types/content";
 export const resourcesContent: {
   heading: SectionContent;
   labels: { download: string; comingSoon: string };
-  emptyState: string;
   video: SectionContent & { playLabel: string; comingSoon: string };
   specifications: SectionContent & { cta: string };
 } = {
@@ -23,10 +23,9 @@ export const resourcesContent: {
     eyebrow: "Brochures",
     title: "BOSS EXIM Corporate Brochure",
     description:
-      "A concise introduction to BOSS EXIM Global — our business model, products, markets, trade process and capabilities — designed for buyers, suppliers, banks, strategic partners and other stakeholders who want a quick overview of the company.",
+      "A concise introduction to BOSS EXIM Global and the products that matter to you — designed for buyers, suppliers, banks, strategic partners and other stakeholders. Choose your products below and download a brochure made for them.",
   },
   labels: { download: "Download", comingSoon: "Coming soon" },
-  emptyState: "Our corporate brochure is being finalised and will be available to download here soon.",
   specifications: {
     eyebrow: "Product Specifications",
     title: "The Latest Specification, on Request",

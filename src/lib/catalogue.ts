@@ -69,7 +69,7 @@ const KNOWN_CATEGORIES = new Map(productCategories.map((category) => [categoryKe
  * are matched ignoring case and spacing ("seafood " joins "Seafood"), so a product added
  * later always lands in its existing section.
  */
-export function groupByCategory<T extends Product>(items: T[]): { category: string; items: T[] }[] {
+export function groupByCategory<T extends Pick<Product, "category">>(items: T[]): { category: string; items: T[] }[] {
   const groups = new Map<string, { category: string; items: T[] }>();
   for (const item of items) {
     const key = categoryKey(item.category);
@@ -78,4 +78,27 @@ export function groupByCategory<T extends Product>(items: T[]): { category: stri
     groups.set(key, group);
   }
   return [...groups.values()];
+}
+
+const CATEGORY_ORDER = productCategories.map((category) => category.name);
+
+/** Known categories in their set order; any others (added in the admin) after them. */
+export function sortByCategory<T extends { category: string }>(groups: T[]): T[] {
+  const rank = (name: string) => {
+    const index = CATEGORY_ORDER.indexOf(name);
+    return index === -1 ? CATEGORY_ORDER.length : index;
+  };
+  return [...groups].sort((a, b) => rank(a.category) - rank(b.category));
+}
+
+/** Exports, then imports, each grouped by category in the set order, as on the Products page. */
+export function groupByDirection<T extends Pick<Product, "category" | "direction">>(
+  items: T[],
+): { direction: TradeDirection; groups: { category: string; items: T[] }[] }[] {
+  return (["export", "import"] as const)
+    .map((direction) => ({
+      direction,
+      groups: sortByCategory(groupByCategory(items.filter((item) => item.direction === direction))),
+    }))
+    .filter((section) => section.groups.length > 0);
 }

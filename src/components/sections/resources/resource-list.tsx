@@ -1,5 +1,5 @@
 import { Download } from "lucide-react";
-import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
+import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { buttonStyles } from "@/components/ui/button";
 import { cardStyles } from "@/components/ui/card";
 import { Chip } from "@/components/ui/chip";
@@ -8,20 +8,15 @@ import { resourcesContent } from "@/config";
 import { cn } from "@/lib/cn";
 import { getResources } from "@/lib/content/queries";
 
-/** Only documents with a file attached are listed; pending ones stay hidden until finalised. */
+/**
+ * Extra downloads uploaded in the admin, shown under the brochure builder. Only documents
+ * with a file attached are listed, and nothing renders until there is one.
+ */
 export async function ResourceList({ className }: { className?: string }) {
-  const { labels, emptyState } = resourcesContent;
+  const { labels } = resourcesContent;
   const items = (await getResources()).filter((resource) => resource.href);
 
-  if (items.length === 0) {
-    return (
-      <Reveal className={className}>
-        <p className="rounded-card border border-dashed border-fg/15 px-6 py-10 text-center type-body text-fg-mute">
-          {emptyState}
-        </p>
-      </Reveal>
-    );
-  }
+  if (items.length === 0) return null;
 
   return (
     <RevealGroup as="ul" className={cn("grid gap-4 md:grid-cols-2 lg:grid-cols-3", className)}>
