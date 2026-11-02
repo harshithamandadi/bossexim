@@ -22,6 +22,8 @@ npm-debug.log*
 # client source documents (kept locally, not published)
 *.docx
 *.pdf
+# …but not the folder of the /brochure.pdf route, which is code
+!/src/app/brochure.pdf/
 
 # Payload CMS: local database and uploaded files (recreate with `npm run seed`)
 /cms-data/
