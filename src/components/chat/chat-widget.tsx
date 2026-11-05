@@ -20,6 +20,24 @@ const ChatPanel = dynamic(() => loadPanel().then((module) => module.ChatPanel), 
 const LAUNCHER_DELAY_S = 1.2;
 /** Phones get no teaser: the client asked for less disturbance on mobile. */
 const TEASER_MEDIA = "(min-width: 768px)";
+/** Set once the visitor closes the teaser or opens Aira: it never pops up again on this browser (client request, Nov 2026). */
+const TEASER_DONE_KEY = "aira-teaser-done";
+
+function isTeaserDone(): boolean {
+  try {
+    return window.localStorage.getItem(TEASER_DONE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function rememberTeaserDone() {
+  try {
+    window.localStorage.setItem(TEASER_DONE_KEY, "1");
+  } catch {
+    // Storage blocked (e.g. private mode): the in-memory flag still covers this visit.
+  }
+}
 /** Same ids as Aira's main menu (assistant-flow.ts), listed here so the panel's code can stay lazy-loaded. */
 const TEASER_CHOICES: ChatChoice[] = [
   { id: "menu:products", label: chatbotContent.menu.products },
@@ -44,41 +62,38 @@ export function ChatWidget({ faqs, products, formToken }: ChatWidgetProps) {
   const [request, setRequest] = useState<ChatRequest>();
   const launcherRef = useRef<HTMLButtonElement>(null);
 
-  // The greeting bubble: shown on every page a few seconds after arriving, and back
-  // about 25 seconds after it's dismissed (client request). Never on phones.
+  // The greeting bubble: shown on each page a few seconds after arriving, until the visitor
+  // closes it or opens Aira — then never again on this browser. Never on phones.
   const pathname = usePathname();
   const [teaserPath, setTeaserPath] = useState(pathname);
   const [showTeaser, setShowTeaser] = useState(false);
-  const [teaserDelay, setTeaserDelay] = useState(chatbotContent.teaser.delaySeconds);
-  const [teaserCycle, setTeaserCycle] = useState(0);
+  const teaserDone = useRef(false);
 
   if (pathname !== teaserPath) {
     setTeaserPath(pathname);
     setShowTeaser(false);
-    setTeaserDelay(chatbotContent.teaser.delaySeconds);
-    setTeaserCycle((cycle) => cycle + 1);
   }
 
   useEffect(() => {
-    if (!window.matchMedia(TEASER_MEDIA).matches) return;
-    const timer = window.setTimeout(() => setShowTeaser(true), teaserDelay * 1000);
+    if (teaserDone.current || isTeaserDone() || !window.matchMedia(TEASER_MEDIA).matches) return;
+    const timer = window.setTimeout(() => setShowTeaser(true), chatbotContent.teaser.delaySeconds * 1000);
     return () => window.clearTimeout(timer);
-  }, [teaserCycle, teaserDelay]);
+  }, [teaserPath]);
 
-  const dismissTeaser = useCallback(() => {
+  const retireTeaser = useCallback(() => {
+    teaserDone.current = true;
+    rememberTeaserDone();
     setShowTeaser(false);
-    setTeaserDelay(chatbotContent.teaser.returnAfterSeconds);
-    setTeaserCycle((cycle) => cycle + 1);
   }, []);
 
   const open = useCallback(
     (question?: string, choice?: ChatChoice) => {
-      setShowTeaser(false);
+      retireTeaser();
       setHasOpened(true);
       setIsOpen(true);
       if (question || choice) setRequest({ id: Date.now(), question, choice });
     },
-    [],
+    [retireTeaser],
   );
 
   const close = useCallback(() => {
@@ -92,7 +107,7 @@ export function ChatWidget({ faqs, products, formToken }: ChatWidgetProps) {
     <>
       <AnimatePresence>
         {showTeaser && !isOpen && (
-          <Teaser key="teaser" onChoose={(choice) => open(undefined, choice)} onDismiss={dismissTeaser} />
+          <Teaser key="teaser" onChoose={(choice) => open(undefined, choice)} onDismiss={retireTeaser} />
         )}
       </AnimatePresence>
       <Launcher ref={launcherRef} isOpen={isOpen} invite={!hasOpened} onToggle={() => (isOpen ? close() : open())} />

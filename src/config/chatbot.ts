@@ -316,14 +316,15 @@ export const chatbotContent = {
     intro: "Thank you! So our trade team can follow up with you on this —",
   },
 
-  /** A small greeting bubble beside the launcher on larger screens (never on phones). */
+  /**
+   * A small greeting bubble beside the launcher on larger screens (never on phones). Once the
+   * visitor closes it or opens Aira, it doesn't pop up again on that browser.
+   */
   teaser: {
     text: "👋 Welcome to BOSS Exim Global! I’m AIRA, your virtual assistant. How may I assist you today?",
     dismiss: "Dismiss",
     /** After arriving on a page. */
     delaySeconds: 3,
-    /** After the visitor dismisses it. */
-    returnAfterSeconds: 25,
   },
   backToMenu: "Main menu",
   smallTalk: {

@@ -22,15 +22,11 @@ import { cn } from "@/lib/cn";
 import { pluralize } from "@/lib/format";
 import { DURATION, EASE_SMOOTH, SPRING_SNAPPY, VIEWPORT_ONCE } from "@/lib/motion";
 import type { IconName } from "@/lib/icons";
+import { WHEEL, WHEEL_COLORS, polar, sectorPath } from "@/lib/trade-wheel";
 import type { Product } from "@/types/content";
 
-/* Geometry, in viewBox units. */
-const SIZE = 500;
-const CENTER = SIZE / 2;
-const OUTER_RADIUS = 238;
-const INNER_RADIUS = 116;
-const GLOBE_RADIUS = INNER_RADIUS - 14;
-const SECTOR_GAP_DEGREES = 2;
+/* Geometry, in viewBox units (shared with the PDF brochure's cover). */
+const { size: SIZE, center: CENTER, outerRadius: OUTER_RADIUS, globeRadius: GLOBE_RADIUS, podRadius: POD_RADIUS } = WHEEL;
 
 /** Idle orbit speed in degrees per second: one full turn a minute. */
 const ORBIT_SPEED = 6;
@@ -64,31 +60,8 @@ function buildSegments(products: Product[]): Segment[] {
   });
 }
 
-const POD_RADIUS = (OUTER_RADIUS + INNER_RADIUS) / 2;
-
 const round = (value: number) => Math.round(value * 100) / 100;
 const percent = (value: number) => `${round((value / SIZE) * 100)}%`;
-
-function polar(radius: number, degrees: number) {
-  const radians = ((degrees - 90) * Math.PI) / 180;
-  return { x: round(CENTER + radius * Math.cos(radians)), y: round(CENTER + radius * Math.sin(radians)) };
-}
-
-function sectorPath(index: number, sectorDegrees: number) {
-  const start = index * sectorDegrees + SECTOR_GAP_DEGREES / 2;
-  const end = (index + 1) * sectorDegrees - SECTOR_GAP_DEGREES / 2;
-  const outerStart = polar(OUTER_RADIUS, start);
-  const outerEnd = polar(OUTER_RADIUS, end);
-  const innerEnd = polar(INNER_RADIUS, end);
-  const innerStart = polar(INNER_RADIUS, start);
-  return [
-    `M ${outerStart.x} ${outerStart.y}`,
-    `A ${OUTER_RADIUS} ${OUTER_RADIUS} 0 0 1 ${outerEnd.x} ${outerEnd.y}`,
-    `L ${innerEnd.x} ${innerEnd.y}`,
-    `A ${INNER_RADIUS} ${INNER_RADIUS} 0 0 0 ${innerStart.x} ${innerStart.y}`,
-    "Z",
-  ].join(" ");
-}
 
 /** True when the pointer moves somewhere outside this segment (not just from its wedge onto its pod). */
 function leavesSegment(event: PointerEvent, index: number) {
@@ -145,12 +118,12 @@ export function TradeWheel({ products, className }: { products: Product[]; class
         <svg viewBox={`0 0 ${SIZE} ${SIZE}`} aria-hidden className="absolute inset-0 size-full overflow-visible">
           <defs>
             <linearGradient id={`${id}-light`} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#8fc6f2" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#1560bd" stopOpacity="0.9" />
+              <stop offset="0%" stopColor={WHEEL_COLORS.light.from} stopOpacity={WHEEL_COLORS.light.fromOpacity} />
+              <stop offset="100%" stopColor={WHEEL_COLORS.light.to} stopOpacity={WHEEL_COLORS.light.toOpacity} />
             </linearGradient>
             <linearGradient id={`${id}-deep`} x1="0" y1="1" x2="1" y2="0">
-              <stop offset="0%" stopColor="#4fa8e8" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#0e4a95" stopOpacity="0.9" />
+              <stop offset="0%" stopColor={WHEEL_COLORS.deep.from} stopOpacity={WHEEL_COLORS.deep.fromOpacity} />
+              <stop offset="100%" stopColor={WHEEL_COLORS.deep.to} stopOpacity={WHEEL_COLORS.deep.toOpacity} />
             </linearGradient>
           </defs>
 
@@ -252,9 +225,9 @@ function Globe({ gradientId, paused }: { gradientId: string; paused: boolean }) 
       <svg viewBox={`0 0 ${SIZE} ${SIZE}`} aria-hidden className="pointer-events-none absolute inset-0 size-full">
         <defs>
           <radialGradient id={gradientId} cx="35%" cy="30%" r="80%">
-            <stop offset="0%" stopColor="#4fa8e8" />
-            <stop offset="55%" stopColor="#1560bd" />
-            <stop offset="100%" stopColor="#0a3270" />
+            {WHEEL_COLORS.globe.map((stop) => (
+              <stop key={stop.offset} offset={stop.offset} stopColor={stop.color} />
+            ))}
           </radialGradient>
         </defs>
         <circle cx={CENTER} cy={CENTER} r={GLOBE_RADIUS} fill={`url(#${gradientId})`} />

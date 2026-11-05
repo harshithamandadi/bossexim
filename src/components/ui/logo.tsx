@@ -1,55 +1,52 @@
 import { useId } from "react";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/cn";
+import { LOGO_MARK, lobeShapes, slotShape } from "@/lib/logo-mark";
 
-/* The BOSS mark, traced from the official artwork: a "B" (a block with two
-   round lobes and two slots) beside a disc that keeps an even gap around it. */
-const B_LOBE_X = 92.3;
-const B_LOBE_RADIUS = 46.7;
-const GAP = 16; // stroke width of the cut-out, i.e. an 8-unit gap each side
+const { width, height, disc, gap, slots } = LOGO_MARK;
 
 function BShape(props: React.SVGProps<SVGGElement>) {
   return (
     <g {...props}>
-      <rect x="1" y="2" width={B_LOBE_X} height="170" />
-      <circle cx={B_LOBE_X} cy="45" r={B_LOBE_RADIUS} />
-      <circle cx={B_LOBE_X} cy="129" r={B_LOBE_RADIUS} />
+      {LOGO_MARK.lobes.map(lobeShapes).map(({ block, circle }) => (
+        <g key={circle.cy}>
+          <rect {...block} />
+          <circle {...circle} />
+        </g>
+      ))}
     </g>
   );
 }
 
 /**
- * Draws in `currentColor`: brand blue on light sections, white on dark ones.
- * The shapes overlap, so they form a mask that is filled once — a see-through
- * colour (e.g. `text-white/90`) then stays even instead of doubling up where
- * the block and lobes of the "B" meet.
+ * The BOSS mark (shapes in lib/logo-mark.ts). Draws in `currentColor`: logo blue on
+ * light sections, white on dark ones. The shapes overlap, so they form a mask that is
+ * filled once — a see-through colour (e.g. `text-white/90`) then stays even instead of
+ * doubling up where the block and lobes of the "B" meet.
  */
 export function LogoMark({ className }: { className?: string }) {
   const id = useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const box = { x: 0, y: 0, width, height };
 
   return (
-    <svg viewBox="0 0 272 174" aria-hidden className={className}>
+    <svg viewBox={`0 0 ${width} ${height}`} aria-hidden className={className}>
       <defs>
-        <clipPath id={`${id}-bounds`}>
-          <rect x="1" y="2" width="270" height="170" />
-        </clipPath>
-        <mask id={`${id}-gap`}>
-          <rect width="272" height="174" fill="#fff" />
-          <BShape fill="#000" stroke="#000" strokeWidth={GAP} />
+        <mask id={`${id}-gap`} maskUnits="userSpaceOnUse" {...box}>
+          <rect {...box} fill="#fff" />
+          <BShape fill="#000" stroke="#000" strokeWidth={gap} />
         </mask>
-        <mask id={`${id}-slots`}>
-          <rect width="272" height="174" fill="#fff" />
-          <rect x="0" y="39" width="58" height="14" fill="#000" />
-          <rect x="0" y="118" width="58" height="13" fill="#000" />
+        <mask id={`${id}-slots`} maskUnits="userSpaceOnUse" {...box}>
+          <rect {...box} fill="#fff" />
+          {slots.centres.map((centre) => (
+            <rect key={centre} {...slotShape(centre)} fill="#000" />
+          ))}
         </mask>
-        <mask id={`${id}-mark`} maskUnits="userSpaceOnUse" x="0" y="0" width="272" height="174">
-          <circle cx="185" cy="87" r="85" fill="#fff" mask={`url(#${id}-gap)`} />
-          <g clipPath={`url(#${id}-bounds)`} mask={`url(#${id}-slots)`}>
-            <BShape fill="#fff" />
-          </g>
+        <mask id={`${id}-mark`} maskUnits="userSpaceOnUse" {...box}>
+          <circle {...disc} fill="#fff" mask={`url(#${id}-gap)`} />
+          <BShape fill="#fff" mask={`url(#${id}-slots)`} />
         </mask>
       </defs>
-      <rect width="272" height="174" fill="currentColor" mask={`url(#${id}-mark)`} />
+      <rect {...box} fill="currentColor" mask={`url(#${id}-mark)`} />
     </svg>
   );
 }

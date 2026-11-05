@@ -64,15 +64,24 @@ export function BrochureBuilder({ products, className }: { products: BrochureOpt
   return (
     // overflow-clip, not the card's overflow-hidden: a hidden overflow would stop the download bar sticking.
     <div className={cardStyles({ className: cn("overflow-clip", className) })}>
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-        <div className="max-w-2xl">
-          <h3 className="type-h3">{builder.title}</h3>
-          <p className="mt-2 text-[15px] text-fg-mute">{builder.description}</p>
-        </div>
-        <div className="flex gap-2">
+      <div className="max-w-2xl">
+        <h3 className="type-h3">{builder.title}</h3>
+        <p className="mt-2 text-[15px] text-fg-mute">{builder.description}</p>
+      </div>
+
+      {/* Sticks under the site header while the list scrolls, like the "on this page" bar (layout/local-nav.tsx). */}
+      <div className="glass sticky top-[4.75rem] z-30 mt-8 flex flex-col gap-3 rounded-[1.4rem] p-2 shadow-[0_10px_30px_-14px_rgb(0_0_0/0.3)] ring-1 ring-border sm:flex-row sm:items-center sm:justify-between sm:rounded-full sm:pl-5">
+        <p aria-live="polite" className={cn("px-2 text-sm sm:px-0", status === "error" ? "text-danger" : "text-fg-mute")}>
+          {status === "error"
+            ? builder.error
+            : count === 0
+              ? builder.emptyHint
+              : `${count} ${builder.selectedOf} ${products.length} ${builder.selected} · ${count + FIXED_PAGES}${builder.pages}`}
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             size="sm"
-            variant="secondary"
+            variant="ghost"
             disabled={count === products.length}
             onClick={() => setMany(products.map((product) => product.slug), true)}
           >
@@ -80,6 +89,10 @@ export function BrochureBuilder({ products, className }: { products: BrochureOpt
           </Button>
           <Button size="sm" variant="ghost" disabled={count === 0} onClick={() => setMany([...selected], false)}>
             {builder.clear}
+          </Button>
+          <Button variant="brand" size="sm" disabled={count === 0 || preparing} onClick={download} className="grow sm:grow-0">
+            {preparing ? <LoaderCircle aria-hidden className="size-4 animate-spin" /> : <Download aria-hidden className="size-4" />}
+            {preparing ? builder.preparing : builder.download}
           </Button>
         </div>
       </div>
@@ -97,21 +110,6 @@ export function BrochureBuilder({ products, className }: { products: BrochureOpt
           </div>
         </div>
       ))}
-
-      {/* Sticks just above the chat launcher (components/chat/chat-widget.tsx), which sits bottom-right. */}
-      <div className="sticky bottom-[4.5rem] z-10 mt-10 flex sm:bottom-[6.5rem] flex-col gap-3 rounded-[1.4rem] bg-elevated/90 p-3 shadow-lg ring-1 ring-border backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:pl-5">
-        <p aria-live="polite" className={cn("text-sm", status === "error" ? "text-danger" : "text-fg-mute")}>
-          {status === "error"
-            ? builder.error
-            : count === 0
-              ? builder.emptyHint
-              : `${count} ${builder.selectedOf} ${products.length} ${builder.selected} · ${count + FIXED_PAGES}${builder.pages}`}
-        </p>
-        <Button variant="brand" disabled={count === 0 || preparing} onClick={download}>
-          {preparing ? <LoaderCircle aria-hidden className="size-4 animate-spin" /> : <Download aria-hidden className="size-4" />}
-          {preparing ? builder.preparing : builder.download}
-        </Button>
-      </div>
     </div>
   );
 }

@@ -50,9 +50,9 @@ export function registerFonts(): Promise<void> {
   return fontsReady;
 }
 
-/** The BOSS mark as a crisp PNG in the given colour. */
-export async function logoMark(fill: string): Promise<PdfImage> {
-  const data = await sharp(Buffer.from(logoMarkSvg(fill)), { density: 288 }).png().toBuffer();
+/** The BOSS mark as a crisp PNG in the given colour; `trademark` adds the ™ for large uses. */
+export async function logoMark(fill: string, trademark = false): Promise<PdfImage> {
+  const data = await sharp(Buffer.from(logoMarkSvg(fill, { trademark }))).resize({ width: 900 }).png().toBuffer();
   return { data, format: "png" };
 }
 
@@ -99,26 +99,6 @@ export function loadPhoto(src: string, origin: string, width: number, format: Pd
   if (photoCache.size >= CACHE_LIMIT) photoCache.delete(photoCache.keys().next().value ?? "");
   photoCache.set(key, photo);
   return photo;
-}
-
-/**
- * A cover photo cropped to `aspect` (width ÷ height) and faded into `color`: `stops` are
- * [offset, opacity] pairs from top to bottom. Baked into the photo because PDF viewers
- * don't reliably blend a see-through gradient drawn on top of it.
- */
-export async function fadedPhoto(photo: PdfImage | undefined, aspect: number, color: string, stops: [number, number][]): Promise<PdfImage | undefined> {
-  if (!photo) return undefined;
-  const { width = 1400 } = await sharp(photo.data).metadata();
-  const height = Math.round(width / aspect);
-  const gradient = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><defs><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">${stops
-    .map(([offset, opacity]) => `<stop offset="${offset}" stop-color="${color}" stop-opacity="${opacity}"/>`)
-    .join("")}</linearGradient></defs><rect width="100%" height="100%" fill="url(#fade)"/></svg>`;
-  const data = await sharp(photo.data)
-    .resize({ width, height, fit: "cover" })
-    .composite([{ input: Buffer.from(gradient) }])
-    .jpeg({ quality: 80, mozjpeg: true })
-    .toBuffer();
-  return { data, format: "jpg" };
 }
 
 async function fetchPhoto(url: URL, width: number, format: PdfImage["format"]): Promise<PdfImage> {

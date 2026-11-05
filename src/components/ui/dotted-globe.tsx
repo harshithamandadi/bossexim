@@ -2,15 +2,11 @@
 
 import { useReducedMotion } from "framer-motion";
 import { useEffect, useRef } from "react";
+import { GLOBE_VIEW, orthographic } from "@/lib/geo";
 import { WORLD_DOTS } from "@/lib/world-dots";
 
 /** Degrees per second: one turn every 40 seconds. */
 const SPIN_SPEED = 9;
-/** Starts with India facing the viewer. */
-const START_LONGITUDE = 78;
-const TILT_DEGREES = 12;
-const HIGHLIGHT = { lon: 78.5, lat: 17.4 };
-const RADIANS = Math.PI / 180;
 
 interface DottedGlobeProps {
   /** Pauses the spin, e.g. while the globe is off-screen. */
@@ -25,7 +21,7 @@ interface DottedGlobeProps {
  */
 export function DottedGlobe({ paused = false, className }: DottedGlobeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rotationRef = useRef(START_LONGITUDE);
+  const rotationRef = useRef<number>(GLOBE_VIEW.startLongitude);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -33,8 +29,6 @@ export function DottedGlobe({ paused = false, className }: DottedGlobeProps) {
     const context = canvas?.getContext("2d");
     if (!canvas || !context) return;
 
-    const tiltSin = Math.sin(TILT_DEGREES * RADIANS);
-    const tiltCos = Math.cos(TILT_DEGREES * RADIANS);
     let frame = 0;
     let last = performance.now();
 
@@ -57,15 +51,8 @@ export function DottedGlobe({ paused = false, className }: DottedGlobeProps) {
       context.clearRect(0, 0, canvas.width, canvas.height);
 
       const project = (lon: number, lat: number) => {
-        const lambda = (lon - rotationRef.current) * RADIANS;
-        const phi = lat * RADIANS;
-        const x = Math.cos(phi) * Math.sin(lambda);
-        const y = Math.sin(phi);
-        const z = Math.cos(phi) * Math.cos(lambda);
-        // Tilt the axis towards the viewer so the northern hemisphere shows more.
-        const yTilted = y * tiltCos - z * tiltSin;
-        const zTilted = y * tiltSin + z * tiltCos;
-        return { x: centre + x * radius, y: centre - yTilted * radius, depth: zTilted };
+        const point = orthographic(lon, lat, rotationRef.current);
+        return { x: centre + point.x * radius, y: centre - point.y * radius, depth: point.depth };
       };
 
       for (const [lon, lat] of WORLD_DOTS) {
@@ -78,7 +65,7 @@ export function DottedGlobe({ paused = false, className }: DottedGlobeProps) {
         context.fill();
       }
 
-      const home = project(HIGHLIGHT.lon, HIGHLIGHT.lat);
+      const home = project(GLOBE_VIEW.highlight.lon, GLOBE_VIEW.highlight.lat);
       if (home.depth > 0) {
         const pulse = (now / 1600) % 1;
         context.globalAlpha = (1 - pulse) * 0.7;

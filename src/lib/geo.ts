@@ -42,6 +42,33 @@ export function arcPath(from: Point, to: Point, curvature = 0.28): string {
   return `M ${from.x} ${from.y} Q ${control.x} ${control.y} ${to.x} ${to.y}`;
 }
 
+/** How the dotted globe is shown (components/ui/dotted-globe.tsx and the PDF brochure's cover). */
+export const GLOBE_VIEW = {
+  /** Centre longitude at rest: India facing the viewer. */
+  startLongitude: 78,
+  /** The axis leans towards the viewer so the northern hemisphere shows more. */
+  tiltDegrees: 12,
+  /** Marked in gold: Hyderabad. */
+  highlight: { lon: 78.5, lat: 17.4 },
+} as const;
+
+const RADIANS = Math.PI / 180;
+const TILT_SIN = Math.sin(GLOBE_VIEW.tiltDegrees * RADIANS);
+const TILT_COS = Math.cos(GLOBE_VIEW.tiltDegrees * RADIANS);
+
+/**
+ * Orthographic projection onto a unit globe turned to `rotation` degrees of longitude:
+ * x and y in -1…1 (y up), and depth > 0 for points on the visible side.
+ */
+export function orthographic(lon: number, lat: number, rotation: number): { x: number; y: number; depth: number } {
+  const lambda = (lon - rotation) * RADIANS;
+  const phi = lat * RADIANS;
+  const x = Math.cos(phi) * Math.sin(lambda);
+  const y = Math.sin(phi);
+  const z = Math.cos(phi) * Math.cos(lambda);
+  return { x, y: y * TILT_COS - z * TILT_SIN, depth: y * TILT_SIN + z * TILT_COS };
+}
+
 export function toPercent(value: number, total: number): string {
   return `${round((value / total) * 100)}%`;
 }

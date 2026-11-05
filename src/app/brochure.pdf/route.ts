@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
 
   const file = await renderBrochure({
     products,
+    allProducts: catalogue.products,
     markets: catalogue.markets,
     details,
     stats: getHighlightStats(catalogue),

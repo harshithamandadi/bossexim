@@ -38,7 +38,13 @@ export const brochureContent = {
     featuring: "In this brochure",
     andMore: (count: number) => `and ${count} more`,
     aboutSection: "About Us",
+    /** The About page's eyebrow (client mark-up, Nov 2026: no "Global"). */
+    aboutEyebrow: "About BOSS EXIM",
     productsSection: "Products",
+    /** Button at the foot of each product page, to the website's Products page. */
+    otherProducts: "Other Products",
+    /** Link beside the HSN code, to the product's page on the website. */
+    viewOnline: "View online",
     whatWeDo: "What We Do",
     overview: "Overview",
     marketsTitle: "Key Markets",

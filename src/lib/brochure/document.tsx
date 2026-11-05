@@ -1,17 +1,25 @@
 /**
- * The PDF brochure's layout (react-pdf): a cover, About BOSS EXIM, one page per
- * selected product and a back cover with the company's details. All facts come
- * from the admin and src/config, so the PDF always matches the website.
+ * The PDF brochure's layout (react-pdf), following the client's mock-ups (Nov 2026): a cover
+ * with the product wheel, About BOSS EXIM with the six trade steps, one page per selected
+ * product, and a back cover with the trade-lanes map and the company's details. All facts
+ * come from the admin and src/config, so the PDF always matches the website.
  */
 import "server-only";
 // react-pdf's Image is imported as Photo: it is not an HTML <img>, so it takes no alt text.
 import { Document, Image as Photo, Link, Page, StyleSheet, Text, View, type Styles } from "@react-pdf/renderer";
-import { aboutOverview, visionMissionValues } from "@/config/about";
+import { aboutOverview } from "@/config/about";
 import { brochureContent } from "@/config/brochure";
+import { closingCta, homeContent } from "@/config/pages";
+import { howWeWork } from "@/config/process";
 import { productLabels, tradeDirections } from "@/config/products";
+import { productCategoryHref, productHref, routes } from "@/config/routes";
 import { siteConfig } from "@/config/site";
-import type { CompanyDetails, Market, Product, SpecificationTable, Stat } from "@/types/content";
+import { formatStepNumber } from "@/lib/format";
+import { LOGO_MARK } from "@/lib/logo-mark";
+import { TRADE_MAP_SIZE, TRADE_ORIGIN, type TradeLane } from "@/lib/trade-lanes";
+import type { CompanyDetails, LabelAnchor, Market, Product, SpecificationTable, Stat } from "@/types/content";
 import { FONT_BODY, FONT_DISPLAY, type PdfImage } from "./assets";
+import { PdfIcon } from "./icons";
 
 const { document: copy } = brochureContent;
 const { company } = siteConfig;
@@ -21,7 +29,7 @@ export const brochureColors = {
   navy: "#0e2f73",
   navyDeep: "#08214f",
   brand: "#1560bd",
-  logo: "#264796",
+  logo: LOGO_MARK.color,
   ink: "#142036",
   body: "#2f3c57",
   mute: "#5b6782",
@@ -29,6 +37,8 @@ export const brochureColors = {
   mist: "#f2f6fc",
   accent: "#e8f0fb",
   sky: "#9cc8f5",
+  tide: "#4fa8e8",
+  gold: "#f2b34b",
   white: "#ffffff",
 };
 const color = brochureColors;
@@ -36,15 +46,24 @@ const color = brochureColors;
 /** A4 in points. */
 const PAGE_WIDTH = 595.28;
 const MARGIN_X = 46;
-const COVER_PHOTO_HEIGHT = 500;
-/** Cover photos are cropped to this width ÷ height and faded into the page (see fadedPhoto). */
-export const COVER_PHOTO_ASPECT = PAGE_WIDTH / COVER_PHOTO_HEIGHT;
-/** [offset, opacity] from the top: dark behind the logo, clear in the middle, solid at the bottom. */
-export const COVER_FADE: [number, number][] = [[0, 0.7], [0.22, 0.05], [0.62, 0.2], [1, 1]];
-/** The back cover's photo stays in the background, behind the company's name. */
-export const BACK_FADE: [number, number][] = [[0, 0.82], [0.5, 0.88], [1, 1]];
+/** The navy tagline band at the foot of every inner page. */
+const BAND_HEIGHT = 40;
+/** The cover's light top panel, drawn by artwork.ts at this size. */
+export const COVER_PANEL = { width: PAGE_WIDTH, height: 490 };
+/** The back cover's trade map, full width. */
+export const BACK_MAP = { top: 196, width: PAGE_WIDTH, height: (PAGE_WIDTH * TRADE_MAP_SIZE.height) / TRADE_MAP_SIZE.width };
+/** The mark's proportions, without and with the ™ above it. */
+const MARK_RATIO = LOGO_MARK.width / LOGO_MARK.height;
+const MARK_TM_RATIO = LOGO_MARK.width / (LOGO_MARK.height + 22);
 /** Product names listed on the cover before "and N more". */
 const COVER_NAMES = 6;
+/** Room kept for the "Other Products" button above the band. */
+const PRODUCT_BUTTON_SPACE = 30;
+
+/** A page of the website, as a link printed in the PDF. */
+const siteLink = (path: string) => new URL(path, siteConfig.url).toString();
+/** A product's page inside this PDF, for links from the cover. */
+const productAnchor = (slug: string) => `product-${slug}`;
 
 const styles = StyleSheet.create({
   page: {
@@ -53,7 +72,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.45,
     color: color.ink,
     paddingTop: 64,
-    paddingBottom: 54,
+    paddingBottom: BAND_HEIGHT + 18,
     paddingHorizontal: MARGIN_X,
   },
   header: {
@@ -69,20 +88,20 @@ const styles = StyleSheet.create({
     borderBottomColor: color.line,
   },
   headerBrand: { flexDirection: "row", alignItems: "center" },
-  headerMark: { width: 17, height: 11, marginRight: 5 },
+  headerMark: { width: 11 * MARK_RATIO, height: 11, marginRight: 5 },
   headerName: { fontSize: 8, color: color.logo },
   headerSection: { fontSize: 6.8, color: color.mute, letterSpacing: 1.2, textTransform: "uppercase" },
-  footer: {
+  band: {
     position: "absolute",
-    bottom: 22,
-    left: MARGIN_X,
-    right: MARGIN_X,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    fontSize: 7,
-    color: color.mute,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: BAND_HEIGHT,
+    backgroundColor: color.navy,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  pageNumber: { fontWeight: 700, color: color.navy },
+  bandText: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 17, color: color.white, letterSpacing: 0.3 },
   bold: { fontWeight: 700 },
 
   eyebrow: { fontSize: 7, fontWeight: 700, letterSpacing: 1.4, textTransform: "uppercase", color: color.brand },
@@ -95,26 +114,33 @@ const styles = StyleSheet.create({
   lead: { fontSize: 10.5, color: color.mute, marginBottom: 8 },
   note: { fontSize: 7.4, color: color.mute, marginTop: 6 },
   row: { flexDirection: "row", gap: 16 },
-  section: { marginTop: 14 },
+  section: { marginTop: 12 },
   productSection: { marginTop: 10 },
+
+  // Buttons: links to the website, styled like its pills.
+  buttonRow: { flexDirection: "row", gap: 10 },
+  button: { flexDirection: "row", alignItems: "center", gap: 6, borderRadius: 20, textDecoration: "none" },
+  buttonOutline: { borderWidth: 1, borderColor: color.line, backgroundColor: color.white, paddingVertical: 5, paddingHorizontal: 11 },
+  buttonText: { fontSize: 7.6, fontWeight: 600, color: color.navy },
 
   // Cover and back cover
   coverPage: { fontFamily: FONT_BODY, backgroundColor: color.navyDeep, color: color.white },
-  coverPhoto: { position: "absolute", top: 0, left: 0, width: PAGE_WIDTH, height: COVER_PHOTO_HEIGHT, objectFit: "cover" },
-  coverBrand: { position: "absolute", top: 40, left: MARGIN_X, flexDirection: "row", alignItems: "center" },
-  coverMark: { width: 44, height: 28, marginRight: 9 },
-  coverWordmark: { fontSize: 15, color: color.white },
-  coverText: { position: "absolute", left: MARGIN_X, right: MARGIN_X, bottom: 92 },
-  coverTitle: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 44, lineHeight: 1.04, marginTop: 8, marginBottom: 12 },
-  coverLead: { fontSize: 11.5, lineHeight: 1.5, color: "#d9e6fa", maxWidth: 440 },
-  roles: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 16 },
+  coverPanel: { position: "absolute", top: 0, left: 0, width: COVER_PANEL.width, height: COVER_PANEL.height },
+  coverBrand: { position: "absolute", top: 26, left: MARGIN_X },
+  coverMark: { width: 54, height: 54 / MARK_TM_RATIO },
+  coverName: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 13, color: color.navy, marginTop: 6 },
+  coverText: { position: "absolute", left: MARGIN_X, right: MARGIN_X, bottom: 84 },
+  coverTitle: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 48, lineHeight: 1.04, marginTop: 7, marginBottom: 10, maxWidth: 380 },
+  coverLead: { fontSize: 11, lineHeight: 1.5, color: "#d9e6fa", maxWidth: 440 },
+  roles: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 14 },
   role: { fontSize: 8.5, fontWeight: 600, borderWidth: 0.75, borderColor: "#6f86b3", borderRadius: 20, paddingVertical: 4, paddingHorizontal: 11 },
-  featuring: { fontSize: 8.5, color: "#b9c9e6", marginTop: 16, lineHeight: 1.5 },
+  featuring: { fontSize: 8.5, color: "#b9c9e6", marginTop: 14, lineHeight: 1.5 },
+  featuringLink: { color: "#b9c9e6", textDecoration: "none" },
   coverFoot: {
     position: "absolute",
     left: MARGIN_X,
     right: MARGIN_X,
-    bottom: 34,
+    bottom: 32,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -127,7 +153,8 @@ const styles = StyleSheet.create({
 
   // About
   stats: { flexDirection: "row", flexWrap: "wrap", gap: 7 },
-  stat: { width: "47.5%", backgroundColor: color.navy, borderRadius: 7, padding: 10 },
+  aboutText: { fontSize: 8.6, lineHeight: 1.42, color: color.body, marginBottom: 5 },
+  stat: { width: "47.5%", backgroundColor: color.navy, borderRadius: 7, padding: 9 },
   statValue: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 22, color: color.white, lineHeight: 1 },
   statLabel: { fontSize: 7.6, color: "#cfe0f7", marginTop: 4, lineHeight: 1.3 },
   pull: {
@@ -141,14 +168,24 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginTop: 14,
   },
-  statement: { flex: 1, backgroundColor: color.mist, borderRadius: 7, padding: 12 },
-  statementText: { fontSize: 9.6, fontWeight: 600, color: color.ink, marginTop: 4, lineHeight: 1.45 },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  tile: { width: "48.9%", backgroundColor: color.mist, borderRadius: 7, padding: 11 },
+  tile: { width: "48.9%", backgroundColor: color.mist, borderRadius: 7, paddingVertical: 8, paddingHorizontal: 10 },
+  tileText: { fontSize: 7.6, lineHeight: 1.4, color: color.body },
+  steps: { backgroundColor: color.accent, borderRadius: 8, padding: 10 },
+  stepsHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", gap: 16, marginBottom: 8 },
+  stepsTitle: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 15, lineHeight: 1.15, color: color.navy },
+  stepRow: { flexDirection: "row", gap: 6 },
+  step: { flex: 1, backgroundColor: color.white, borderRadius: 6, padding: 7 },
+  stepTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 5 },
+  stepIcon: { width: 17, height: 17, borderRadius: 5, backgroundColor: color.accent, alignItems: "center", justifyContent: "center" },
+  stepNumber: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 13, color: "#5f92d3" },
+  stepTitle: { fontWeight: 700, fontSize: 8.4, color: color.navy, marginBottom: 2 },
+  stepText: { fontSize: 6.5, lineHeight: 1.35, color: color.mute },
 
   // Product pages
+  productPage: { paddingBottom: BAND_HEIGHT + PRODUCT_BUTTON_SPACE + 10 },
   productTop: { flexDirection: "row", gap: 16, marginBottom: 6 },
-  productPhoto: { width: 220, height: 165, objectFit: "cover", borderRadius: 8 },
+  productPhoto: { width: 220, height: 160, objectFit: "cover", borderRadius: 8 },
   metaRow: { flexDirection: "row", alignItems: "center", gap: 7, marginBottom: 2 },
   tag: {
     fontSize: 6.6,
@@ -163,7 +200,6 @@ const styles = StyleSheet.create({
   },
   tagImport: { backgroundColor: color.navy },
   hs: {
-    alignSelf: "flex-start",
     fontSize: 7.6,
     fontWeight: 700,
     color: color.navy,
@@ -171,14 +207,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingVertical: 2.5,
     paddingHorizontal: 6,
-    marginBottom: 8,
   },
   label: { fontSize: 6.8, fontWeight: 700, letterSpacing: 1.1, textTransform: "uppercase", color: color.mute, marginBottom: 4 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 4 },
   chip: { fontSize: 7.6, fontWeight: 600, color: color.navy, backgroundColor: color.accent, borderRadius: 20, paddingVertical: 2.5, paddingHorizontal: 7 },
   docChip: { fontSize: 7, color: color.navy, backgroundColor: color.white, borderRadius: 20, paddingVertical: 2, paddingHorizontal: 6 },
   overview: { fontSize: 8.6, lineHeight: 1.4, color: color.body, marginBottom: 4 },
-  specRow: { flexDirection: "row", paddingVertical: 2.4, paddingHorizontal: 6, borderBottomWidth: 0.5, borderBottomColor: color.line },
+  specRow: { flexDirection: "row", paddingVertical: 2.2, paddingHorizontal: 6, borderBottomWidth: 0.5, borderBottomColor: color.line },
   specRowAlt: { backgroundColor: color.mist },
   specLabel: { width: "36%", fontSize: 7.8, fontWeight: 600, color: color.navy, paddingRight: 8 },
   specValue: { flex: 1, fontSize: 7.8, lineHeight: 1.35, color: color.body },
@@ -189,29 +224,64 @@ const styles = StyleSheet.create({
   factColumn: { flex: 1 },
   bullet: { flexDirection: "row", marginBottom: 2 },
   bulletDot: { width: 9, fontSize: 8, color: color.brand },
+  otherProducts: { position: "absolute", left: 0, right: 0, bottom: BAND_HEIGHT + 10, alignItems: "center" },
+  otherProductsButton: { borderWidth: 1.6, borderColor: color.navy, borderRadius: 20, paddingVertical: 4, paddingHorizontal: 34, textDecoration: "none" },
+  otherProductsText: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 12, color: color.navy },
 
   // Back cover
-  back: { position: "absolute", left: MARGIN_X, right: MARGIN_X, top: 64 },
-  backBottom: { position: "absolute", left: MARGIN_X, right: MARGIN_X, bottom: 84 },
-  backMark: { width: 88, height: 56 },
-  backWordmark: { fontSize: 26, marginTop: 14 },
-  backLegal: { fontSize: 9.5, color: "#b9c9e6", marginTop: 4 },
-  backTitle: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 32, marginBottom: 8 },
-  contactGrid: { flexDirection: "row", gap: 22, marginTop: 26, paddingTop: 16, borderTopWidth: 0.75, borderTopColor: "#33507f" },
+  back: { position: "absolute", left: MARGIN_X, right: MARGIN_X, top: 40 },
+  backMark: { width: 80, height: 80 / MARK_TM_RATIO },
+  backWordmark: { fontSize: 24, marginTop: 10 },
+  backLegal: { fontSize: 9.5, color: "#b9c9e6", marginTop: 3 },
+  explore: { position: "absolute", right: MARGIN_X, top: 146 },
+  buttonGhost: { borderWidth: 0.75, borderColor: "#4a6aa3", backgroundColor: "#12306a", paddingVertical: 5, paddingHorizontal: 11 },
+  buttonGhostText: { fontSize: 7.6, fontWeight: 600, color: color.white },
+  map: { position: "absolute", left: 0, top: BACK_MAP.top, width: BACK_MAP.width, height: BACK_MAP.height },
+  mapLabel: {
+    position: "absolute",
+    width: 20,
+    height: 9,
+    paddingTop: 1.6,
+    fontSize: 5.4,
+    fontWeight: 700,
+    textAlign: "center",
+    color: color.white,
+    backgroundColor: "#10295c",
+    borderWidth: 0.5,
+    borderColor: "#3b5a92",
+    borderRadius: 4.5,
+  },
+  mapOrigin: { position: "absolute", width: 30, fontSize: 7, fontWeight: 700, textAlign: "center", color: color.gold },
+  backBottom: { position: "absolute", left: MARGIN_X, right: MARGIN_X, bottom: 78 },
+  backTitle: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 30, marginBottom: 6 },
+  ctaRow: { flexDirection: "row", gap: 10, marginTop: 14 },
+  ctaPrimary: { backgroundColor: "#3d8fe0", paddingVertical: 8, paddingHorizontal: 18 },
+  ctaSecondary: { borderWidth: 1, borderColor: "#6f86b3", paddingVertical: 8, paddingHorizontal: 18 },
+  ctaText: { fontSize: 10, fontWeight: 600, color: color.white },
+  contactGrid: { flexDirection: "row", gap: 22, marginTop: 20, paddingTop: 14, borderTopWidth: 0.75, borderTopColor: "#33507f" },
   contactColumn: { flex: 1 },
-  contactValue: { fontSize: 9.4, lineHeight: 1.5, color: color.white, marginTop: 3, marginBottom: 11 },
-  social: { fontSize: 7.8, color: "#c9d8f0", marginTop: 2, marginBottom: 5 },
+  contactValue: { fontSize: 9.2, lineHeight: 1.5, color: color.white, marginTop: 3, marginBottom: 10 },
+  social: { fontSize: 7.8, color: "#c9d8f0", marginTop: 1, marginBottom: 4 },
   link: { color: color.white, textDecoration: "none" },
-  motto: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 16, color: color.sky, marginTop: 18 },
+  /** A link that looks like the text around it: its colour comes from the style it is combined with. */
+  plainLink: { textDecoration: "none" },
+  hsRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 8 },
+  viewOnline: { flexDirection: "row", alignItems: "center", gap: 3, textDecoration: "none" },
+  viewOnlineText: { fontSize: 7.4, fontWeight: 600, color: color.brand },
+  motto: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 16, color: color.sky, marginTop: 14 },
   groupLogo: { height: 22, width: 64, objectFit: "contain" },
 });
 
 export interface BrochureAssets {
-  /** The BOSS mark in white (covers) and in logo blue (inner pages). Cover photos come faded (COVER_FADE, BACK_FADE). */
-  markWhite: PdfImage;
-  markBlue: PdfImage;
-  coverPhoto?: PdfImage;
-  backPhoto?: PdfImage;
+  /** The BOSS mark: small in the inner pages' header, and with the ™ on the covers. */
+  markHeader: PdfImage;
+  markCover: PdfImage;
+  markBack: PdfImage;
+  /** The cover's top panel with the product wheel (artwork.ts). */
+  coverPanel?: PdfImage;
+  /** The back cover's trade-lanes map (artwork.ts) and the lanes it shows, for their labels. */
+  tradeMap?: PdfImage;
+  lanes: TradeLane[];
   groupLogo?: PdfImage;
   /** Each product's first photo, by slug. */
   productPhotos: Map<string, PdfImage | undefined>;
@@ -245,7 +315,7 @@ export function BrochureDocument({ products, markets, details, stats, assets, da
           key={product.slug}
           product={product}
           photo={assets.productPhotos.get(product.slug)}
-          mark={assets.markBlue}
+          mark={assets.markHeader}
           marketNames={product.direction === "export" ? product.markets.flatMap((code) => marketNames.get(code) ?? []) : []}
         />
       ))}
@@ -254,48 +324,58 @@ export function BrochureDocument({ products, markets, details, stats, assets, da
   );
 }
 
-function Wordmark({ style }: { style: Styles[string] }) {
+function Wordmark({ style, short = false }: { style: Styles[string]; short?: boolean }) {
+  const { primary, secondary } = company.wordmark;
+  // The short form drops "Global" (client mark-up, Nov 2026): "BOSS EXIM".
+  const rest = short ? company.shortName.slice(primary.length).trim() : secondary;
   return (
     <Text style={style}>
-      <Text style={styles.bold}>{company.wordmark.primary}</Text> {company.wordmark.secondary}
+      <Text style={styles.bold}>{primary}</Text> {rest}
     </Text>
   );
 }
 
-/** Header and footer repeated on every inner page. */
+/** A pill button linking to the website. */
+function SiteButton({ href, label, style, textStyle, arrow = true }: { href: string; label: string; style: Styles[string]; textStyle: Styles[string]; arrow?: boolean }) {
+  const iconColor = (textStyle as { color?: string }).color ?? color.navy;
+  return (
+    <Link src={siteLink(href)} style={[styles.button, style]}>
+      <Text style={textStyle}>{label}</Text>
+      {arrow && <PdfIcon name="arrow-right" size={8} color={iconColor} />}
+    </Link>
+  );
+}
+
+/** The header and the tagline band, repeated on every inner page. */
 function RunningChrome({ section, mark }: { section: string; mark: PdfImage }) {
   return (
     <>
       <View style={styles.header} fixed>
-        <View style={styles.headerBrand}>
+        <Link src={siteConfig.url} style={[styles.headerBrand, styles.plainLink]}>
           <Photo src={mark} style={styles.headerMark} />
-          <Wordmark style={styles.headerName} />
-        </View>
+          <Wordmark style={styles.headerName} short />
+        </Link>
         <Text style={styles.headerSection}>{section}</Text>
       </View>
-      <View style={styles.footer} fixed>
-        <Text>{siteConfig.website}</Text>
-        <Text style={styles.pageNumber} render={({ pageNumber }) => String(pageNumber).padStart(2, "0")} />
+      <View style={styles.band} fixed>
+        <Text style={styles.bandText}>{company.tagline}</Text>
       </View>
     </>
   );
 }
 
 function CoverPage({ products, assets, date }: { products: Product[]; assets: BrochureAssets; date: Date }) {
-  const names = products.map((product) => product.name);
-  const featured =
-    names.length > COVER_NAMES
-      ? `${names.slice(0, COVER_NAMES).join(" · ")} ${copy.andMore(names.length - COVER_NAMES)}`
-      : names.join(" · ");
+  const featured = products.slice(0, COVER_NAMES);
+  const more = products.length - featured.length;
   const edition = new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric" }).format(date);
 
   return (
     <Page size="A4" style={styles.coverPage}>
-      {assets.coverPhoto && <Photo src={assets.coverPhoto} style={styles.coverPhoto} />}
-      <View style={styles.coverBrand}>
-        <Photo src={assets.markWhite} style={styles.coverMark} />
-        <Wordmark style={styles.coverWordmark} />
-      </View>
+      {assets.coverPanel && <Photo src={assets.coverPanel} style={styles.coverPanel} />}
+      <Link src={siteConfig.url} style={[styles.coverBrand, styles.plainLink]}>
+        <Photo src={assets.markCover} style={styles.coverMark} />
+        <Text style={styles.coverName}>{company.legalName}</Text>
+      </Link>
       <View style={styles.coverText}>
         <Text style={[styles.eyebrow, styles.eyebrowLight]}>
           {copy.title} · {edition}
@@ -309,16 +389,27 @@ function CoverPage({ products, assets, date }: { products: Product[]; assets: Br
             </Text>
           ))}
         </View>
+        {/* Each name jumps to its page in this PDF. */}
         <Text style={styles.featuring}>
           <Text style={styles.bold}>{copy.featuring}: </Text>
-          {featured}
+          {featured.map((product, index) => (
+            <Text key={product.slug}>
+              {index > 0 && " · "}
+              <Link src={`#${productAnchor(product.slug)}`} style={styles.featuringLink}>
+                {product.name}
+              </Link>
+            </Text>
+          ))}
+          {more > 0 && ` ${copy.andMore(more)}`}
         </Text>
       </View>
       <View style={styles.coverFoot}>
         <Text>
           {company.legalName} · {copy.backCover.group}
         </Text>
-        <Text>{siteConfig.website}</Text>
+        <Link src={siteConfig.url} style={[styles.plainLink, { color: "#9fb3d6" }]}>
+          {siteConfig.website}
+        </Link>
       </View>
     </Page>
   );
@@ -327,16 +418,17 @@ function CoverPage({ products, assets, date }: { products: Product[]; assets: Br
 function AboutPage({ stats, assets }: { stats: Stat[]; assets: BrochureAssets }) {
   const paragraphs = aboutOverview.paragraphs.slice(0, -1);
   const closing = aboutOverview.paragraphs.at(-1);
+  const { process } = homeContent;
 
   return (
     <Page size="A4" style={styles.page}>
-      <RunningChrome section={copy.aboutSection} mark={assets.markBlue} />
-      <Text style={styles.eyebrow}>{aboutOverview.heading.eyebrow}</Text>
+      <RunningChrome section={copy.aboutSection} mark={assets.markHeader} />
+      <Text style={styles.eyebrow}>{copy.aboutEyebrow}</Text>
       <Text style={styles.h1}>{aboutOverview.heading.title}</Text>
       <View style={styles.row}>
         <View style={{ flex: 1.35 }}>
           {paragraphs.map((paragraph) => (
-            <Text key={paragraph} style={styles.body}>
+            <Text key={paragraph} style={styles.aboutText}>
               {paragraph}
             </Text>
           ))}
@@ -354,22 +446,38 @@ function AboutPage({ stats, assets }: { stats: Stat[]; assets: BrochureAssets })
         </View>
       </View>
 
-      <View style={[styles.row, styles.section]}>
-        {visionMissionValues.statements.map((statement) => (
-          <View key={statement.label} style={styles.statement}>
-            <Text style={styles.eyebrow}>{statement.label}</Text>
-            <Text style={styles.statementText}>{statement.text}</Text>
-          </View>
-        ))}
-      </View>
-
       <View style={styles.section} wrap={false}>
         <Text style={styles.h2}>{copy.whatWeDo}</Text>
         <View style={styles.grid}>
           {siteConfig.services.map((service) => (
-            <View key={service.id} style={styles.tile}>
+            <Link key={service.id} src={siteLink(service.href)} style={[styles.tile, styles.plainLink]}>
               <Text style={styles.h3}>{service.title}</Text>
-              <Text style={styles.small}>{service.summary}</Text>
+              <Text style={styles.tileText}>{service.summary}</Text>
+            </Link>
+          ))}
+        </View>
+      </View>
+
+      {/* The six trade steps, as on the website's Home page (client mark-up, Nov 2026). */}
+      <View style={[styles.steps, styles.section]} wrap={false}>
+        <View style={styles.stepsHead}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.stepsTitle}>{process.title}</Text>
+            {process.description && <Text style={[styles.small, { marginTop: 3 }]}>{process.description}</Text>}
+          </View>
+          <SiteButton href={process.cta.href} label={process.cta.label} style={styles.buttonOutline} textStyle={styles.buttonText} />
+        </View>
+        <View style={styles.stepRow}>
+          {howWeWork.steps.map((step, index) => (
+            <View key={step.title} style={styles.step}>
+              <View style={styles.stepTop}>
+                <View style={styles.stepIcon}>
+                  <PdfIcon name={step.icon} size={9} color={color.brand} />
+                </View>
+                <Text style={styles.stepNumber}>{formatStepNumber(index + 1)}</Text>
+              </View>
+              <Text style={styles.stepTitle}>{step.title}</Text>
+              <Text style={styles.stepText}>{step.description}</Text>
             </View>
           ))}
         </View>
@@ -414,6 +522,7 @@ function SpecificationsTable({ table }: { table: SpecificationTable }) {
 
 function ProductPage({ product, photo, mark, marketNames }: { product: Product; photo?: PdfImage; mark: PdfImage; marketNames: string[] }) {
   const direction = tradeDirections[product.direction];
+  const pageLink = siteLink(productHref(product.slug));
   const paragraphs = product.description
     .split(/\n\s*\n/)
     .map((paragraph) => paragraph.trim())
@@ -450,21 +559,35 @@ function ProductPage({ product, photo, mark, marketNames }: { product: Product; 
   ];
 
   return (
-    <Page size="A4" style={styles.page}>
+    <Page size="A4" style={[styles.page, styles.productPage]}>
       <RunningChrome section={`${direction.singular} ${copy.productsSection}`} mark={mark} />
-      <View style={styles.productTop}>
-        {photo && <Photo src={photo} style={styles.productPhoto} />}
+      <View id={productAnchor(product.slug)} style={styles.productTop}>
+        {photo && (
+          <Link src={pageLink}>
+            <Photo src={photo} style={styles.productPhoto} />
+          </Link>
+        )}
         <View style={{ flex: 1 }}>
           <View style={styles.metaRow}>
             <Text style={product.direction === "import" ? [styles.tag, styles.tagImport] : styles.tag}>{direction.singular}</Text>
-            <Text style={styles.eyebrow}>{product.category}</Text>
+            <Link src={siteLink(productCategoryHref(product.direction, product.category))} style={[styles.eyebrow, styles.plainLink]}>
+              {product.category}
+            </Link>
           </View>
-          <Text style={styles.h1}>{product.name}</Text>
-          {product.hsCode && (
-            <Text style={styles.hs}>
-              {productLabels.facts.hsCode} {product.hsCode}
-            </Text>
-          )}
+          <Link src={pageLink} style={[styles.h1, styles.plainLink]}>
+            {product.name}
+          </Link>
+          <View style={styles.hsRow}>
+            {product.hsCode && (
+              <Text style={styles.hs}>
+                {productLabels.facts.hsCode} {product.hsCode}
+              </Text>
+            )}
+            <Link src={pageLink} style={styles.viewOnline}>
+              <Text style={styles.viewOnlineText}>{copy.viewOnline}</Text>
+              <PdfIcon name="arrow-right" size={7} color={color.brand} />
+            </Link>
+          </View>
           <Text style={styles.lead}>{product.summary}</Text>
           {product.variants && (
             <View>
@@ -491,47 +614,91 @@ function ProductPage({ product, photo, mark, marketNames }: { product: Product; 
       </View>
 
       {product.specifications ? (
-        <>
-          <View style={[styles.row, styles.productSection]}>
-            <View style={{ flex: 1.85 }}>
-              {product.specifications.map((table) => (
-                <SpecificationsTable key={table.title} table={table} />
-              ))}
-              <Text style={styles.note}>{productLabels.specificationsNote}</Text>
-            </View>
-            {/* Kept whole: split across pages, it would leave its box on one page and the facts on the next. */}
-            <View style={styles.sidebar} wrap={false}>
-              {facts}
-            </View>
+        <View style={[styles.row, styles.productSection]}>
+          <View style={{ flex: 1.85 }}>
+            {product.specifications.map((table) => (
+              <SpecificationsTable key={table.title} table={table} />
+            ))}
+            <Text style={styles.note}>{productLabels.specificationsNote}</Text>
           </View>
-        </>
+          {/* Kept whole: split across pages, it would leave its box on one page and the facts on the next. */}
+          <View style={styles.sidebar} wrap={false}>
+            {facts}
+          </View>
+        </View>
       ) : (
         <View style={[styles.factsRow, styles.productSection]}>{facts}</View>
       )}
+
+      <View style={styles.otherProducts} fixed>
+        <Link src={siteLink(routes.products)} style={styles.otherProductsButton}>
+          <Text style={styles.otherProductsText}>{copy.otherProducts}</Text>
+        </Link>
+      </View>
     </Page>
+  );
+}
+
+/** Where a lane's code sits beside its point, as on the website's map (LABEL_TRANSFORMS). */
+const LABEL_GAP = 4;
+function labelPosition(x: number, y: number, anchor: LabelAnchor, width: number, height: number) {
+  switch (anchor) {
+    case "top":
+      return { left: x - width / 2, top: y - height - LABEL_GAP };
+    case "bottom":
+      return { left: x - width / 2, top: y + LABEL_GAP };
+    case "left":
+      return { left: x - width - LABEL_GAP, top: y - height / 2 };
+    default:
+      return { left: x + LABEL_GAP, top: y - height / 2 };
+  }
+}
+
+function TradeMap({ map, lanes }: { map: PdfImage; lanes: TradeLane[] }) {
+  const scale = BACK_MAP.width / TRADE_MAP_SIZE.width;
+  const { width, height } = styles.mapLabel as { width: number; height: number };
+  return (
+    <View style={styles.map}>
+      <Photo src={map} style={{ width: BACK_MAP.width, height: BACK_MAP.height }} />
+      {lanes.map((lane) => (
+        <Text key={lane.code} style={[styles.mapLabel, labelPosition(lane.point.x * scale, lane.point.y * scale, lane.labelAnchor, width, height)]}>
+          {lane.code}
+        </Text>
+      ))}
+      <Text style={[styles.mapOrigin, { left: TRADE_ORIGIN.point.x * scale - 15, top: TRADE_ORIGIN.point.y * scale + 6 }]}>{TRADE_ORIGIN.code}</Text>
+    </View>
   );
 }
 
 function BackCover({ details, assets }: { details: CompanyDetails; assets: BrochureAssets }) {
   const { contact } = details;
   const { backCover } = copy;
-  const socials = details.social.filter(({ platform, href }) => href && href !== siteConfig.socialPlaceholders[platform]);
   const website = `https://${contact.website}`;
 
   return (
     <Page size="A4" style={styles.coverPage}>
-      {assets.backPhoto && <Photo src={assets.backPhoto} style={styles.coverPhoto} />}
       <View style={styles.back}>
-        <Photo src={assets.markWhite} style={styles.backMark} />
+        <Photo src={assets.markBack} style={styles.backMark} />
         <Wordmark style={styles.backWordmark} />
         <Text style={styles.backLegal}>
           {company.legalName} · {company.descriptor}
         </Text>
       </View>
+      <View style={styles.explore}>
+        <SiteButton href={homeContent.world.cta.href} label={homeContent.world.cta.label} style={styles.buttonGhost} textStyle={styles.buttonGhostText} />
+      </View>
+
+      {assets.tradeMap && <TradeMap map={assets.tradeMap} lanes={assets.lanes} />}
 
       <View style={styles.backBottom}>
         <Text style={styles.backTitle}>{backCover.title}</Text>
         <Text style={styles.coverLead}>{backCover.lead}</Text>
+        <View style={styles.ctaRow}>
+          <SiteButton href={closingCta.primary.href} label={closingCta.primary.label} style={styles.ctaPrimary} textStyle={styles.ctaText} />
+          {closingCta.secondary && (
+            <SiteButton href={closingCta.secondary.href} label={closingCta.secondary.label} style={styles.ctaSecondary} textStyle={styles.ctaText} arrow={false} />
+          )}
+        </View>
 
         <View style={styles.contactGrid}>
           <View style={styles.contactColumn}>
@@ -554,7 +721,9 @@ function BackCover({ details, assets }: { details: CompanyDetails; assets: Broch
             {contact.phone && (
               <>
                 <Text style={[styles.eyebrow, styles.eyebrowLight]}>{backCover.phone}</Text>
-                <Text style={styles.contactValue}>{contact.phone}</Text>
+                <Link src={`tel:${contact.phone.replace(/[^\d+]/g, "")}`} style={[styles.contactValue, styles.link]}>
+                  {contact.phone}
+                </Link>
               </>
             )}
           </View>
@@ -563,7 +732,8 @@ function BackCover({ details, assets }: { details: CompanyDetails; assets: Broch
             <Link src={website} style={[styles.contactValue, styles.link]}>
               {contact.website}
             </Link>
-            {socials.map(({ platform, href }) => (
+            {/* Every platform, as in the website's footer (X links to x.com until its profile is entered). */}
+            {details.social.map(({ platform, href }) => (
               <Link key={platform} src={href ?? website} style={[styles.social, styles.link]}>
                 <Text style={styles.bold}>{platform}</Text>
               </Link>
@@ -574,7 +744,13 @@ function BackCover({ details, assets }: { details: CompanyDetails; assets: Broch
         <Text style={styles.motto}>{company.motto}</Text>
       </View>
       <View style={styles.coverFoot}>
-        {assets.groupLogo ? <Photo src={assets.groupLogo} style={styles.groupLogo} /> : <Text />}
+        {assets.groupLogo ? (
+          <Link src={siteLink(routes.group)}>
+            <Photo src={assets.groupLogo} style={styles.groupLogo} />
+          </Link>
+        ) : (
+          <Text />
+        )}
         <Text>
           {company.legalName} · {backCover.group}
         </Text>

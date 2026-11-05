@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#264796"/>
-  <svg x="4" y="6.5" width="24" height="19" viewBox="0 0 272 174" fill="#ffffff">
-    <defs>
-      <mask id="gap"><rect width="272" height="174" fill="#fff"/><g fill="#000" stroke="#000" stroke-width="16"><rect x="1" y="2" width="92.3" height="170"/><circle cx="92.3" cy="45" r="46.7"/><circle cx="92.3" cy="129" r="46.7"/></g></mask>
-      <mask id="slots"><rect width="272" height="174" fill="#fff"/><rect x="0" y="39" width="58" height="14" fill="#000"/><rect x="0" y="118" width="58" height="13" fill="#000"/></mask>
-      <clipPath id="bounds"><rect x="1" y="2" width="270" height="170"/></clipPath>
-    </defs>
-    <circle cx="185" cy="87" r="85" mask="url(#gap)"/>
-    <g clip-path="url(#bounds)" mask="url(#slots)"><rect x="1" y="2" width="92.3" height="170"/><circle cx="92.3" cy="45" r="46.7"/><circle cx="92.3" cy="129" r="46.7"/></g>
-  </svg>
+<rect width="32" height="32" rx="7" fill="#394285"/>
+<svg x="4" y="7.96" width="24" height="16.09" viewBox="0 0 840 563" fill="#ffffff">
+<defs>
+<mask id="gap" maskUnits="userSpaceOnUse" x="0" y="0" width="840" height="563"><rect x="0" y="0" width="840" height="563" fill="#fff"/><g fill="#000" stroke="#000" stroke-width="39"><rect x="0" y="13" width="286.5" height="243"/><circle cx="286.5" cy="134.5" r="121.5"/><rect x="0" y="254" width="301" height="297"/><circle cx="301" cy="403.5" r="147.5"/></g></mask>
+<mask id="slots" maskUnits="userSpaceOnUse" x="0" y="0" width="840" height="563"><rect x="0" y="0" width="840" height="563" fill="#fff"/><g fill="#000"><rect x="-20" y="136.5" width="195.5" height="20" rx="10"/><rect x="-20" y="379.5" width="195.5" height="20" rx="10"/></g></mask>
+</defs>
+<circle cx="558" cy="281.5" r="281.5" mask="url(#gap)"/>
+<g mask="url(#slots)"><rect x="0" y="13" width="286.5" height="243"/><circle cx="286.5" cy="134.5" r="121.5"/><rect x="0" y="254" width="301" height="297"/><circle cx="301" cy="403.5" r="147.5"/></g>
+
+</svg>
 </svg>

@@ -2,27 +2,14 @@
 
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
-import { extraTradeLanes, tradeOrigin } from "@/config/markets";
 import { useDomId } from "@/hooks/use-dom-id";
-import { arcPath, project, toPercent, type MapBounds, type MapSize } from "@/lib/geo";
+import { toPercent } from "@/lib/geo";
 import { cn } from "@/lib/cn";
-import { toAlpha3 } from "@/lib/country-codes";
 import { EASE_SMOOTH } from "@/lib/motion";
-import { WORLD_DOTS } from "@/lib/world-dots";
+import { LAND_PATH, LANE_COLORS, TRADE_MAP_SIZE as SIZE, TRADE_ORIGIN, tradeLanes } from "@/lib/trade-lanes";
 import type { LabelAnchor, Market } from "@/types/content";
 
-/* The whole world (minus the polar caps), equirectangular. */
-const BOUNDS: MapBounds = { west: -180, east: 180, north: 76, south: -56 };
-const SIZE: MapSize = { width: 1000, height: 367 };
-const toMap = (lat: number, lon: number) => project({ lat, lon }, BOUNDS, SIZE);
-
-/** Every land dot as one path of zero-length segments: thousands of dots, one DOM node. */
-const LAND_PATH = WORLD_DOTS.map(([lon, lat]) => {
-  const point = toMap(lat, lon);
-  return `M${point.x} ${point.y}h0`;
-}).join("");
-
-const origin = toMap(tradeOrigin.coordinates.lat, tradeOrigin.coordinates.lon);
+const origin = TRADE_ORIGIN.point;
 
 const LABEL_GAP_PX = 8;
 const LABEL_TRANSFORMS: Record<LabelAnchor, string> = {
@@ -31,13 +18,6 @@ const LABEL_TRANSFORMS: Record<LabelAnchor, string> = {
   left: `translate(calc(-100% - ${LABEL_GAP_PX}px), -50%)`,
   right: `translate(${LABEL_GAP_PX}px, -50%)`,
 };
-
-interface Lane {
-  code: string;
-  point: { x: number; y: number };
-  path: string;
-  labelAnchor: LabelAnchor;
-}
 
 interface WorldTradeMapProps {
   /** Core markets (from the admin); the extra lanes come from config. */
@@ -56,17 +36,7 @@ export function WorldTradeMap({ markets, label, className }: WorldTradeMapProps)
   const isInView = useInView(ref, { once: true, amount: 0.3 });
   const reduceMotion = useReducedMotion();
   const gradientId = useDomId("world-lane");
-  const destinations = [
-    ...markets
-      .filter((market) => market.code !== tradeOrigin.code)
-      .map((market) => ({ code: toAlpha3(market.code), coordinates: market.coordinates, labelAnchor: market.labelAnchor ?? "right" })),
-    ...extraTradeLanes,
-  ];
-  const lanes: Lane[] = destinations.map((destination) => {
-    const point = toMap(destination.coordinates.lat, destination.coordinates.lon);
-    // Longer lanes arc higher, so lanes to the west and east read as a balanced fan.
-    return { code: destination.code, point, path: arcPath(origin, point, 0.28), labelAnchor: destination.labelAnchor };
-  });
+  const lanes = tradeLanes(markets);
   const draw = (delay: number) =>
     reduceMotion
       ? { initial: false as const }
@@ -81,8 +51,8 @@ export function WorldTradeMap({ markets, label, className }: WorldTradeMapProps)
       <svg viewBox={`0 0 ${SIZE.width} ${SIZE.height}`} aria-hidden className="absolute inset-0 size-full overflow-visible">
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#f2b34b" />
-            <stop offset="100%" stopColor="#4fa8e8" />
+            <stop offset="0%" stopColor={LANE_COLORS.from} />
+            <stop offset="100%" stopColor={LANE_COLORS.to} />
           </linearGradient>
         </defs>
         <path d={LAND_PATH} stroke="currentColor" strokeWidth={2.3} strokeLinecap="round" className="text-fg/25" />
@@ -126,7 +96,7 @@ export function WorldTradeMap({ markets, label, className }: WorldTradeMapProps)
         className="pointer-events-none absolute -translate-x-1/2 translate-y-3 text-[11px] font-bold tracking-wide text-gold"
         style={{ left: toPercent(origin.x, SIZE.width), top: toPercent(origin.y, SIZE.height) }}
       >
-        IND
+        {TRADE_ORIGIN.code}
       </span>
 
       <p className="absolute bottom-0 left-0 flex items-center gap-2 text-xs text-fg-mute">

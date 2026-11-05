@@ -111,7 +111,9 @@ or paid API is involved:
   gets a BGX reference.
 - **Company Information** — five short answers, then an offer to start an enquiry.
 - **Request a Call Back** — name, email, optional phone and topic; saved as a general enquiry.
-  Offered whenever Aira can't answer. On larger screens a greeting teaser appears once per visit.
+  Offered whenever Aira can't answer. On larger screens a greeting teaser appears a few seconds
+  after each page loads, until the visitor closes it or opens Aira; after that it never pops up
+  again on that browser (remembered in `localStorage`).
 - Anything typed outside a flow is answered from the FAQs.
 
 Email goes through the company's mailbox over SMTP (`SMTP_*` in `.env`). With
@@ -120,9 +122,17 @@ Email goes through the company's mailbox over SMTP (`SMTP_*` in `.env`). With
 ## Product brochure
 
 On **Resources → Brochures**, visitors tick the products they want (by category, or all) and
-download a PDF made for them: a cover, About BOSS EXIM, one page per selected product (photo,
-HSN code, overview, specifications, packaging, markets, documentation) and a back cover with
-the company's contact details from the admin.
+download a PDF made for them, laid out from the client's mock-ups (Nov 2026):
+
+1. **Cover** — the product wheel and globe from the Home page, the logo and company name.
+2. **About BOSS EXIM** — overview, key figures, What We Do and the six trade steps.
+3. **One page per selected product** — photo, HSN code, overview, specifications, packaging,
+   markets, documentation and an "Other Products" button.
+4. **Back cover** — the trade-lanes map, enquiry/partner buttons and contact details from the admin.
+
+Inner pages end with a navy "Trade Beyond Boundaries" band. Everything clickable links back to
+the website (product pages, categories, services, contact, partner, socials, email, phone), and
+the product names on the cover jump to their pages in the PDF.
 
 - The picker is `src/components/sections/resources/brochure-builder.tsx`; wording is in
   `src/config/brochure.ts`.
@@ -130,6 +140,9 @@ the company's contact details from the admin.
   (`/brochure.pdf?products=basmati-rice,turmeric`) with `@react-pdf/renderer`; the layout is
   `src/lib/brochure/document.tsx`. It always reflects the current admin content, so there is
   nothing to regenerate.
+- The cover wheel and back-cover map are drawn by `src/lib/brochure/artwork.ts` from the same
+  geometry as the website (`src/lib/trade-wheel.ts`, `src/lib/trade-lanes.ts`, `orthographic` in
+  `src/lib/geo.ts`), so they follow any change to products or markets.
 - Photos are fetched from the site itself and resized with sharp; the Inter fonts (OFL) ship in
   `src/lib/brochure/fonts/`.
 - At most 15 brochures per visitor per 10 minutes (in memory, per server instance).
