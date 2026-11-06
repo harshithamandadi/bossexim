@@ -74,22 +74,34 @@ function wheelMarkup(photos: (PdfImage | undefined)[]): string {
 ${segments}${pods}${globeMarkup()}`;
 }
 
+/** Cover background stops, top to bottom: pale sky behind the wheel, easing into navy for the text (client request, 6 Nov 2026: no hard split). */
+const COVER_STOPS: [number, string][] = [
+  [0, "#f7faff"],
+  [0.44, "#e2ecf9"],
+  [0.56, "#9dbbe3"],
+  [0.66, "#2a5598"],
+  [0.76, "#0d2d68"],
+  [0.86, NAVY_DEEP],
+  [1, NAVY_DEEP],
+];
+
 /**
- * The cover's top panel, `width` × `height` pixels: a pale sky with the dotted world map
- * and the product wheel (`photos`: one per category, in wheel order) below the logo area.
+ * The whole cover's background, `width` × `height` pixels (an A4 page): a pale sky with the
+ * dotted world map and the product wheel (`photos`: one per category, in wheel order) below
+ * the logo, fading gradually into navy where the cover's text sits.
  */
 export async function coverPanel(width: number, height: number, photos: (PdfImage | undefined)[]): Promise<PdfImage> {
   const mapHeight = (width * TRADE_MAP_SIZE.height) / TRADE_MAP_SIZE.width;
-  const wheelSize = height * 0.66;
+  const wheelSize = height * 0.41;
   const wheelX = (width - wheelSize) / 2;
-  const wheelY = height * 0.2;
+  const wheelY = height * 0.125;
+  const stops = COVER_STOPS.map(([offset, color]) => `<stop offset="${offset}" stop-color="${color}"/>`).join("");
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7faff"/><stop offset="1" stop-color="#e2ecf9"/></linearGradient></defs>
+<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">${stops}</linearGradient></defs>
 <rect width="${width}" height="${height}" fill="url(#sky)"/>
-<svg y="${height * 0.24}" width="${width}" height="${mapHeight}" viewBox="0 0 ${TRADE_MAP_SIZE.width} ${TRADE_MAP_SIZE.height}">
+<svg y="${height * 0.15}" width="${width}" height="${mapHeight}" viewBox="0 0 ${TRADE_MAP_SIZE.width} ${TRADE_MAP_SIZE.height}">
 <path d="${LAND_PATH}" stroke="${NAVY_DEEP}" stroke-opacity="0.16" stroke-width="2.3" stroke-linecap="round"/>
 </svg>
-<path d="M0 ${height * 0.9} C ${width * 0.3} ${height * 0.84}, ${width * 0.62} ${height * 0.97}, ${width} ${height * 0.88} V ${height} H 0 Z" fill="#ffffff" fill-opacity="0.55"/>
 <svg x="${wheelX}" y="${wheelY}" width="${wheelSize}" height="${wheelSize}" viewBox="-20 -20 ${WHEEL.size + 40} ${WHEEL.size + 40}">${wheelMarkup(photos)}</svg>
 </svg>`;
   const data = await sharp(Buffer.from(svg)).jpeg({ quality: 86, mozjpeg: true }).toBuffer();

@@ -39,7 +39,7 @@ export const visionMissionValues: {
     },
   ],
   valuesImage: {
-    src: "/images/about/values.webp",
+    src: "/images/about/values-2026-11.webp",
     alt: "Our values: integrity, partnership, compliance, quality, responsibility and reliability",
     width: 1200,
     height: 1200,

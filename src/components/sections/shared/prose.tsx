@@ -1,8 +1,8 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { DottedGlobe } from "@/components/ui/dotted-globe";
 import { IconTile } from "@/components/ui/icon";
+import { LogoLockup } from "@/components/ui/logo";
 import { FootprintMap } from "@/components/ui/footprint-map";
 import { siteConfig } from "@/config";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -50,15 +50,11 @@ export function AccentPanel({ variant = "map", caption = siteConfig.company.mott
           </div>
         )}
         {variant === "mark" && (
-          // The official BOSS Group logo (mark and wordmark), in white (client request, 15 Oct 2026).
+          // The BOSS Group logo in white: the new mark over the name (client requests, 15 Oct and 6 Nov 2026).
           <div className="grid aspect-[16/9] place-items-center">
-            <Image
-              src="/images/group/boss-group-logo-white.png"
-              alt="BOSS Group"
-              width={606}
-              height={534}
-              sizes="220px"
-              className="h-36 w-auto drop-shadow-[0_10px_30px_rgb(79_168_232/0.45)]"
+            <LogoLockup
+              name={siteConfig.company.parentGroup}
+              className="h-36 w-auto text-white drop-shadow-[0_10px_30px_rgb(79_168_232/0.45)]"
             />
           </div>
         )}

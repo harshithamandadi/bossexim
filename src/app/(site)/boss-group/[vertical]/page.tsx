@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { LocalNav } from "@/components/layout/local-nav";
+import { Reveal } from "@/components/motion/reveal";
 import { PageHero } from "@/components/layout/page-hero";
 import { ContainerLineSpotlight } from "@/components/sections/group/container-line";
 import { ContainerLineNetwork } from "@/components/sections/group/container-line-network";
@@ -85,7 +87,20 @@ function ContainerLineBody() {
 function VerticalBody({ vertical }: { vertical: GroupVertical }) {
   return (
     <Section spacing="compact">
-      <ProseSplit content={vertical.intro} accent="mark" />
+      <ProseSplit content={vertical.intro} accent="mark">
+        {vertical.illustration && (
+          <Reveal className="mt-10 max-w-2xl">
+            <Image
+              src={vertical.illustration.src}
+              alt={vertical.illustration.alt}
+              width={vertical.illustration.width}
+              height={vertical.illustration.height}
+              sizes="(min-width: 1024px) 640px, 100vw"
+              className="w-full rounded-panel bg-white p-6 ring-1 ring-border"
+            />
+          </Reveal>
+        )}
+      </ProseSplit>
       {vertical.photos && <PhotoSlider photos={vertical.photos} label={`${vertical.name} photos`} className="mt-12" />}
       {vertical.capabilities.map((group) => (
         <div key={group.title ?? vertical.slug} className="mt-10">

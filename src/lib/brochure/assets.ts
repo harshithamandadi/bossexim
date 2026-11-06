@@ -50,9 +50,9 @@ export function registerFonts(): Promise<void> {
   return fontsReady;
 }
 
-/** The BOSS mark as a crisp PNG in the given colour; `trademark` adds the ™ for large uses. */
-export async function logoMark(fill: string, trademark = false): Promise<PdfImage> {
-  const data = await sharp(Buffer.from(logoMarkSvg(fill, { trademark }))).resize({ width: 900 }).png().toBuffer();
+/** The BOSS mark as a crisp PNG in the given colour. */
+export async function logoMark(fill: string): Promise<PdfImage> {
+  const data = await sharp(Buffer.from(logoMarkSvg(fill))).resize({ width: 900 }).png().toBuffer();
   return { data, format: "png" };
 }
 

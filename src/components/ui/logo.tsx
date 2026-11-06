@@ -1,7 +1,7 @@
 import { useId } from "react";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/cn";
-import { LOGO_MARK, lobeShapes, slotShape } from "@/lib/logo-mark";
+import { LOCKUP, LOGO_MARK, lobeShapes, lockupFontSize, slotShape } from "@/lib/logo-mark";
 
 const { width, height, disc, gap, slots } = LOGO_MARK;
 
@@ -25,11 +25,48 @@ function BShape(props: React.SVGProps<SVGGElement>) {
  * doubling up where the block and lobes of the "B" meet.
  */
 export function LogoMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} aria-hidden className={className}>
+      <MarkShapes />
+    </svg>
+  );
+}
+
+/**
+ * The mark with a name beneath it at exactly the mark's width (lib/logo-mark.ts → LOCKUP),
+ * like the official BOSS Group logo. Draws in `currentColor`.
+ */
+export function LogoLockup({ name, className }: { name: string; className?: string }) {
+  const fontSize = lockupFontSize(name);
+  const baseline = height + LOCKUP.gap + fontSize * LOCKUP.capHeight;
+  // Room below the baseline for descenders (the "p" in "Group").
+  const total = baseline + fontSize * 0.24;
+  return (
+    <svg viewBox={`0 0 ${width} ${total}`} role="img" aria-label={name} className={className}>
+      <MarkShapes />
+      <text
+        x={width / 2}
+        y={baseline}
+        textAnchor="middle"
+        fontSize={fontSize}
+        fontWeight={800}
+        fill="currentColor"
+        textLength={width}
+        lengthAdjust="spacing"
+        style={{ fontFamily: "var(--font-display)" }}
+      >
+        {name}
+      </text>
+    </svg>
+  );
+}
+
+function MarkShapes() {
   const id = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const box = { x: 0, y: 0, width, height };
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} aria-hidden className={className}>
+    <>
       <defs>
         <mask id={`${id}-gap`} maskUnits="userSpaceOnUse" {...box}>
           <rect {...box} fill="#fff" />
@@ -47,7 +84,7 @@ export function LogoMark({ className }: { className?: string }) {
         </mask>
       </defs>
       <rect {...box} fill="currentColor" mask={`url(#${id}-mark)`} />
-    </svg>
+    </>
   );
 }
 

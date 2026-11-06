@@ -36,12 +36,25 @@ export function slotShape(centre: number) {
   return { x: -thickness, y: centre - thickness / 2, width: length + thickness, height: thickness, rx: thickness / 2 };
 }
 
-/** The ™ beside the disc, as strokes (no font needed), above the mark's top edge. */
-const TRADEMARK = {
-  top: 22,
-  markup: `<circle cx="738" cy="10" r="29" fill="none" stroke-width="4.5"/>
-<path fill="none" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" d="M716 -4h19M725.5 -4v27M740 23v-27l10 21 10-21v27"/>`,
+/**
+ * The mark with a name set beneath it at exactly the mark's width, like the BOSS Group logo
+ * (client request, 6 Nov 2026: "aligned proportionally", never squeezed). The name is in
+ * Inter Tight ExtraBold; its width in ems was measured with fontkit, so the font size alone
+ * makes it fit (no letter stretching). No ™ anywhere (same request).
+ */
+export const LOCKUP = {
+  /** Space between the mark and the name, in mark units. */
+  gap: 64,
+  /** The name's cap height, as a share of its font size (Inter Tight). */
+  capHeight: 0.728,
+  nameEms: { "BOSS EXIM": 5.301, "BOSS Group": 5.76 } as Readonly<Record<string, number>>,
 };
+
+/** Font size, in mark units, at which `name` is exactly as wide as the mark. */
+export function lockupFontSize(name: string): number {
+  // Unmeasured names: about 0.6em a character in Inter Tight ExtraBold.
+  return LOGO_MARK.width / (LOCKUP.nameEms[name] ?? name.length * 0.6);
+}
 
 const attributes = (shape: Record<string, number>) =>
   Object.entries(shape)
@@ -56,22 +69,17 @@ function bMarkup(extra: string): string {
   return `<g ${extra}>${shapes}</g>`;
 }
 
-/**
- * The mark as a standalone SVG, for places that can't render the React component.
- * `trademark` adds the ™ from the official artwork; it only reads at large sizes.
- */
-export function logoMarkSvg(fill: string, { trademark = false }: { trademark?: boolean } = {}): string {
+/** The mark as a standalone SVG, for places that can't render the React component. */
+export function logoMarkSvg(fill: string): string {
   const { width, height, disc, gap } = LOGO_MARK;
-  const top = trademark ? -TRADEMARK.top : 0;
-  const box = `x="0" y="${top}" width="${width}" height="${height - top}"`;
+  const box = `x="0" y="0" width="${width}" height="${height}"`;
   const slots = LOGO_MARK.slots.centres.map((centre) => `<rect ${attributes(slotShape(centre))}/>`).join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 ${top} ${width} ${height - top}" fill="${fill}">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" fill="${fill}">
 <defs>
 <mask id="gap" maskUnits="userSpaceOnUse" ${box}><rect ${box} fill="#fff"/>${bMarkup(`fill="#000" stroke="#000" stroke-width="${gap}"`)}</mask>
 <mask id="slots" maskUnits="userSpaceOnUse" ${box}><rect ${box} fill="#fff"/><g fill="#000">${slots}</g></mask>
 </defs>
 <circle cx="${disc.cx}" cy="${disc.cy}" r="${disc.r}" mask="url(#gap)"/>
 ${bMarkup('mask="url(#slots)"')}
-${trademark ? `<g stroke="${fill}">${TRADEMARK.markup}</g>` : ""}
 </svg>`;
 }

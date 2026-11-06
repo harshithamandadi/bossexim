@@ -552,6 +552,8 @@ export interface GroupVertical {
   capabilities: CapabilityGroup[];
   /** The client's photographs of the business, shown as a gallery on its page. */
   photos?: ImageAsset[];
+  /** An illustration shown under the intro, for verticals without photographs. */
+  illustration?: ImageAsset;
 }
 
 /**
@@ -767,6 +769,13 @@ export const groupVerticals: GroupVertical[] = [
     name: "IT",
     companyName: "BOSS IT",
     menuDescription: "Digital systems and IT-enabled solutions.",
+    // Client artwork (6 Nov 2026).
+    illustration: {
+      src: "/images/group/it/it-services.webp",
+      alt: "Server racks linked to the cloud, with icons for security, data, devices, files, automation and reporting",
+      width: 1200,
+      height: 900,
+    },
     hero: {
       eyebrow: "BOSS Group · Technology",
       title: "IT",
@@ -801,6 +810,13 @@ export const groupVerticals: GroupVertical[] = [
     name: "BPO",
     companyName: "BOSS BPO",
     menuDescription: "HR and finance operations outsourcing.",
+    // Client artwork (6 Nov 2026).
+    illustration: {
+      src: "/images/group/bpo/bpo-services.webp",
+      alt: "A laptop showing BPO, surrounded by icons for support, teams, reporting, processes and documents",
+      width: 604,
+      height: 503,
+    },
     hero: {
       eyebrow: "BOSS Group · Business Process Outsourcing",
       title: "BPO",

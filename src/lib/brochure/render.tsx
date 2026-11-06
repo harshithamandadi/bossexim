@@ -8,9 +8,6 @@ import { coverPanel, tradeMapArtwork } from "./artwork";
 import { loadPhoto, logoMark, registerFonts, type PdfImage } from "./assets";
 import { BACK_MAP, BrochureDocument, COVER_PANEL, brochureColors } from "./document";
 
-/** Photos shipped with the site (public/images). */
-const GROUP_LOGO = "/images/group/boss-group-logo-white.png";
-
 /** Pixels per PDF point for the illustrations: sharp in print, small enough to email. */
 const ARTWORK_SCALE = 2.5;
 /**
@@ -19,7 +16,6 @@ const ARTWORK_SCALE = 2.5;
  */
 const PRODUCT_PHOTO_PX = 720;
 const WHEEL_PHOTO_PX = 220;
-const LOGO_PX = 400;
 
 interface RenderOptions {
   /** Selected products, in catalogue order. */
@@ -58,11 +54,10 @@ export async function renderBrochure({ products, allProducts, markets, details, 
   const wheelSources = wheelPhotoSources(allProducts);
   const lanes = tradeLanes(markets);
 
-  const [, markHeader, markCover, markBack, panel, tradeMap, groupLogo, productPhotos] = await Promise.all([
+  const [, markBlue, markWhite, panel, tradeMap, productPhotos] = await Promise.all([
     registerFonts(),
     logoMark(LOGO_MARK.color),
-    logoMark(LOGO_MARK.color, true),
-    logoMark(brochureColors.white, true),
+    logoMark(brochureColors.white),
     cachedCover(wheelSources.join("|"), async () =>
       coverPanel(
         Math.round(COVER_PANEL.width * ARTWORK_SCALE),
@@ -71,7 +66,6 @@ export async function renderBrochure({ products, allProducts, markets, details, 
       ),
     ),
     cachedMap(JSON.stringify(lanes), () => tradeMapArtwork(Math.round(BACK_MAP.width * ARTWORK_SCALE * 1.6), lanes)),
-    loadPhoto(GROUP_LOGO, origin, LOGO_PX, "png"),
     Promise.all(
       products.map(async (product) => {
         const src = product.images?.[0]?.src;
@@ -87,13 +81,11 @@ export async function renderBrochure({ products, allProducts, markets, details, 
       details={details}
       stats={stats}
       assets={{
-        markHeader,
-        markCover,
-        markBack,
+        markBlue,
+        markWhite,
         coverPanel: panel,
         tradeMap,
         lanes,
-        groupLogo,
         productPhotos: new Map(productPhotos),
       }}
       date={new Date()}

@@ -6,7 +6,7 @@
  */
 import "server-only";
 // react-pdf's Image is imported as Photo: it is not an HTML <img>, so it takes no alt text.
-import { Document, Image as Photo, Link, Page, StyleSheet, Text, View, type Styles } from "@react-pdf/renderer";
+import { Document, Image as Photo, Link, Page, Path, StyleSheet, Svg, Text, View, type Styles } from "@react-pdf/renderer";
 import { aboutOverview } from "@/config/about";
 import { brochureContent } from "@/config/brochure";
 import { closingCta, homeContent } from "@/config/pages";
@@ -15,7 +15,8 @@ import { productLabels, tradeDirections } from "@/config/products";
 import { productCategoryHref, productHref, routes } from "@/config/routes";
 import { siteConfig } from "@/config/site";
 import { formatStepNumber } from "@/lib/format";
-import { LOGO_MARK } from "@/lib/logo-mark";
+import { LOCKUP, LOGO_MARK, lockupFontSize } from "@/lib/logo-mark";
+import { SOCIAL_ICON_PATHS } from "@/lib/social-icons";
 import { TRADE_MAP_SIZE, TRADE_ORIGIN, type TradeLane } from "@/lib/trade-lanes";
 import type { CompanyDetails, LabelAnchor, Market, Product, SpecificationTable, Stat } from "@/types/content";
 import { FONT_BODY, FONT_DISPLAY, type PdfImage } from "./assets";
@@ -48,13 +49,13 @@ const PAGE_WIDTH = 595.28;
 const MARGIN_X = 46;
 /** The navy tagline band at the foot of every inner page. */
 const BAND_HEIGHT = 40;
-/** The cover's light top panel, drawn by artwork.ts at this size. */
-export const COVER_PANEL = { width: PAGE_WIDTH, height: 490 };
+/** The cover's background (light at the top, fading to navy), drawn by artwork.ts at this size. */
+// Shorter than the page (a page-tall picture breaks react-pdf's layout); it ends in the page's own navy, so no edge shows.
+export const COVER_PANEL = { width: PAGE_WIDTH, height: 780 };
 /** The back cover's trade map, full width. */
 export const BACK_MAP = { top: 196, width: PAGE_WIDTH, height: (PAGE_WIDTH * TRADE_MAP_SIZE.height) / TRADE_MAP_SIZE.width };
-/** The mark's proportions, without and with the ™ above it. */
+/** The mark's proportions. */
 const MARK_RATIO = LOGO_MARK.width / LOGO_MARK.height;
-const MARK_TM_RATIO = LOGO_MARK.width / (LOGO_MARK.height + 22);
 /** Product names listed on the cover before "and N more". */
 const COVER_NAMES = 6;
 /** Room kept for the "Other Products" button above the band. */
@@ -126,9 +127,7 @@ const styles = StyleSheet.create({
   // Cover and back cover
   coverPage: { fontFamily: FONT_BODY, backgroundColor: color.navyDeep, color: color.white },
   coverPanel: { position: "absolute", top: 0, left: 0, width: COVER_PANEL.width, height: COVER_PANEL.height },
-  coverBrand: { position: "absolute", top: 26, left: MARGIN_X },
-  coverMark: { width: 54, height: 54 / MARK_TM_RATIO },
-  coverName: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 13, color: color.navy, marginTop: 6 },
+  coverBrand: { position: "absolute", top: 28, left: MARGIN_X },
   coverText: { position: "absolute", left: MARGIN_X, right: MARGIN_X, bottom: 84 },
   coverTitle: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 48, lineHeight: 1.04, marginTop: 7, marginBottom: 10, maxWidth: 380 },
   coverLead: { fontSize: 11, lineHeight: 1.5, color: "#d9e6fa", maxWidth: 440 },
@@ -230,9 +229,7 @@ const styles = StyleSheet.create({
 
   // Back cover
   back: { position: "absolute", left: MARGIN_X, right: MARGIN_X, top: 40 },
-  backMark: { width: 80, height: 80 / MARK_TM_RATIO },
-  backWordmark: { fontSize: 24, marginTop: 10 },
-  backLegal: { fontSize: 9.5, color: "#b9c9e6", marginTop: 3 },
+  backLegal: { fontSize: 9.5, color: "#b9c9e6", marginTop: 10 },
   explore: { position: "absolute", right: MARGIN_X, top: 146 },
   buttonGhost: { borderWidth: 0.75, borderColor: "#4a6aa3", backgroundColor: "#12306a", paddingVertical: 5, paddingHorizontal: 11 },
   buttonGhostText: { fontSize: 7.6, fontWeight: 600, color: color.white },
@@ -252,7 +249,8 @@ const styles = StyleSheet.create({
     borderRadius: 4.5,
   },
   mapOrigin: { position: "absolute", width: 30, fontSize: 7, fontWeight: 700, textAlign: "center", color: color.gold },
-  backBottom: { position: "absolute", left: MARGIN_X, right: MARGIN_X, bottom: 78 },
+  /** Starts right under the map, so no gap opens above it (client request, 6 Nov 2026). */
+  backBottom: { position: "absolute", left: MARGIN_X, right: MARGIN_X, top: BACK_MAP.top + BACK_MAP.height + 26 },
   backTitle: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 30, marginBottom: 6 },
   ctaRow: { flexDirection: "row", gap: 10, marginTop: 14 },
   ctaPrimary: { backgroundColor: "#3d8fe0", paddingVertical: 8, paddingHorizontal: 18 },
@@ -261,7 +259,17 @@ const styles = StyleSheet.create({
   contactGrid: { flexDirection: "row", gap: 22, marginTop: 20, paddingTop: 14, borderTopWidth: 0.75, borderTopColor: "#33507f" },
   contactColumn: { flex: 1 },
   contactValue: { fontSize: 9.2, lineHeight: 1.5, color: color.white, marginTop: 3, marginBottom: 10 },
-  social: { fontSize: 7.8, color: "#c9d8f0", marginTop: 1, marginBottom: 4 },
+  socials: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 1 },
+  socialIcon: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 0.75,
+    borderColor: "#6f86b3",
+    alignItems: "center",
+    justifyContent: "center",
+    textDecoration: "none",
+  },
   link: { color: color.white, textDecoration: "none" },
   /** A link that looks like the text around it: its colour comes from the style it is combined with. */
   plainLink: { textDecoration: "none" },
@@ -269,20 +277,17 @@ const styles = StyleSheet.create({
   viewOnline: { flexDirection: "row", alignItems: "center", gap: 3, textDecoration: "none" },
   viewOnlineText: { fontSize: 7.4, fontWeight: 600, color: color.brand },
   motto: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 16, color: color.sky, marginTop: 14 },
-  groupLogo: { height: 22, width: 64, objectFit: "contain" },
 });
 
 export interface BrochureAssets {
-  /** The BOSS mark: small in the inner pages' header, and with the ™ on the covers. */
-  markHeader: PdfImage;
-  markCover: PdfImage;
-  markBack: PdfImage;
+  /** The BOSS mark in logo blue (header and cover) and in white (back cover). No ™ anywhere. */
+  markBlue: PdfImage;
+  markWhite: PdfImage;
   /** The cover's top panel with the product wheel (artwork.ts). */
   coverPanel?: PdfImage;
   /** The back cover's trade-lanes map (artwork.ts) and the lanes it shows, for their labels. */
   tradeMap?: PdfImage;
   lanes: TradeLane[];
-  groupLogo?: PdfImage;
   /** Each product's first photo, by slug. */
   productPhotos: Map<string, PdfImage | undefined>;
 }
@@ -315,12 +320,39 @@ export function BrochureDocument({ products, markets, details, stats, assets, da
           key={product.slug}
           product={product}
           photo={assets.productPhotos.get(product.slug)}
-          mark={assets.markHeader}
+          mark={assets.markBlue}
           marketNames={product.direction === "export" ? product.markets.flatMap((code) => marketNames.get(code) ?? []) : []}
         />
       ))}
       <BackCover details={details} assets={assets} />
     </Document>
+  );
+}
+
+/**
+ * The mark with a name beneath it at the mark's width, like the BOSS Group logo (client request,
+ * 6 Nov 2026): the font size is chosen so the name fits exactly, never squeezed.
+ */
+function Lockup({ mark, name, width, color: textColor }: { mark: PdfImage; name: string; width: number; color: string }) {
+  const scale = width / LOGO_MARK.width;
+  const fontSize = lockupFontSize(name) * scale;
+  return (
+    <View style={{ width, alignItems: "center" }}>
+      <Photo src={mark} style={{ width, height: width / MARK_RATIO }} />
+      <Text
+        style={{
+          fontFamily: FONT_DISPLAY,
+          fontWeight: 800,
+          fontSize,
+          lineHeight: 1,
+          color: textColor,
+          // Inter's line box sits a little above the capitals; this keeps the visible gap at LOCKUP.gap.
+          marginTop: LOCKUP.gap * scale - fontSize * 0.18,
+        }}
+      >
+        {name}
+      </Text>
+    </View>
   );
 }
 
@@ -373,8 +405,7 @@ function CoverPage({ products, assets, date }: { products: Product[]; assets: Br
     <Page size="A4" style={styles.coverPage}>
       {assets.coverPanel && <Photo src={assets.coverPanel} style={styles.coverPanel} />}
       <Link src={siteConfig.url} style={[styles.coverBrand, styles.plainLink]}>
-        <Photo src={assets.markCover} style={styles.coverMark} />
-        <Text style={styles.coverName}>{company.legalName}</Text>
+        <Lockup mark={assets.markBlue} name={company.shortName} width={72} color={color.logo} />
       </Link>
       <View style={styles.coverText}>
         <Text style={[styles.eyebrow, styles.eyebrowLight]}>
@@ -422,7 +453,7 @@ function AboutPage({ stats, assets }: { stats: Stat[]; assets: BrochureAssets })
 
   return (
     <Page size="A4" style={styles.page}>
-      <RunningChrome section={copy.aboutSection} mark={assets.markHeader} />
+      <RunningChrome section={copy.aboutSection} mark={assets.markBlue} />
       <Text style={styles.eyebrow}>{copy.aboutEyebrow}</Text>
       <Text style={styles.h1}>{aboutOverview.heading.title}</Text>
       <View style={styles.row}>
@@ -678,8 +709,9 @@ function BackCover({ details, assets }: { details: CompanyDetails; assets: Broch
   return (
     <Page size="A4" style={styles.coverPage}>
       <View style={styles.back}>
-        <Photo src={assets.markBack} style={styles.backMark} />
-        <Wordmark style={styles.backWordmark} />
+        <Link src={siteConfig.url} style={styles.plainLink}>
+          <Lockup mark={assets.markWhite} name={company.shortName} width={96} color={color.white} />
+        </Link>
         <Text style={styles.backLegal}>
           {company.legalName} · {company.descriptor}
         </Text>
@@ -732,25 +764,25 @@ function BackCover({ details, assets }: { details: CompanyDetails; assets: Broch
             <Link src={website} style={[styles.contactValue, styles.link]}>
               {contact.website}
             </Link>
-            {/* Every platform, as in the website's footer (X links to x.com until its profile is entered). */}
-            {details.social.map(({ platform, href }) => (
-              <Link key={platform} src={href ?? website} style={[styles.social, styles.link]}>
-                <Text style={styles.bold}>{platform}</Text>
-              </Link>
-            ))}
+            {/* Round icons in one row (client request, 6 Nov 2026). X links to x.com until its profile is entered. */}
+            <View style={styles.socials}>
+              {details.social.map(({ platform, href }) => (
+                <Link key={platform} src={href ?? website} style={styles.socialIcon}>
+                  <Svg viewBox="0 0 24 24" width={9} height={9}>
+                    <Path d={SOCIAL_ICON_PATHS[platform] ?? ""} fill={color.white} />
+                  </Svg>
+                </Link>
+              ))}
+            </View>
           </View>
         </View>
 
         <Text style={styles.motto}>{company.motto}</Text>
       </View>
       <View style={styles.coverFoot}>
-        {assets.groupLogo ? (
-          <Link src={siteLink(routes.group)}>
-            <Photo src={assets.groupLogo} style={styles.groupLogo} />
-          </Link>
-        ) : (
-          <Text />
-        )}
+        <Link src={siteLink(routes.group)} style={styles.plainLink}>
+          <Lockup mark={assets.markWhite} name={company.parentGroup} width={34} color={color.white} />
+        </Link>
         <Text>
           {company.legalName} · {backCover.group}
         </Text>
