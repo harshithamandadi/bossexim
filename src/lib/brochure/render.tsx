@@ -3,18 +3,20 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { groupByCategory } from "@/lib/catalogue";
 import { LOGO_MARK } from "@/lib/logo-mark";
 import { tradeLanes } from "@/lib/trade-lanes";
-import type { CompanyDetails, Market, Product, Stat } from "@/types/content";
+import type { CompanyDetails, GroupCompany, Market, Product, Stat } from "@/types/content";
 import { coverPanel, tradeMapArtwork } from "./artwork";
 import { loadPhoto, logoMark, registerFonts, type PdfImage } from "./assets";
-import { BACK_MAP, BrochureDocument, COVER_PANEL, brochureColors } from "./document";
+import { BACK_MAP, BrochureDocument, COVER_PANEL, GROUP_MAP, brochureColors } from "./document";
 
 /** Pixels per PDF point for the illustrations: sharp in print, small enough to email. */
 const ARTWORK_SCALE = 2.5;
 /**
- * Photo widths in pixels. Product photos print 220pt wide, so 720px is ~235 dpi — and keeps a
- * brochure of every product well under Vercel's 4.5 MB response limit.
+ * Photo widths in pixels. Product photos print ~162pt wide on the cards, so 480px is ~210 dpi —
+ * and keeps a brochure of every product well under Vercel's 4.5 MB response limit.
  */
-const PRODUCT_PHOTO_PX = 720;
+const PRODUCT_PHOTO_PX = 480;
+/** The BOSS Group presence map on a dark panel, as on the website's BOSS Group page (footprint-map.tsx). */
+const GROUP_MAP_SRC = "/images/group/boss-group-presence-dark.webp";
 const WHEEL_PHOTO_PX = 220;
 
 interface RenderOptions {
@@ -22,6 +24,8 @@ interface RenderOptions {
   products: Product[];
   /** Every product: the cover's wheel shows one photo per category, as on the Home page. */
   allProducts: Product[];
+  /** The BOSS Group companies, in the admin's order. */
+  companies: GroupCompany[];
   markets: Market[];
   details: CompanyDetails;
   stats: Stat[];
@@ -50,11 +54,11 @@ function wheelPhotoSources(products: Product[]): (string | undefined)[] {
 }
 
 /** The brochure for these products, as PDF bytes. */
-export async function renderBrochure({ products, allProducts, markets, details, stats, origin }: RenderOptions): Promise<Buffer> {
+export async function renderBrochure({ products, allProducts, companies, markets, details, stats, origin }: RenderOptions): Promise<Buffer> {
   const wheelSources = wheelPhotoSources(allProducts);
   const lanes = tradeLanes(markets);
 
-  const [, markBlue, markWhite, panel, tradeMap, productPhotos] = await Promise.all([
+  const [, markBlue, markWhite, panel, tradeMap, groupMap, productPhotos] = await Promise.all([
     registerFonts(),
     logoMark(LOGO_MARK.color),
     logoMark(brochureColors.white),
@@ -66,6 +70,8 @@ export async function renderBrochure({ products, allProducts, markets, details, 
       ),
     ),
     cachedMap(JSON.stringify(lanes), () => tradeMapArtwork(Math.round(BACK_MAP.width * ARTWORK_SCALE * 1.6), lanes)),
+    // PNG, to keep the map's transparent sea on the navy panel.
+    loadPhoto(GROUP_MAP_SRC, origin, Math.round(GROUP_MAP.width * ARTWORK_SCALE * 1.4), "png"),
     Promise.all(
       products.map(async (product) => {
         const src = product.images?.[0]?.src;
@@ -77,7 +83,7 @@ export async function renderBrochure({ products, allProducts, markets, details, 
   return renderToBuffer(
     <BrochureDocument
       products={products}
-      markets={markets}
+      companies={companies}
       details={details}
       stats={stats}
       assets={{
@@ -85,6 +91,7 @@ export async function renderBrochure({ products, allProducts, markets, details, 
         markWhite,
         coverPanel: panel,
         tradeMap,
+        groupMap,
         lanes,
         productPhotos: new Map(productPhotos),
       }}

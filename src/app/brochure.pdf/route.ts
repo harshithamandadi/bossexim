@@ -4,13 +4,14 @@ import { BROCHURE_SLUG_SEPARATOR } from "@/config/routes";
 import { photoOrigin } from "@/lib/brochure/assets";
 import { renderBrochure } from "@/lib/brochure/render";
 import { groupByDirection } from "@/lib/catalogue";
-import { getCatalogue, getCompanyDetails } from "@/lib/content/queries";
+import { getCatalogue, getCompanyDetails, getGroupCompanies } from "@/lib/content/queries";
 import { clientAddress, isRateLimited } from "@/lib/enquiry/rate-limit";
 import { getHighlightStats } from "@/lib/stats";
 
 /*
  * /brochure.pdf?products=basmati-rice,turmeric — the brochure a visitor builds on the
- * Resources page: cover, About BOSS EXIM, the chosen products and the back cover.
+ * Resources page: cover, About BOSS EXIM, About BOSS Group, the chosen products (twelve to a
+ * page) and the back cover.
  * Made on request from the current admin content, so it is never out of date.
  */
 
@@ -24,7 +25,7 @@ const { document: pdf, errors } = brochureContent;
 
 export async function GET(request: NextRequest) {
   const wanted = new Set(request.nextUrl.searchParams.get("products")?.split(BROCHURE_SLUG_SEPARATOR));
-  const [catalogue, details] = await Promise.all([getCatalogue(), getCompanyDetails()]);
+  const [catalogue, details, companies] = await Promise.all([getCatalogue(), getCompanyDetails(), getGroupCompanies()]);
 
   // Catalogue order whatever order the link lists them in; unknown slugs are ignored.
   const products = groupByDirection(catalogue.products.filter((product) => wanted.has(product.slug))).flatMap((section) =>
@@ -39,6 +40,7 @@ export async function GET(request: NextRequest) {
   const file = await renderBrochure({
     products,
     allProducts: catalogue.products,
+    companies,
     markets: catalogue.markets,
     details,
     stats: getHighlightStats(catalogue),

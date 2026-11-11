@@ -126,13 +126,16 @@ download a PDF made for them, laid out from the client's mock-ups (Nov 2026):
 
 1. **Cover** — the product wheel and globe from the Home page, the logo and company name.
 2. **About BOSS EXIM** — overview, key figures, What We Do and the six trade steps.
-3. **One page per selected product** — photo, HSN code, overview, specifications, packaging,
-   markets, documentation and an "Other Products" button.
-4. **Back cover** — the trade-lanes map, enquiry/partner buttons and contact details from the admin.
+3. **About BOSS Group** — the Group introduction, presence map and "One Group. Many Strengths"
+   business cards, as on the website's BOSS Group page (businesses from admin → Group companies).
+4. **Selected products, twelve to a page** — a 3 × 4 grid of cards (photo, export/import,
+   category, name, summary, HSN code), each linking to the product's full page online, and an
+   "Other Products" button.
+5. **Back cover** — the trade-lanes map, enquiry/partner buttons and contact details from the admin.
 
 Inner pages end with a navy "Trade Beyond Boundaries" band. Everything clickable links back to
 the website (product pages, categories, services, contact, partner, socials, email, phone), and
-the product names on the cover jump to their pages in the PDF.
+the product names on the cover jump to their cards in the PDF.
 
 - The picker is `src/components/sections/resources/brochure-builder.tsx`; wording is in
   `src/config/brochure.ts`.

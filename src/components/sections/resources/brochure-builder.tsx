@@ -14,10 +14,10 @@ import type { Product } from "@/types/content";
 /** What the picker needs to know about a product (the rest stays on the server). */
 export type BrochureOption = Pick<Product, "slug" | "name" | "category" | "direction">;
 
-/** Pages around the products: cover, About BOSS EXIM and the back cover. */
-const FIXED_PAGES = 3;
+const { builder, document: pdf, fixedPages, productsPerPage } = brochureContent;
 
-const { builder, document: pdf } = brochureContent;
+/** Pages in a brochure of `count` products: the fixed pages plus twelve products a page. */
+const pageCount = (count: number) => fixedPages + Math.ceil(count / productsPerPage);
 
 /**
  * Lists every product by trade direction and category; the visitor ticks the ones they
@@ -76,7 +76,7 @@ export function BrochureBuilder({ products, className }: { products: BrochureOpt
             ? builder.error
             : count === 0
               ? builder.emptyHint
-              : `${count} ${builder.selectedOf} ${products.length} ${builder.selected} · ${count + FIXED_PAGES}${builder.pages}`}
+              : `${count} ${builder.selectedOf} ${products.length} ${builder.selected} · ${pageCount(count)}${builder.pages}`}
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <Button

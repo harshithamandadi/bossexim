@@ -1,24 +1,26 @@
 /**
  * The PDF brochure's layout (react-pdf), following the client's mock-ups (Nov 2026): a cover
- * with the product wheel, About BOSS EXIM with the six trade steps, one page per selected
- * product, and a back cover with the trade-lanes map and the company's details. All facts
- * come from the admin and src/config, so the PDF always matches the website.
+ * with the product wheel, About BOSS EXIM with the six trade steps, About BOSS Group with its
+ * presence map and businesses (as on the website's BOSS Group page), the selected products
+ * twelve to a page, and a back cover with the trade-lanes map and the company's details. All
+ * facts come from the admin and src/config, so the PDF always matches the website.
  */
 import "server-only";
 // react-pdf's Image is imported as Photo: it is not an HTML <img>, so it takes no alt text.
 import { Document, Image as Photo, Link, Page, Path, StyleSheet, Svg, Text, View, type Styles } from "@react-pdf/renderer";
 import { aboutOverview } from "@/config/about";
 import { brochureContent } from "@/config/brochure";
-import { closingCta, homeContent } from "@/config/pages";
+import { getVerticalForCompany, groupCompanies, groupIntro } from "@/config/group";
+import { closingCta, homeContent, pageContent } from "@/config/pages";
 import { howWeWork } from "@/config/process";
 import { productLabels, tradeDirections } from "@/config/products";
-import { productCategoryHref, productHref, routes } from "@/config/routes";
+import { groupVerticalHref, productHref, routes } from "@/config/routes";
 import { siteConfig } from "@/config/site";
 import { formatStepNumber } from "@/lib/format";
 import { LOCKUP, LOGO_MARK, lockupFontSize } from "@/lib/logo-mark";
 import { SOCIAL_ICON_PATHS } from "@/lib/social-icons";
 import { TRADE_MAP_SIZE, TRADE_ORIGIN, type TradeLane } from "@/lib/trade-lanes";
-import type { CompanyDetails, LabelAnchor, Market, Product, SpecificationTable, Stat } from "@/types/content";
+import type { CompanyDetails, GroupCompany, LabelAnchor, Product, Stat } from "@/types/content";
 import { FONT_BODY, FONT_DISPLAY, type PdfImage } from "./assets";
 import { PdfIcon } from "./icons";
 
@@ -60,6 +62,18 @@ const MARK_RATIO = LOGO_MARK.width / LOGO_MARK.height;
 const COVER_NAMES = 6;
 /** Room kept for the "Other Products" button above the band. */
 const PRODUCT_BUTTON_SPACE = 30;
+/** Width of the text column on inner pages. */
+const CONTENT_WIDTH = PAGE_WIDTH - MARGIN_X * 2;
+/** Product and Group company cards: three columns. */
+const GRID_GAP = 8;
+const CARD_WIDTH = (CONTENT_WIDTH - GRID_GAP * 2) / 3;
+/** Product cards: four rows of three fill a page (brochureContent.productsPerPage). */
+const PRODUCT_CARD_HEIGHT = 156;
+const PRODUCT_PHOTO_HEIGHT = 60;
+/** Names longer than this wrap onto a second line on a card, so the summary gets one line less. */
+const CARD_NAME_ONE_LINE = 26;
+/** The Group's presence map (2200 x 1159), centred on a navy panel as on the website. */
+export const GROUP_MAP = { width: 300, height: (300 * 1159) / 2200 };
 
 /** A page of the website, as a link printed in the PDF. */
 const siteLink = (path: string) => new URL(path, siteConfig.url).toString();
@@ -116,7 +130,6 @@ const styles = StyleSheet.create({
   note: { fontSize: 7.4, color: color.mute, marginTop: 6 },
   row: { flexDirection: "row", gap: 16 },
   section: { marginTop: 12 },
-  productSection: { marginTop: 10 },
 
   // Buttons: links to the website, styled like its pills.
   buttonRow: { flexDirection: "row", gap: 10 },
@@ -181,48 +194,50 @@ const styles = StyleSheet.create({
   stepTitle: { fontWeight: 700, fontSize: 8.4, color: color.navy, marginBottom: 2 },
   stepText: { fontSize: 6.5, lineHeight: 1.35, color: color.mute },
 
-  // Product pages
+  // Product pages: twelve cards to a page
   productPage: { paddingBottom: BAND_HEIGHT + PRODUCT_BUTTON_SPACE + 10 },
-  productTop: { flexDirection: "row", gap: 16, marginBottom: 6 },
-  productPhoto: { width: 220, height: 160, objectFit: "cover", borderRadius: 8 },
-  metaRow: { flexDirection: "row", alignItems: "center", gap: 7, marginBottom: 2 },
+  productsHead: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 10 },
+  productsTitle: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 20, lineHeight: 1.1, color: color.navy, marginTop: 3 },
+  productsCount: { fontSize: 7.6, color: color.mute },
+  cardGrid: { flexDirection: "row", flexWrap: "wrap", gap: GRID_GAP },
+  productCard: { width: CARD_WIDTH, height: PRODUCT_CARD_HEIGHT, backgroundColor: color.mist, borderRadius: 7, overflow: "hidden" },
+  productPhoto: { width: CARD_WIDTH, height: PRODUCT_PHOTO_HEIGHT, objectFit: "cover" },
+  productPhotoEmpty: { width: CARD_WIDTH, height: PRODUCT_PHOTO_HEIGHT, backgroundColor: color.accent, alignItems: "center", justifyContent: "center" },
+  productBody: { paddingTop: 6, paddingHorizontal: 8 },
+  metaRow: { flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 3 },
   tag: {
-    fontSize: 6.6,
+    fontSize: 5.6,
     fontWeight: 700,
-    letterSpacing: 1,
+    letterSpacing: 0.8,
     textTransform: "uppercase",
     color: color.white,
     backgroundColor: color.brand,
-    borderRadius: 3,
-    paddingVertical: 2,
-    paddingHorizontal: 5,
+    borderRadius: 2.5,
+    paddingVertical: 1.5,
+    paddingHorizontal: 4,
   },
   tagImport: { backgroundColor: color.navy },
-  hs: {
-    fontSize: 7.6,
-    fontWeight: 700,
-    color: color.navy,
-    backgroundColor: color.accent,
-    borderRadius: 4,
-    paddingVertical: 2.5,
-    paddingHorizontal: 6,
-  },
-  label: { fontSize: 6.8, fontWeight: 700, letterSpacing: 1.1, textTransform: "uppercase", color: color.mute, marginBottom: 4 },
-  chips: { flexDirection: "row", flexWrap: "wrap", gap: 4 },
-  chip: { fontSize: 7.6, fontWeight: 600, color: color.navy, backgroundColor: color.accent, borderRadius: 20, paddingVertical: 2.5, paddingHorizontal: 7 },
-  docChip: { fontSize: 7, color: color.navy, backgroundColor: color.white, borderRadius: 20, paddingVertical: 2, paddingHorizontal: 6 },
-  overview: { fontSize: 8.6, lineHeight: 1.4, color: color.body, marginBottom: 4 },
-  specRow: { flexDirection: "row", paddingVertical: 2.2, paddingHorizontal: 6, borderBottomWidth: 0.5, borderBottomColor: color.line },
-  specRowAlt: { backgroundColor: color.mist },
-  specLabel: { width: "36%", fontSize: 7.8, fontWeight: 600, color: color.navy, paddingRight: 8 },
-  specValue: { flex: 1, fontSize: 7.8, lineHeight: 1.35, color: color.body },
-  sidebar: { flex: 1, alignSelf: "flex-start", backgroundColor: color.mist, borderRadius: 7, padding: 12 },
-  /** Facts laid side by side when a product has no specification table. */
-  factsRow: { flexDirection: "row", gap: 16, backgroundColor: color.mist, borderRadius: 7, padding: 12 },
-  fact: { marginBottom: 10 },
-  factColumn: { flex: 1 },
-  bullet: { flexDirection: "row", marginBottom: 2 },
-  bulletDot: { width: 9, fontSize: 8, color: color.brand },
+  cardCategory: { flex: 1, fontSize: 5.8, fontWeight: 700, letterSpacing: 0.8, textTransform: "uppercase", color: color.brand, maxLines: 1, textOverflow: "ellipsis" },
+  productName: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 10, lineHeight: 1.15, color: color.navy, marginBottom: 3, maxLines: 2, textOverflow: "ellipsis" },
+  productSummary: { fontSize: 6.8, lineHeight: 1.35, color: color.body, maxLines: 3, textOverflow: "ellipsis" },
+  cardFoot: { position: "absolute", left: 8, right: 8, bottom: 7, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  hs: { fontSize: 6.2, fontWeight: 700, color: color.navy, backgroundColor: color.white, borderRadius: 3, paddingVertical: 1.5, paddingHorizontal: 4 },
+  viewOnline: { flexDirection: "row", alignItems: "center", gap: 2.5, textDecoration: "none" },
+  viewOnlineText: { fontSize: 6.6, fontWeight: 600, color: color.brand },
+
+  // About BOSS Group
+  mapPanel: { backgroundColor: color.navyDeep, borderRadius: 10, paddingVertical: 10, alignItems: "center", marginTop: 12 },
+  groupHead: { flexDirection: "row", gap: 16, marginTop: 14, marginBottom: 10 },
+  groupTitle: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 17, lineHeight: 1.12, color: color.navy, marginTop: 3 },
+  groupLead: { flex: 1.9, fontSize: 7.4, lineHeight: 1.4, color: color.body },
+  companyCard: { width: CARD_WIDTH, backgroundColor: color.mist, borderRadius: 7, padding: 8, textDecoration: "none" },
+  companyCardCurrent: { width: CARD_WIDTH * 2 + GRID_GAP, backgroundColor: color.navy },
+  companyTop: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 4 },
+  companyIcon: { width: 16, height: 16, borderRadius: 4.5, backgroundColor: color.brand, alignItems: "center", justifyContent: "center" },
+  companyName: { flex: 1, fontWeight: 700, fontSize: 8.6, color: color.navy },
+  companyNameCurrent: { color: color.white },
+  companyText: { fontSize: 6.6, lineHeight: 1.36, color: color.mute },
+  companyTextCurrent: { color: "#cfe0f7" },
   otherProducts: { position: "absolute", left: 0, right: 0, bottom: BAND_HEIGHT + 10, alignItems: "center" },
   otherProductsButton: { borderWidth: 1.6, borderColor: color.navy, borderRadius: 20, paddingVertical: 4, paddingHorizontal: 34, textDecoration: "none" },
   otherProductsText: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 12, color: color.navy },
@@ -273,9 +288,6 @@ const styles = StyleSheet.create({
   link: { color: color.white, textDecoration: "none" },
   /** A link that looks like the text around it: its colour comes from the style it is combined with. */
   plainLink: { textDecoration: "none" },
-  hsRow: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 8 },
-  viewOnline: { flexDirection: "row", alignItems: "center", gap: 3, textDecoration: "none" },
-  viewOnlineText: { fontSize: 7.4, fontWeight: 600, color: color.brand },
   motto: { fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 16, color: color.sky, marginTop: 14 },
 });
 
@@ -290,20 +302,23 @@ export interface BrochureAssets {
   lanes: TradeLane[];
   /** Each product's first photo, by slug. */
   productPhotos: Map<string, PdfImage | undefined>;
+  /** The BOSS Group presence map: light countries on a transparent background. */
+  groupMap?: PdfImage;
 }
 
 export interface BrochureProps {
   /** Selected products, in catalogue order. */
   products: Product[];
-  markets: Market[];
+  /** The BOSS Group companies (admin: Group companies), for the About BOSS Group page. */
+  companies: GroupCompany[];
   details: CompanyDetails;
   stats: Stat[];
   assets: BrochureAssets;
   date: Date;
 }
 
-export function BrochureDocument({ products, markets, details, stats, assets, date }: BrochureProps) {
-  const marketNames = new Map(markets.map((market) => [market.code, market.name]));
+export function BrochureDocument({ products, companies, details, stats, assets, date }: BrochureProps) {
+  const pages = chunk(products, brochureContent.productsPerPage);
   return (
     <Document
       title={`${company.name} — ${copy.title}`}
@@ -315,18 +330,25 @@ export function BrochureDocument({ products, markets, details, stats, assets, da
     >
       <CoverPage products={products} assets={assets} date={date} />
       <AboutPage stats={stats} assets={assets} />
-      {products.map((product) => (
-        <ProductPage
-          key={product.slug}
-          product={product}
-          photo={assets.productPhotos.get(product.slug)}
+      <GroupPage companies={companies} assets={assets} />
+      {pages.map((items, index) => (
+        <ProductsPage
+          key={items.map((product) => product.slug).join()}
+          products={items}
+          first={index * brochureContent.productsPerPage + 1}
+          total={products.length}
+          photos={assets.productPhotos}
           mark={assets.markBlue}
-          marketNames={product.direction === "export" ? product.markets.flatMap((code) => marketNames.get(code) ?? []) : []}
         />
       ))}
       <BackCover details={details} assets={assets} />
     </Document>
   );
+}
+
+/** `items` in runs of `size`. */
+function chunk<T>(items: T[], size: number): T[][] {
+  return Array.from({ length: Math.ceil(items.length / size) }, (_, index) => items.slice(index * size, (index + 1) * size));
 }
 
 /**
@@ -517,149 +539,153 @@ function AboutPage({ stats, assets }: { stats: Stat[]; assets: BrochureAssets })
   );
 }
 
-function Bullets({ items }: { items: string[] }) {
+/**
+ * About BOSS Group, as on the website's BOSS Group page (client request, 11 Nov 2026): the
+ * Group's introduction, its presence map and "One Group. Many Strengths" with a card per business.
+ */
+function GroupPage({ companies, assets }: { companies: GroupCompany[]; assets: BrochureAssets }) {
+  const { heading } = groupCompanies;
   return (
-    <View>
-      {items.map((item) => (
-        <View key={item} style={styles.bullet}>
-          <Text style={styles.bulletDot}>•</Text>
-          <Text style={[styles.small, { flex: 1 }]}>{item}</Text>
+    <Page size="A4" style={styles.page}>
+      <RunningChrome section={copy.groupSection} mark={assets.markBlue} />
+      <View style={styles.row}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.eyebrow}>{groupIntro.heading.eyebrow}</Text>
+          <Text style={[styles.h1, { fontSize: 21 }]}>{groupIntro.heading.title}</Text>
+          <View style={{ flexDirection: "row", marginTop: 2 }}>
+            <SiteButton href={routes.media} label={pageContent.media.eyebrow ?? ""} style={styles.buttonOutline} textStyle={styles.buttonText} />
+          </View>
         </View>
-      ))}
-    </View>
-  );
-}
-
-function SpecificationsTable({ table }: { table: SpecificationTable }) {
-  return (
-    <View style={{ marginBottom: 2 }} wrap={false}>
-      <Text style={styles.h2}>{productLabels.specificationsTitle}</Text>
-      {table.subtitle && <Text style={styles.label}>{table.subtitle}</Text>}
-      {table.rows.map((row, index) => (
-        <View key={row.label} style={index % 2 === 0 ? [styles.specRow, styles.specRowAlt] : styles.specRow}>
-          <Text style={styles.specLabel}>{row.label}</Text>
-          <Text style={styles.specValue}>{row.value}</Text>
-        </View>
-      ))}
-      {table.keyFeatures && (
-        <View style={{ marginTop: 8 }}>
-          <Text style={styles.h3}>{productLabels.keyFeatures}</Text>
-          <Bullets items={table.keyFeatures} />
-        </View>
-      )}
-    </View>
-  );
-}
-
-function ProductPage({ product, photo, mark, marketNames }: { product: Product; photo?: PdfImage; mark: PdfImage; marketNames: string[] }) {
-  const direction = tradeDirections[product.direction];
-  const pageLink = siteLink(productHref(product.slug));
-  const paragraphs = product.description
-    .split(/\n\s*\n/)
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean);
-
-  const factStyle = product.specifications ? styles.fact : styles.factColumn;
-  const facts = [
-    product.packaging && (
-      <View key="packaging" style={factStyle}>
-        <Text style={styles.label}>{productLabels.packaging}</Text>
-        <Text style={styles.small}>{product.packaging}</Text>
-      </View>
-    ),
-    <View key="markets" style={factStyle}>
-      <Text style={styles.label}>{product.direction === "export" ? copy.marketsTitle : productLabels.facts.origin}</Text>
-      <Text style={styles.small}>
-        {product.direction === "export"
-          ? [marketNames.join(", "), productLabels.worldwideSuffix].filter(Boolean).join(" ")
-          : productLabels.facts.originValue}
-      </Text>
-    </View>,
-    product.documentation && (
-      <View key="documentation" style={factStyle}>
-        <Text style={styles.label}>{productLabels.documentationTitle}</Text>
-        <View style={styles.chips}>
-          {product.documentation.map((document) => (
-            <Text key={document} style={styles.docChip}>
-              {document}
+        <View style={{ flex: 1.3 }}>
+          {groupIntro.paragraphs.map((paragraph) => (
+            <Text key={paragraph} style={styles.aboutText}>
+              {paragraph}
             </Text>
           ))}
         </View>
       </View>
-    ),
-  ];
 
-  return (
-    <Page size="A4" style={[styles.page, styles.productPage]}>
-      <RunningChrome section={`${direction.singular} ${copy.productsSection}`} mark={mark} />
-      <View id={productAnchor(product.slug)} style={styles.productTop}>
-        {photo && (
-          <Link src={pageLink}>
-            <Photo src={photo} style={styles.productPhoto} />
-          </Link>
-        )}
+      {assets.groupMap && (
+        <Link src={siteLink(routes.group)} style={styles.mapPanel}>
+          <Photo src={assets.groupMap} style={GROUP_MAP} />
+        </Link>
+      )}
+
+      <View style={styles.groupHead}>
         <View style={{ flex: 1 }}>
-          <View style={styles.metaRow}>
-            <Text style={product.direction === "import" ? [styles.tag, styles.tagImport] : styles.tag}>{direction.singular}</Text>
-            <Link src={siteLink(productCategoryHref(product.direction, product.category))} style={[styles.eyebrow, styles.plainLink]}>
-              {product.category}
-            </Link>
-          </View>
-          <Link src={pageLink} style={[styles.h1, styles.plainLink]}>
-            {product.name}
-          </Link>
-          <View style={styles.hsRow}>
-            {product.hsCode && (
-              <Text style={styles.hs}>
-                {productLabels.facts.hsCode} {product.hsCode}
-              </Text>
-            )}
-            <Link src={pageLink} style={styles.viewOnline}>
-              <Text style={styles.viewOnlineText}>{copy.viewOnline}</Text>
-              <PdfIcon name="arrow-right" size={7} color={color.brand} />
-            </Link>
-          </View>
-          <Text style={styles.lead}>{product.summary}</Text>
-          {product.variants && (
-            <View>
-              <Text style={styles.label}>{product.variantsLabel ?? productLabels.defaultVariantsLabel}</Text>
-              <View style={styles.chips}>
-                {product.variants.map((variant) => (
-                  <Text key={variant} style={styles.chip}>
-                    {variant}
-                  </Text>
-                ))}
-              </View>
-            </View>
-          )}
+          <Text style={styles.eyebrow}>{heading.eyebrow}</Text>
+          <Text style={styles.groupTitle}>{heading.title}</Text>
         </View>
+        {heading.description && <Text style={styles.groupLead}>{heading.description}</Text>}
       </View>
-
-      <View style={styles.productSection}>
-        <Text style={styles.h2}>{copy.overview}</Text>
-        {paragraphs.map((paragraph) => (
-          <Text key={paragraph} style={styles.overview}>
-            {paragraph}
-          </Text>
+      {/* Three columns with BOSS EXIM spanning two, as on the website (company-grid.tsx). */}
+      <View style={styles.cardGrid}>
+        {companies.map((company) => (
+          <CompanyCard key={company.name} company={company} />
         ))}
       </View>
+    </Page>
+  );
+}
 
-      {product.specifications ? (
-        <View style={[styles.row, styles.productSection]}>
-          <View style={{ flex: 1.85 }}>
-            {product.specifications.map((table) => (
-              <SpecificationsTable key={table.title} table={table} />
-            ))}
-            <Text style={styles.note}>{productLabels.specificationsNote}</Text>
-          </View>
-          {/* Kept whole: split across pages, it would leave its box on one page and the facts on the next. */}
-          <View style={styles.sidebar} wrap={false}>
-            {facts}
-          </View>
+/** A Group company's card, linking to its page on the website. */
+function CompanyCard({ company }: { company: GroupCompany }) {
+  const vertical = getVerticalForCompany(company.name);
+  const href = vertical ? siteLink(groupVerticalHref(vertical.slug)) : company.isCurrent ? siteLink(routes.about) : company.href;
+  const current = Boolean(company.isCurrent);
+  const content = (
+    <>
+      <View style={styles.companyTop}>
+        <View style={styles.companyIcon}>
+          <PdfIcon name={company.icon} size={9} color={color.white} />
         </View>
-      ) : (
-        <View style={[styles.factsRow, styles.productSection]}>{facts}</View>
-      )}
+        <Text style={current ? [styles.companyName, styles.companyNameCurrent] : styles.companyName}>{vertical?.name ?? company.name}</Text>
+        {href && <PdfIcon name="arrow-up-right" size={8} color={current ? color.sky : color.mute} />}
+      </View>
+      <Text style={current ? [styles.companyText, styles.companyTextCurrent] : styles.companyText}>{company.description}</Text>
+    </>
+  );
+  const style = current ? [styles.companyCard, styles.companyCardCurrent] : styles.companyCard;
+  return href ? (
+    <Link src={href} style={style}>
+      {content}
+    </Link>
+  ) : (
+    <View style={style}>{content}</View>
+  );
+}
+
+/** One product card: photo, trade direction, category, name, summary and HSN code, linked to its page online. */
+function ProductCard({ product, photo }: { product: Product; photo?: PdfImage }) {
+  const direction = tradeDirections[product.direction];
+  const pageLink = siteLink(productHref(product.slug));
+  return (
+    <View id={productAnchor(product.slug)} style={styles.productCard} wrap={false}>
+      <Link src={pageLink}>
+        {photo ? (
+          <Photo src={photo} style={styles.productPhoto} />
+        ) : (
+          <View style={styles.productPhotoEmpty}>
+            <PdfIcon name="ship" size={18} color={color.brand} />
+          </View>
+        )}
+      </Link>
+      <View style={styles.productBody}>
+        <View style={styles.metaRow}>
+          <Text style={product.direction === "import" ? [styles.tag, styles.tagImport] : styles.tag}>{direction.singular}</Text>
+          <Text style={styles.cardCategory}>{product.category}</Text>
+        </View>
+        <Link src={pageLink} style={[styles.productName, styles.plainLink]}>
+          {product.name}
+        </Link>
+        <Text style={[styles.productSummary, product.name.length > CARD_NAME_ONE_LINE ? { maxLines: 2 } : {}]}>{product.summary}</Text>
+      </View>
+      <View style={styles.cardFoot}>
+        {product.hsCode ? (
+          <Text style={styles.hs}>
+            {productLabels.facts.hsCode} {product.hsCode}
+          </Text>
+        ) : (
+          <View />
+        )}
+        <Link src={pageLink} style={styles.viewOnline}>
+          <Text style={styles.viewOnlineText}>{copy.viewOnline}</Text>
+          <PdfIcon name="arrow-right" size={6.5} color={color.brand} />
+        </Link>
+      </View>
+    </View>
+  );
+}
+
+/** Up to twelve products on one page (client request, 11 Nov 2026), each linking to its full details online. */
+function ProductsPage({
+  products,
+  first,
+  total,
+  photos,
+  mark,
+}: {
+  products: Product[];
+  first: number;
+  total: number;
+  photos: Map<string, PdfImage | undefined>;
+  mark: PdfImage;
+}) {
+  return (
+    <Page size="A4" style={[styles.page, styles.productPage]}>
+      <RunningChrome section={copy.productsSection} mark={mark} />
+      <View style={styles.productsHead}>
+        <View>
+          <Text style={styles.eyebrow}>{copy.productsEyebrow}</Text>
+          <Text style={styles.productsTitle}>{copy.productsTitle}</Text>
+        </View>
+        <Text style={styles.productsCount}>{copy.productsCount(first, first + products.length - 1, total)}</Text>
+      </View>
+      <View style={styles.cardGrid}>
+        {products.map((product) => (
+          <ProductCard key={product.slug} product={product} photo={photos.get(product.slug)} />
+        ))}
+      </View>
 
       <View style={styles.otherProducts} fixed>
         <Link src={siteLink(routes.products)} style={styles.otherProductsButton}>
